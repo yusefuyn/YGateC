@@ -1,0 +1,261 @@
+﻿@page "/Management/Category/EntityTemplate/{Id:int}"
+@using YGate.Client.Services.Category
+@using YGate.Client.Services.Measurement
+@using YGate.Client.Services.Property
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@inject ICategoryService categoryService
+@inject IMeasurementService measurementService
+@inject IProfileService profileService
+@inject IPropertyService propertyService
+@inject IJSRuntime jsRuntime
+@using YGate.Client.Shared.Components
+@using YGate.Entities.ViewModels
+
+@if (SelectedCategory != null)
+{
+    <div class="container">
+        <h3>@SelectedCategory.Name</h3>
+        <h5>Üst Öğe : @SelectedCategory.ParentCategoryId</h5>
+        <h5>Zorunlu Özellik Sayısı : @SelectedCategory.Template.Count(xd => xd.Require == true).ToString()</h5>
+        <h5>Opsiyonel Özellik Sayısı : @SelectedCategory.Template.Count(xd => xd.Require == false).ToString()</h5>
+        <h5>Uzun Açıklama : @SelectedCategory.LongDescription</h5>
+        <h5>Kısa Açıklama : @SelectedCategory.ShortDescription</h5>
+        <br />
+        @foreach (CategoryTemplateViewModel templateViewModel in Templates)
+        {
+            <div style="border:1px solid var(--button-border-color); border-radius:10px;">
+                <div style="margin:20px;">
+                    <Entry Placeholder="Name"
+                           @bind-value="templateViewModel.Name"></Entry>
+
+
+                    <ComboBox Ttemp="PropertyValueType"
+                              Source="Enum.GetValues(typeof(PropertyValueType)).Cast<PropertyValueType>().ToList()"
+                              ValueBinding="temp => temp.ToString()"
+                              Empty="false"
+                              SelectedValueChanged="(e)=>  OnValueTypeStatusChanged(e,templateViewModel)"
+                              DataBinding="temp=> temp.ToString()" />
+                    <br />
+
+                    @if (templateViewModel.ValueType == PropertyValueType.String)
+                    {
+                        <CheckBox Text="Seo için bunu kullan" CheckedChange="(ea)=> { if((bool)ea.Value) templateViewModel.Require = (bool)ea.Value; templateViewModel.Seo = (bool)ea.Value;}"></CheckBox>
+                        <p style="font-size:12px;">Seo ilan yada objenizin Arama motorları tarafından anlamlandırılması için URL bazlı iyileştirmedir.</p>
+                        <p style="font-size:12px;">Seo için işaretleyeceğiniz özelliğin varlığı tam anlatan bir alan olması ve doldurulması şartır.</p>
+                        <p style="font-size:12px;">Örnek olarak ilan objesi için ilan başlığı seo'ya en uygun özelliktir.</p>
+                        <p style="font-size:12px;">Birden fazla Seo işaretli alanın olmaması önerilir.</p>
+                    }
+                    else if (templateViewModel.ValueType == PropertyValueType.CustomValidationRegex)
+                    {
+                        <Entry Placeholder="Value Controll Regex"
+                               value="@templateViewModel.ValidateRegex"></Entry>
+                    }
+                    else if (templateViewModel.ValueType == PropertyValueType.ItemGroup)
+                    {
+                        <div style="margin:5px;">
+                            <ComboBox Source="Groups"
+                                      Ttemp="PropertyGroupViewModel"
+                                      DataBinding="xd=> xd.DBGuid"
+                                      ValueBinding="xd=> xd.Name"
+                                      Empty="false"
+                                      SelectedValueChanged="(e)=> ChangeGroup(e,templateViewModel)"></ComboBox>
+                        </div>
+                    }
+                    else if (templateViewModel.ValueType == PropertyValueType.Unit)
+                    {
+                        <ComboBox Source="measurementCategories"
+                                  DataBinding="xd=> xd.DBGuid"
+                                  Ttemp="MeasurementCategory"
+                                  Empty="false"
+                                  ValueBinding="xd=> xd.Name"
+                                  SelectedValueChanged="async (e)=> await ChangeUnit(e,templateViewModel)"></ComboBox>
+                    }
+                    else if (templateViewModel.ValueType == PropertyValueType.Combos)
+                    {
+                        <div style="margin:5px;">
+                            <ComboBox Source="Groups"
+                                      Ttemp="PropertyGroupViewModel"
+                                      DataBinding="xd=> xd.DBGuid"
+                                      ValueBinding="xd=> xd.Name"
+                                      Empty="false"
+                                      SelectedValueChanged="(e)=> ChangeGroup(e,templateViewModel)"></ComboBox>
+                        </div>
+                    }
+                    else if (templateViewModel.ValueType == PropertyValueType.ValueList)
+                    {
+
+                        <p>Kullanıcının gireceği bir veya birden fazla değer.</p>
+
+                    }
+                    <div class="form-group row">
+                        <label>Özelliğin Zorunlu Olup Olmadığını Belirleyin:</label><br>
+                        <div class="custom-control custom-radio custom-control-inline col-6">
+                            <RadioButton Id="zorunluEvet"
+                                         Name="@templateViewModel.DBGuid"
+                                         Text="Evet, zorunlu."
+                                         Checked="(templateViewModel.Require)"
+                                         OnChange="(e) => OnCompulsoryTypeStatusChanged(true,e,templateViewModel)"></RadioButton>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline col-6">
+                            <RadioButton Id="zorunluHayir"
+                                         Name="@templateViewModel.DBGuid"
+                                         Text="Hayır, zorunlu değil."
+                                         Checked="(!templateViewModel.Require)"
+                                         OnChange="(e) => OnCompulsoryTypeStatusChanged(false,e,templateViewModel)"></RadioButton>
+                        </div>
+                    </div>
+                    <SpecialButton OnClick="()=>YeniOzelligiSil(templateViewModel)" Class="btn-danger" Text="Sil"></SpecialButton>
+                </div>
+            </div>
+            <br />
+        }
+        <SpecialButton OnClick="async()=> await YeniOzellikEkle(new())"
+                       Class="btn-success"
+                       Text="Ekle"></SpecialButton>
+        <br />
+        <SpecialButton Text="Kaydet"
+                       Class="btn-success"
+                       OnClick="Kaydet"></SpecialButton>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; } = -1;
+
+    private YGate.Entities.ViewModels.CategoryViewModel SelectedCategory { get; set; }
+
+    List<MeasurementCategory> measurementCategories = new();
+    List<CategoryTemplateViewModel> Templates = new();
+    List<PropertyGroupViewModel> Groups = new();
+
+    public string H5Icerigi { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DataRefresh();
+    }
+
+    private async Task DataRefresh()
+    {
+        RequestResult res = await categoryService.GetCategory(Id);
+        if (res.Result == EnumRequestResult.Success)
+            SelectedCategory = res.ConvertRequestObject<YGate.Entities.ViewModels.CategoryViewModel>();
+
+        res = await measurementService.GetAllMeasurementCategory();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            measurementCategories = res.ConvertRequestObject<List<MeasurementCategory>>();
+
+        res = await propertyService.GetAllPropertyViewModel();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            Groups = res.ConvertRequestObject<List<PropertyGroupViewModel>>();
+
+        Templates.AddRange(SelectedCategory.Template);
+    }
+
+    private async Task TemplateValueAdd(CategoryTemplateViewModel model)
+    {
+        CategoryTemplateValue obj = new CategoryTemplateValue()
+            {
+                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                DBGuid = YGate.String.Operations.GuidGen.Generate("CategoryTemplateValue"),
+                CategoryTemplateGuid = model.DBGuid,
+                IsActive = true,
+            };
+        model.categoryTemplateValues.Add(obj);
+        StateHasChanged();
+    }
+
+    private async Task ChangeGroup(ChangeEventArgs eventArgs, CategoryTemplateViewModel model)
+    {
+        CategoryTemplateValue res = new CategoryTemplateValue()
+            {
+                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                ValueGroupGuid = eventArgs.Value.ToString(),
+                DBGuid = YGate.String.Operations.GuidGen.Generate("CategoryTemplateValue"),
+                CategoryTemplateGuid = model.DBGuid,
+            };
+        model.categoryTemplateValues.Add(res);
+        StateHasChanged();
+    }
+
+    private async Task ChangeUnit(ChangeEventArgs eventArgs, CategoryTemplateViewModel model)
+    {
+        CategoryTemplateValue res = new CategoryTemplateValue()
+            {
+                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                ValueGroupGuid = eventArgs.Value.ToString(),
+                DBGuid = YGate.String.Operations.GuidGen.Generate("categorytemplatevalue"),
+                CategoryTemplateGuid = model.DBGuid,
+            };
+        model.categoryTemplateValues.Add(res);
+        StateHasChanged();
+    }
+
+    private async Task YeniOzellikEkle(CategoryTemplateViewModel model)
+    {
+        model = new CategoryTemplateViewModel()
+            {
+                DBGuid = YGate.String.Operations.GuidGen.Generate("categorytemplate"),
+                CategoryId = SelectedCategory.Id,
+                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                Added = false,
+                categoryTemplateValues = new() { new() {
+                    CategoryTemplateGuid = model.DBGuid,
+                    OwnerGuid = await profileService.GetPropertiesValue("Guid")
+                }}
+            };
+
+        Templates.Add(model);
+        StateHasChanged();
+    }
+
+    private void OnCompulsoryTypeStatusChanged(bool compulsory, ChangeEventArgs e, CategoryTemplate temp)
+    {
+        var val = e.Value.ToString();
+        if (val != "on")
+            return;
+
+        if (compulsory == true)
+        {
+            temp.Require = true;
+        }
+        else
+        {
+            temp.Require = false;
+            temp.Seo = false;
+        }
+    }
+
+    private void OnValueTypeStatusChanged(ChangeEventArgs e, CategoryTemplate temp)
+    {
+        temp.ValueType = (PropertyValueType)Enum.Parse(typeof(PropertyValueType), e.Value.ToString());
+        StateHasChanged();
+    }
+
+
+    private void YeniOzelligiSil(CategoryTemplateViewModel temp)
+    {
+        Templates.Remove(temp);
+        categoryService.DeleteTemplate(temp);
+        StateHasChanged();
+    }
+
+    private async void Kaydet()
+    {
+        RequestResult result = await categoryService.AddTemplates(Templates.Where(xd => xd.Added == false).ToList());
+        if (result == null)
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", "Bir hata meydana geldi daha sonra tekrar deneyin.");
+            return;
+        }
+
+        if (result.Result == EnumRequestResult.Success)
+        {
+            navigationManager.NavigateTo("Management/Category");
+            await jsRuntime.InvokeVoidAsync("showNotification", "Yeni şemalar eklendi.");
+        }
+        await jsRuntime.InvokeVoidAsync("showNotification", "Eski şemalar GÜNCELLENEMEDİ!");
+    }
+}

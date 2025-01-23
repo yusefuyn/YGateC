@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\2-DataLayer\YGate.DataAccess.EFCore\YGate.DataAccess.Postgresql.EFCore.csproj" />
+    <ProjectReference Include="..\..\2-DataLayer\YGate.DataAccess.Mssql.EFCore\YGate.DataAccess.Mssql.EFCore.csproj" />
+    <ProjectReference Include="..\..\2-DataLayer\YGate.DataAccess.Mysql.EFCore\YGate.DataAccess.Mysql.EFCore.csproj" />
+    <ProjectReference Include="..\..\2-DataLayer\YGate.DataAccess.Sqllite.EFCore\YGate.DataAccess.Sqllite.EFCore.csproj" />
+    <ProjectReference Include="..\YGate.IO.Operations\YGate.IO.Operations.csproj" />
+    <ProjectReference Include="..\YGate.Json.Operations\YGate.Json.Operations.csproj" />
+    <ProjectReference Include="..\YGate.Mapping\YGate.Mapping.csproj" />
+    <ProjectReference Include="..\YGate.Operation.Runner\YGate.Operation.Runner.csproj" />
+    <ProjectReference Include="..\YGate.String.Operations\YGate.String.Operations.csproj" />
+  </ItemGroup>
+
+</Project>

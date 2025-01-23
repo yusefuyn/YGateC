@@ -1,0 +1,71 @@
+﻿@page "/Management/PropertyGroup"
+@using YGate.Client.Services.Property
+@using YGate.Client.Shared.Components
+@using YGate.Entities
+@using YGate.Entities.ViewModels
+@inject IPropertyService propertService
+@inject NavigationManager navigationManager
+<div class="container">
+    <header class="container-header">
+        <h3>PropertyGroup</h3>
+        <SpecialButton Text="Property Group Add" Style="color:White; width:200px;" OnClick="NavigateAdd"></SpecialButton>
+    </header>
+    @if (source != null && source.Count > 0)
+    {
+        <table class="table table-bordered table-hover" style="color:white;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Group Name</th>
+                    <th>Values</th>
+                    <th>Add</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var model in source)
+                {
+                    <tr>
+                        <td>@model.Name</td>
+                        <td></td>
+                        <td>
+                            <a href="/Management/PropertyGroup/Value/Add/@model.DBGuid">Add Value</a>
+                        </td>
+                        <td>
+                            <a href="">Delete Group</a>
+                        </td>
+                    </tr>
+                    @foreach (var temp in model.Values)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>@temp.Value</td>
+                            <td></td>
+                            <td>
+                                <a href="">Delete Value</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>@localizer["NoDataCurrentlyAvailable."]</p>
+    }
+</div>
+
+@code {
+    List<PropertyGroupViewModel> source { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        RequestResult res = await propertService.GetAllPropertyViewModel();
+        if (res.Result == EnumRequestResult.Success)
+            source = res.ConvertRequestObject<List<PropertyGroupViewModel>>();
+    }
+
+    private void NavigateAdd()
+    {
+        navigationManager.NavigateTo("/Management/PropertyGroup/Add");
+    }
+}

@@ -1,0 +1,61 @@
+﻿@page "/Management/MeasurementUnit/Add"
+@using YGate.Client.Services.Measurement
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@using YGate.Client.Shared.Components
+@inject IMeasurementService measurementService
+@inject NavigationManager navigationManager
+@inject IProfileService profileService
+<div>
+    <h3>UnitManagementAdd</h3>
+    <br />
+    <Entry @bind-value="Model.Name"
+           Placeholder="Name"></Entry>
+    <br />
+    <Entry @bind-value="Model.Symbol"
+           Placeholder="Symbol"></Entry>
+    <br />
+    <ComboBox Source="Categories"
+              Ttemp="MeasurementCategory"
+              ValueBinding="xd=> xd.Name"
+              Empty="false"
+              DataBinding="xd=> xd.DBGuid"
+              SelectedValueChanged="OnChangeCategory"></ComboBox>
+    <br />
+    <p>@ErrorMessage.ToString()</p>
+    <br />
+    <SpecialButton Text="Ekle" OnClick="async()=> await AddUnit()"></SpecialButton>
+</div>
+@code {
+    public MeasurementUnit Model { get; set; } = new();
+    public string ErrorMessage { get; set; } = "";
+    private List<MeasurementCategory> Categories { get; set; } = new();
+
+    private void OnChangeCategory(ChangeEventArgs e)
+    {
+        Model.MeasurementCategoryGuid = e.Value.ToString();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DataRefresh();
+    }
+
+    private async Task DataRefresh()
+    {
+        RequestResult result = await measurementService.GetAllMeasurementCategory();
+        if (result.Result == EnumRequestResult.Success)
+            Categories = (List<MeasurementCategory>)result.Object;
+    }
+
+    private async Task AddUnit()
+    {
+        Model.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        RequestResult res = await measurementService.AddMeasurementUnit(Model);
+
+        if (res.Result == EnumRequestResult.Success)
+            navigationManager.NavigateTo("/Management/MeasurementUnit");
+        else
+            ErrorMessage = res.ShortDescription.ToString();
+    }
+}

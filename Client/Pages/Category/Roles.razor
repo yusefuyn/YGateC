@@ -1,0 +1,102 @@
+﻿@page "/Management/Category/Roles/{CategoryGuid}"
+@using YGate.Client.Services.Category
+@using YGate.Entities
+@inject ICategoryService categoryService
+@inject IProfileService profileService
+@using YGate.Client.Shared.Components;
+@using YGate.Entities.BasedModel
+<div class="container">
+    <div class="container-header">
+        @if (source != null && source.Category != null)
+        {
+            <h3>@source.Category.Name Category Roles</h3>
+        }
+        else
+        {
+            <h3>Category Roles</h3>
+        }
+    </div>
+
+    @if (source != null && source.AddeableRoles != null && source.AddeableRoles.Count > 0)
+    {
+        <ComboBox Ttemp="YGate.Entities.BasedModel.Role"
+                  Empty="false"
+                  DataBinding="xd=> xd.DBGuid"
+                  Source="source.AddeableRoles.ToList()"
+                  ValueBinding="xd=> xd.Name"
+                  SelectedValueChanged="(ChangeEventArgs)=> SelectedChange(ChangeEventArgs)"></ComboBox>
+
+        <SpecialButton Text="Ekle" OnClick="async()=> await Ekle()"></SpecialButton>
+    }
+
+    @if (source != null && source.AddedRoles != null && source.AddedRoles.Count > 0)
+    {
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Management</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in source.AddedRoles)
+                {
+                    <tr>
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.Name</td>
+                        <td>@temp.ShortDescription</td>
+                        <td><SpecialButton Text="Delete" OnClick="async ()=> await DeleteRole(temp.DBGuid)"></SpecialButton></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+</div>
+@code {
+    [Parameter]
+    public string CategoryGuid { get; set; }
+
+    private string SelectedRole { get; set; }
+
+    YGate.Entities.ResultModel.CategoryRolesResultModel source { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        RequestResult requestResult = await categoryService.GetCategoryRoles(CategoryGuid);
+        if (requestResult.Result == EnumRequestResult.Success)
+            source = requestResult.ConvertRequestObject<YGate.Entities.ResultModel.CategoryRolesResultModel>();
+    }
+
+    private void SelectedChange(ChangeEventArgs args)
+    {
+        SelectedRole = args.Value.ToString();
+    }
+
+    public async Task Ekle()
+    {
+
+        CategoryRoles role = new()
+            {
+                CategoryGuid = CategoryGuid,
+                RoleGuid = SelectedRole,
+                IsActive = true
+            };
+
+        role.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+
+        RequestResult requestResult = await categoryService.AddCategoryRoles(role);
+        if (requestResult.Result == EnumRequestResult.Success)
+            source = requestResult.ConvertRequestObject<YGate.Entities.ResultModel.CategoryRolesResultModel>();
+    }
+
+    public async Task DeleteRole(string EklenmisCategoryGuid)
+    {
+        RequestResult requestResult = await categoryService.RemoveCategoryRole(new { CategoryGuid = CategoryGuid, RoleGuid = EklenmisCategoryGuid });
+        if (requestResult.Result == EnumRequestResult.Success)
+            source = requestResult.ConvertRequestObject<YGate.Entities.ResultModel.CategoryRolesResultModel>();
+    }
+}

@@ -1,0 +1,202 @@
+﻿@page "/Management/User/{UserGuid}"
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@using YGate.Entities.ViewModels
+@attribute [Authorize(Roles = "Administrator")]
+@inject IAdministratorService administratorService
+@inject IJSRuntime jsRuntime
+@using YGate.Client.Shared.Components
+
+<style>
+    .role-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .role-name {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    .delete-btn {
+        margin-left: 10px; /* Del butonuna biraz sağ boşluk ekleyelim */
+        width: 70px;
+    }
+
+</style>
+
+
+
+<div class="container">
+    <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+        @if (source != null)
+        {
+            <h3>Management @source.Accounts.Username</h3>
+        }
+        else
+        {
+            <p>@localizer["NoDataCurrentlyAvailable."]</p>
+        }
+    </header>
+    @if (source != null)
+    {
+        <div class="row">
+            <div class="special-div">
+                <div class="col-12"><p>UserName : @source.Accounts.Username</p></div>
+                <div class="col-12">
+                    <div class="container special-div">
+                        <p>
+                            Role(s) :
+                            <ComboBox Empty="false"
+                                      Ttemp="Role"
+                                      Source="source.AssignableRoles"
+                                      SelectedValueChanged="(e)=> SelectedRoleChange(e.Value.ToString())"
+                                      DataBinding="xd=> xd.DBGuid"
+                                      ValueBinding="xd=> xd.Name"></ComboBox>
+                            <SpecialButton Text="Ekle" OnClick="async ()=> await ChangeRole()"></SpecialButton>
+                        </p>
+                        @foreach (var role in source.Accounts.Roles)
+                        {
+                            <div class="role-row">
+                                <p class="role-name">@role.Name</p>
+                                <SpecialButton Class="delete-btn" OnClick="async()=> await DeleteRole(source.Accounts.DBGuid,role.DBGuid)" Text="Del"></SpecialButton>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-12"><p>Active : @source.Accounts.IsActive</p></div>
+                <div class="row">
+                    <div class="col-6">
+                        <SpecialButton Class="btn-outline-success" Text="Active" OnClick="async ()=> await ChangeStatusActive()"></SpecialButton>
+                    </div>
+                    <div class="col-6">
+                        <SpecialButton Class="btn-outline-danger" Text="DeActive" OnClick="async ()=> await ChangeStatusDeActive()"></SpecialButton>
+                    </div>
+                </div>
+                <div class="col-12"><p>Status : @source.Accounts.Status</p></div>
+                <div class="row">
+                    <div class="col-6">
+                        <SpecialButton Class="btn-outline-success" Text="Verified" OnClick="async ()=> await VerifiedUser()"></SpecialButton>
+                    </div>
+                    <div class="col-6">
+                        <SpecialButton Class="btn-outline-danger" Text="Ban" OnClick="async ()=> await BannedUser()"></SpecialButton>
+                    </div>
+                </div>
+                <div class="col-12"><p>Referance : @source.Accounts.OwnerGuid</p></div>
+            </div>
+            <br />
+            <div class="special-div">
+                <p>Şifre geçmişi</p>
+                @foreach (var temp in source.AccountPasswords)
+                {
+                    <div class="col-12">
+                        <p> @temp.CreateDate : @temp.Password (@temp.IsActive)</p>
+                    </div>
+                }
+            </div>
+            <br />
+            <div class="special-div">
+                <p>Özellikleri</p>
+
+                @foreach (var temp in source.AccountProperties)
+                {
+                    <div class="col-12">
+                        <p>@temp.PropertiesName : @temp.PropertiesValue (@temp.IsActive)</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+@code {
+
+    [Parameter]
+    public string UserGuid { get; set; }
+
+    private string SelectedRoleGuid { get; set; }
+
+    AdministratorUsersList source = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        var res = await administratorService.GetUser(UserGuid);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            source = res.ConvertRequestObject<AdministratorUsersList>();
+    }
+
+    private async Task BannedUser()
+    {
+        RequestResult res = await administratorService.UserBan(UserGuid);
+        if (res.Result == EnumRequestResult.Success)
+            source.Accounts = res.ConvertRequestObject<Account>();
+        await jsRuntime.InvokeVoidAsync("showNotification", "İstek gönderildi ve obje yenilendi.");
+    }
+
+    private async Task VerifiedUser()
+    {
+        RequestResult res = await administratorService.VerifyUser(UserGuid);
+        if (res.Result == EnumRequestResult.Success)
+            source.Accounts = res.ConvertRequestObject<Account>();
+        await jsRuntime.InvokeVoidAsync("showNotification", "İstek gönderildi ve obje yenilendi.");
+    }
+
+    private async Task ChangeRole()
+    {
+        string ToGuid = await profileService.GetPropertiesValue("Guid");
+        RequestResult res = await administratorService.ChangeRole(UserGuid, ToGuid, SelectedRoleGuid);
+        if (res.Result == EnumRequestResult.Success)
+        {
+            source.Accounts = res.ConvertRequestObject<Account>();
+            await jsRuntime.InvokeVoidAsync("showNotification", "İstek gönderildi ve obje yenilendi.");
+            StateHasChanged();
+        }
+        else
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", "Başarılı olmadı.");
+        }
+    }
+
+    private async Task ChangeStatusDeActive()
+    {
+        RequestResult res = await administratorService.UserIsActiveFalse(UserGuid);
+        if (res.Result == EnumRequestResult.Success)
+            source.Accounts = res.ConvertRequestObject<Account>();
+        await jsRuntime.InvokeVoidAsync("showNotification", "İstek gönderildi ve obje yenilendi.");
+    }
+
+    private async Task ChangeStatusActive()
+    {
+        RequestResult res = await administratorService.UserIsActiveTrue(UserGuid);
+        if (res.Result == EnumRequestResult.Success)
+            source.Accounts = res.ConvertRequestObject<Account>();
+        await jsRuntime.InvokeVoidAsync("showNotification", "İstek gönderildi ve obje yenilendi.");
+    }
+
+    private void SelectedRoleChange(string dbguid)
+    {
+        SelectedRoleGuid = dbguid;
+    }
+
+    private async Task DeleteRole(string accoutnGuid, string roleGuid)
+    {
+        RequestResult res = await administratorService.DeleteRoleAccountToObjectGuid(accoutnGuid, roleGuid);
+        if (res.Result == EnumRequestResult.Success)
+        {
+            source.Accounts = res.ConvertRequestObject<Account>();
+            await jsRuntime.InvokeVoidAsync("showNotification", "İstek gönderildi ve obje yenilendi.");
+            StateHasChanged();
+        }
+    }
+
+}

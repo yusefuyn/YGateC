@@ -1,0 +1,35 @@
+﻿@page "/Show/Entitie/{Guid}"
+@using YGate.Client.Services.Category
+@using YGate.Client.Services.Entitie
+@inject IEntitieService entitieService
+@inject ICategoryService categoryService
+@inject IJSRuntime jsRuntime
+<style>
+    @CssStyle
+</style>
+<div class="container">
+    @view
+</div>
+@code {
+    [Parameter]
+    public string Guid { get; set; }
+
+    private YGate.Entities.ViewModels.EntitieViewModel entitieviewModel { get; set; }
+
+    private string CssStyle { get; set; } = "";
+
+    private MarkupString view { get; set; } = new("<p>Bu varlık görüntülenemez!<span style='color:red;'>Yada şu anda görüntü oluşturuluyor olabilir.!Bilemeyiz.</span></p>");
+    protected override async Task OnInitializedAsync()
+    {
+        var res1 = await entitieService.GetEntitieViewModel(Guid);
+        if (res1.Result == YGate.Entities.EnumRequestResult.Success)
+            entitieviewModel = res1.ConvertRequestObject<YGate.Entities.ViewModels.EntitieViewModel>();
+
+            view = entitieService.CategoryHtmlTemplateAddValues(entitieviewModel, EntitieService.TemplateEnum.DataView);
+
+        StateHasChanged();
+
+        await jsRuntime.InvokeVoidAsync("ycustomimagelistComponentLoad");
+    }
+
+}

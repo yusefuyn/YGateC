@@ -1,0 +1,62 @@
+﻿@page "/Management/User"
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Entities.BasedModel
+@using YGate.Entities.ViewModels
+@attribute [Authorize(Roles = "Administrator")]
+@inject IAdministratorService administratorService
+
+<div class="container">
+    <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+        <h3>User</h3>
+    </header>
+    @if (source == null || source.Count  == 0)
+    {
+        <p>@localizer["NoDataCurrentlyAvailable."]</p>
+
+    }
+    else
+    {
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Mail</th>
+                    <th scope="col">IsActive</th>
+                    <th scope="col">Management</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in source)
+                {
+
+                    <tr class="table-row">
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.Username</td>
+                        <td>@temp.Roles</td>
+                        <td>@temp.Status</td>
+                        <td>@temp.Email</td>
+                        <td>@temp.IsActive</td>
+                        <td>
+                            <a class="special-button" href="/Management/User/@temp.DBGuid">Management</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+
+@code {
+    List<Account> source = null;
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await administratorService.GetAllUser();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            source = res.ConvertRequestObject<List<Account>>();
+    }
+}

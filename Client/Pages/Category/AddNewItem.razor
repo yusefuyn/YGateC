@@ -1,0 +1,79 @@
+﻿@page "/Management/Category/AddNewtemp"
+@attribute [Authorize(Roles = "Administrator")]
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Category
+@using YGate.Client.Shared.Components
+@inject ICategoryService categoryService
+@inject NavigationManager navigationManager
+
+
+
+<div style="width:100%;">
+    <h3>AddNewtemp</h3>
+    <br />
+    <Entry Placeholder="Name"
+           @bind-value="AddedCategory.Name"></Entry>
+    <Entry Placeholder="Description"
+           @bind-value="AddedCategory.ShortDescription"></Entry>
+
+    <Entry Placeholder="Icon(fa fa-map)"
+           @bind-value="AddedCategory.Icon"></Entry>
+
+    <ComboBox Ttemp="YGate.Entities.BasedModel.Category"
+              Source="source"
+              SelectedValueChanged="OnValueChange"
+              Empty="false"
+              DataBinding="xd=> xd.Id"
+              ValueBinding="xd=> xd.Name"></ComboBox>
+
+    <span style="color:red;">@ErrorMessage</span>
+    <SpecialButton OnClick="async()=>await Click()"
+                   Text="Ekle"
+                   Class="btn-success"></SpecialButton>
+</div>
+
+
+@code {
+    public YGate.Entities.BasedModel.Category AddedCategory { get; set; } = new();
+
+    List<YGate.Entities.BasedModel.Category> source { get; set; } = new();
+
+    public string ErrorMessage { get; set; } = "";
+
+    public void OnValueChange(ChangeEventArgs e)
+    {
+        AddedCategory.ParentCategoryId = Convert.ToInt32(e.Value);
+    }
+    public async Task RefreshData()
+    {
+        source = new();
+        var res = await categoryService.GetAll();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            var list = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Category>>();
+            source.AddRange(list);
+        }
+    }
+    public async Task Click()
+    {
+        if (string.IsNullOrEmpty(AddedCategory.Name))
+        {
+            ErrorMessage = "Lütfen Name alanını doldurunuz.";
+            return;
+        }
+
+        var res = await categoryService.AddCategory(AddedCategory);
+
+        if (res.Result != YGate.Entities.EnumRequestResult.Success)
+        {
+            ErrorMessage = res.ShortDescription.ToString();
+            return;
+        }
+
+        navigationManager.NavigateTo("/Management/Category");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+}

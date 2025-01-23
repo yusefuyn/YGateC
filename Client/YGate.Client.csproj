@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.10" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.11.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
+	</ItemGroup>
+
+		<ItemGroup>
+		<ProjectReference Include="..\1-DomainLayer\YGate.Entities\YGate.Entities.csproj" />
+		<ProjectReference Include="..\3-OperationLayer\YGate.Html.Operations\YGate.Html.Operations.csproj" />
+		<ProjectReference Include="..\3-OperationLayer\YGate.Json.Operations\YGate.Json.Operations.csproj" />
+		<ProjectReference Include="..\3-OperationLayer\YGate.String.Operations\YGate.String.Operations.csproj" />
+		<ProjectReference Include="..\Shared\YGate.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\summernote\" />
+	</ItemGroup>
+
+</Project>

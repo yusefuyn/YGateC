@@ -1,0 +1,122 @@
+﻿@using YGate.Entities.ViewModels
+@using YGate.Client.Shared.Components
+@typeparam Ttemp
+@code {
+
+    [Parameter]
+    public IEnumerable<Ttemp> Source { get; set; }
+
+    private int _level { get; set; }
+    [Parameter]
+    public int Level { get { return _level; } set { _level = value; NextLevel = value + 1; } }
+
+    [Parameter]
+    public EventCallback<string> Deletetemp { get; set; }
+
+
+
+    [Parameter]
+    public Func<Ttemp, string> VisibleText { get; set; }
+
+    [Parameter]
+    public Func<Ttemp, string> Binding { get; set; }
+
+    [Parameter]
+    public List<Func<Ttemp, string>> Columns { get; set; }
+
+    [Parameter]
+    public Func<Ttemp, IEnumerable<Ttemp>> Subtemps { get; set; }
+
+    [Parameter]
+    public List<Func<Ttemp, Task>> TaskList { get; set; }
+
+    private int NextLevel { get; set; }
+
+    private bool IsExpanded = false;
+
+    [Parameter]
+    public Func<Ttemp, bool> Expanded { get; set; }
+
+    [Parameter]
+    public Action<Ttemp> ToggleVisibility { get; set; }
+
+    public TreeViewer()
+    {
+        Level = 0;
+    }
+
+    private async Task DeletetempAsync(string tempguid)
+    {
+        await Deletetemp.InvokeAsync(tempguid);
+    }
+}
+
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
+
+
+
+@foreach (var temp in Source)
+{
+
+    <tr class="treegrid-row level-@Level" data-level="@Level">
+        <td>
+            @for (int i = 0; i < Level; i++)
+            {
+                <span class="treegrid-indent"></span>
+            }
+            <span class="treegrid-expander" @onclick="()=>ToggleVisibility(temp)">
+
+                @if (Expanded(temp))
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    <span>+</span>
+                }
+
+            </span>
+            @VisibleText(temp)
+        </td>
+        @if (Columns != null && Columns.Count() > 0)
+        {
+            <td>
+                @foreach (var column in Columns)
+                {
+                    @column(temp).ToString()
+                }
+            </td>
+        }
+        else
+        {
+            <td></td>
+        }
+        @if (TaskList != null && TaskList.Count > 0)
+        {
+            @foreach (var task in TaskList)
+            {
+                <td>
+                    <SpecialButton Style="color:white;margin:5px;" Text="Action" OnClick="()=> task(temp)"></SpecialButton>
+                </td>
+            }
+        }
+    </tr>
+    @if (Expanded(temp))
+    {
+        <TreeViewer Level="NextLevel"
+                    Source="Subtemps(temp)"
+                    Columns="Columns"
+                    Binding="Binding"
+                    Deletetemp="Deletetemp"
+                    ToggleVisibility="xd=> ToggleVisibility(xd)"
+                    Expanded="Expanded"
+                    Subtemps="Subtemps"
+                    TaskList="TaskList"
+                    VisibleText="VisibleText"
+                    Ttemp="Ttemp"></TreeViewer>
+    }
+}

@@ -1,0 +1,30 @@
+﻿@page "/Management/PropertyGroup/Add"
+@using YGate.Client.Services.Property
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@using YGate.Client.Shared.Components
+@inject IPropertyService propertService
+@inject IProfileService profileService
+<div>
+    <h3>PropertyGroupAdd</h3>
+    <br />
+    <Entry Placeholder="Group Name" @bind-value="Model.Name"></Entry>
+    <br />
+    <p style="color:red;">@ErrorMessage.ToString()</p>
+    <br />
+    <SpecialButton OnClick="Ekle" Style="color:white;" Text="Add"></SpecialButton>
+</div>
+@code {
+    public PropertyGroup Model { get; set; } = new();
+    public string ErrorMessage { get; set; } = "";
+
+    public async Task Ekle()
+    {
+        Model.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        RequestResult result = await propertService.AddGroup(Model);
+        if (result.Result == EnumRequestResult.Success)
+            navigationManager.NavigateTo("/Management/PropertyGroup");
+        else
+            ErrorMessage = result.ShortDescription.ToString();
+    }
+}

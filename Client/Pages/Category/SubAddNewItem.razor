@@ -1,0 +1,54 @@
+﻿@page "/Management/Category/AddNewtemp/{Id:int}"
+@using YGate.Client.Services.Category
+@using YGate.Client.Shared.Components
+@inject ICategoryService categoryService
+
+
+<div style="width:100%;">
+    <h3>@SubCategory.Name için alt kategori</h3>
+    <br />
+    <Entry Placeholder="Name"
+           @bind-value="AddedCategory.Name"></Entry>
+    <Entry Placeholder="Description"
+           @bind-value="AddedCategory.ShortDescription"></Entry>
+
+    <span style="color:red;">@ErrorMessage</span>
+    <SpecialButton OnClick="async()=>await Click()"
+                   Text="Ekle"
+                   Class="btn-success"></SpecialButton>
+</div>
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private string ErrorMessage = "";
+    private YGate.Entities.BasedModel.Category SubCategory = new();
+    private YGate.Entities.BasedModel.Category AddedCategory = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await categoryService.GetCategory(Id);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            SubCategory = res.ConvertRequestObject<YGate.Entities.BasedModel.Category>();
+    }
+    public async Task Click()
+    {
+        AddedCategory.ParentCategoryId = SubCategory.Id;
+
+        if (string.IsNullOrEmpty(AddedCategory.Name))
+        {
+            ErrorMessage = "Lütfen Name alanını doldurunuz.";
+            return;
+        }
+
+        var res = await categoryService.AddCategory(AddedCategory);
+
+        if (res.Result != YGate.Entities.EnumRequestResult.Success)
+        {
+            ErrorMessage = res.ShortDescription.ToString();
+            return;
+        }
+
+        navigationManager.NavigateTo("/Management/Category");
+    }
+
+}

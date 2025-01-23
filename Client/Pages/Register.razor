@@ -1,0 +1,136 @@
+﻿@page "/Register"
+@using YGate.Client.Services.Login
+@using YGate.Client.Shared.Components
+@using YGate.Entities.ViewModels
+<PageTitle>@localizer["Register"]</PageTitle>
+
+<style>
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        position: relative;
+        color: white;
+    }
+
+        .input-container .label {
+            font-size: 15px;
+            padding-left: 10px;
+            position: absolute;
+            top: 13px;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+    .input {
+        height: 45px;
+        border: none;
+        outline: none;
+        padding: 0px 7px;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 15px;
+        background-color: transparent;
+        box-shadow: 3px 3px 10px rgba(0,0,0,1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+    }
+
+        .input:focus {
+            border: 2px solid transparent;
+            color: #fff;
+            box-shadow: 3px 3px 10px rgba(0,0,0,1), -1px -1px 6px rgba(255, 255, 255, 0.4), inset 3px 3px 10px rgba(0,0,0,1), inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+        }
+
+    .input-container .input:valid ~ .label,
+    .input-container .input:focus ~ .label {
+        transition: 0.3s;
+        padding-left: 2px;
+        transform: translateY(-35px);
+    }
+
+    .input-container .input:valid,
+    .input-container .input:focus {
+        box-shadow: 3px 3px 10px rgba(0,0,0,1), -1px -1px 6px rgba(255, 255, 255, 0.4), inset 3px 3px 10px rgba(0,0,0,1), inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+    }
+</style>
+<div class="login-container">
+    <h1>@localizer["Register"]</h1>
+    <div class="bd-transparent">
+        <div class="form">
+            <div class="mb-3 input-container">
+                <input required="" @bind-value="model.UserName" type="text" name="text" class="input">
+                <label class="label">@localizer["Username"]:</label>
+            </div>
+            <div class="mb-3 input-container">
+                <input required="" @bind-value="model.Password" type="password" name="text" class="input">
+                <label class="label">@localizer["Password"]:</label>
+            </div>
+            <div class="mb-3 input-container">
+                <input required="" @bind-value="model.RPassword" type="password" name="text" class="input">
+                <label class="label">@localizer["Password_Retry"]:</label>
+            </div>
+            <div class="mb-3 input-container">
+                <input required="" @bind-value="model.Email" type="text" name="text" class="input">
+                <label class="label">@localizer["Email"]:</label>
+            </div>
+            <label style="color:red;">@ErrorMessage</label>
+            <br>
+            <label>@localizer["Do_you_have_an_account"]<a href="/Login">@localizer["Click_log_in"]</a></label>
+            <SpecialButton OnClick="register" Class="" Text="@localizer["Register"]"></SpecialButton>
+
+        </div>
+    </div>
+</div>
+@code {
+    RegisterViewModel model = new();
+    string ErrorMessage = "";
+
+    public async void register()
+    {
+
+        model.Password = YGate.String.Operations.Hash.SaltAndSHA512(model.Password);
+        model.RPassword = YGate.String.Operations.Hash.SaltAndSHA512(model.RPassword);
+
+        var res = await loginregisterService.RegisterAsync(model);
+        if (res.Result !=YGate.Entities.EnumRequestResult.Success)
+        {
+            ErrorMessage = res.ShortDescription.ToString();
+            return;
+        }
+        StartCountdown();
+    }
+
+
+    int countdown = 3;
+
+    System.Timers.Timer timer;
+
+    private void StartCountdown()
+    {
+        timer = new(1000);
+        timer.Enabled = true;
+        timer.Elapsed += OnTimerElapsed;
+    }
+
+    private void OnTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    {
+        if (countdown > 0)
+        {
+            countdown--;
+            ErrorMessage = $"{countdown} saniye içerisinde login sayfasına yönlendiriliyorsunuz.";
+            InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            navigationManager.NavigateTo("/Login");
+            timer?.Stop();
+            timer?.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Stop();
+        timer?.Dispose();
+    }
+
+}

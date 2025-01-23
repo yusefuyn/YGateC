@@ -1,0 +1,45 @@
+﻿@using System.Reflection
+@inject IJSRuntime jsRuntime
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await jsRuntime.InvokeVoidAsync("initializeSummernote", HtmlName);
+        await jsRuntime.InvokeVoidAsync("changeSummernoteFontColor", HtmlName, FontColorToHex);
+        // await jsRuntime.InvokeVoidAsync("registerEditorChangeEvent", HtmlName, Assembly.GetExecutingAssembly().GetName().Name);
+    }
+
+
+    public string HtmlName { get; set; } = YGate.String.Operations.Name.Generate();
+
+    [Parameter]
+    public string Source { get; set; } = "";
+
+
+    [Parameter]
+    public string FontColorToHex { get; set; } = "#FFF";
+
+
+    [Parameter]
+    public EventCallback<string> SourceChanged { get; set; }
+
+
+    // [JSInvokable("UpdateSource")] // Javascript tarafında tetiklenebilir olarak işaretlendi ve adıda UpdateSource olarak verildi..
+    // public static async Task UpdateSource(string ElementId, string newSource)
+    // {
+    //     // if (ElementId != HtmlName)
+    //     //     return;
+    //     // Source = newSource;
+    //     // StateHasChanged();
+    // }
+
+    public async Task<string> GetEditorContent()
+    {
+        var editorContent = await jsRuntime.InvokeAsync<string>("getSummernoteContent", HtmlName);
+        return editorContent.ToString();
+    }
+}
+
+
+
+<div id="@HtmlName">@Source</div>

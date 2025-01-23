@@ -1,0 +1,55 @@
+﻿.bd-transparent {
+    background-color: transparent;
+}
+
+.login-container {
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    position: absolute; /* Konumlandırma */
+    top: 50%; /* Ekranın %50 yukarısı */
+    left: 50%; /* Ekranın %50 sol tarafı */
+    transform: translate(-50%, -50%); /* Kendini ortalamak için kaydırma */
+    background-color: var(--panel-color);
+}
+
+div {
+    background-color: transparent;
+}
+
+h1 {
+    text-align: center;
+    color: var(--font-color);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    background-color: var(--panel-color);
+}
+
+input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+    input:focus,
+    textarea:focus {
+        border-color: #007bff;
+    }
+
+button {
+    padding: 0.5rem;
+    color: white;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

@@ -1,0 +1,99 @@
+﻿@page "/Management/MyEntities"
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Entitie
+@using YGate.Entities.ViewModels
+@using YGate.Client.Shared.Components
+@inject IEntitieService entityService
+@inject IProfileService profileService
+@inject IJSRuntime jsRuntime
+@attribute [Authorize(Roles = "Administrator,Admin,MarketMod,MarketUser,User")]
+
+<style>
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Kartları sola hizalar */
+        margin: 5px;
+    }
+
+    .card {
+        margin-bottom: 15px;
+        margin-right: 10px; /* Kartlar arasındaki sağ boşluğu kontrol edebilirsiniz */
+    }
+</style>
+
+<div class="container">
+    <header class="container-header">
+        <h3>@localizer["MyEntity"]</h3>
+        <SpecialButton Style="width:100px;" Text="Varlık ekle" OnClick='()=>Navigate("/Management/Entitie/SelectAdvertTypeToAdd")'></SpecialButton>
+    </header>
+
+
+    @if (entitiesList != null && entitiesList.Count > 0)
+    {
+        <div class="row">
+            @foreach (var temp in entitiesList)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        @entityService.CategoryHtmlTemplateAddValues(temp,EntitieService.TemplateEnum.ListingView)
+                    </div>   
+                        <SpecialButton Style="width:100%;"
+                            OnClick='()=>Navigate("/Management/Entitie/SelectAdvertTypeToAdd")'
+                            Class="col-4"
+                            Text="Düzenle"></SpecialButton>
+                        <SpecialButton Style="width:100%;"
+                            Class="col-4"
+                            OnClick='async ()=> await Delete(temp.DBGuid)'
+                            Text="Sil"></SpecialButton>
+                        <SpecialButton Style="width:100%;"
+                            OnClick='()=>Navigate("/Management/Entitie/SelectAdvertTypeToAdd")'
+                            Class="col-4"
+                            Text="Devret"></SpecialButton>
+                </div>
+            }
+        </div>
+
+    }
+    else
+    {
+        <p>@localizer["NoDataCurrentlyAvailable."]</p>
+    }
+
+
+
+</div>
+@code {
+
+    List<EntitieViewModel> entitiesList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetEntities();
+    }
+
+    private async Task GetEntities()
+    {
+        string OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        var res = await entityService.GetAllMyEntitie(OwnerGuid);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            entitiesList = res.ConvertRequestObject<List<EntitieViewModel>>();
+    }
+
+    public void Navigate(string uri)
+    {
+        navigationManager.NavigateTo(uri);
+    }
+
+    private async Task Delete(string dbguid)
+    {
+        if (!(await jsRuntime.InvokeAsync<bool>("custom_confirm", "Silmek istediğinizden emin misiniz?\n Bu değişiklik geri alınamaz!")))
+            return;
+
+        if ((await entityService.DeleteEntity(dbguid)).Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            await GetEntities();    
+            await jsRuntime.InvokeVoidAsync("showNotification", $"Varlığınız silindi.");
+        }
+    }
+}

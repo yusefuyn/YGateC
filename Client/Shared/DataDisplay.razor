@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using YGate.Client.Pages
+@inject NavigationManager navigationManager
+@implements IRootPage
+@typeparam T
+
+<div class="@MainDivClass">
+    @if (DataLoading && source == null)
+    {
+        <p>
+            @localizer["Loading_the_data"]
+        </p>
+    }
+    else if (!DataLoading && source == null)
+    {
+        <p>
+            @localizer["There_is_no_data_at_all"]
+        </p>
+    }
+    else if (!DataLoading && !source.Any())
+    {
+        <p>
+            @localizer["There_is_no_data_at_all"]
+        </p>
+    }
+    else
+    {
+        @DisplayData.Invoke(source)
+    }
+</div>
+
+@code {
+    public bool DataLoading { get; set; } = true;
+
+    [Parameter]
+    public string MainDivClass { get; set; }
+
+    [Parameter]
+    public string SignalRGroupName { get; set; }
+
+    [Parameter]
+    public IEnumerable<T> source { get; set; }
+
+    [Parameter]
+    public RenderFragment<IEnumerable<T>> DisplayData { get; set; }
+
+    public HubConnection hubConnection { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+             .WithUrl(navigationManager.ToAbsoluteUri("/MyHub"))
+             .Build();
+        hubConnection.On<string>("ReceiveMessage", async (message) =>
+        {
+            await RefreshData();
+        });
+        await RefreshData();
+        await hubConnection.StartAsync();
+        await JoinGroup();
+        DataLoading = false;
+    }
+
+    private async Task JoinGroup()
+    {
+        if (!string.IsNullOrEmpty(SignalRGroupName))
+        {
+            await hubConnection.SendAsync("JoinGroup", SignalRGroupName);
+        }
+    }
+
+    private async Task LeaveGroup()
+    {
+        if (!string.IsNullOrEmpty(SignalRGroupName))
+        {
+            await hubConnection.SendAsync("LeaveGroup", SignalRGroupName);
+        }
+    }
+
+    public async Task RefreshData()
+    {
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await LeaveGroup();
+        await hubConnection.DisposeAsync();
+    }
+}

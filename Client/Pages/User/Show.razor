@@ -1,0 +1,112 @@
+﻿@page "/Show/User/{UserGuid}"
+@using YGate.Client.Services.Entitie
+@inject IProfileService profileService
+@inject IEntitieService entitieService
+<div class="container">
+
+    @if (Model != null)
+    {
+        <div class="special-div container-header">
+            <h1>@Model.Username</h1>
+        </div>
+        <a class="special-button" href="Chat/@UserGuid">Mesaj gönder</a>
+        <div class="container">
+            <div class="special-div container-header">
+                <h3>Referansı</h3>
+            </div>
+            <p>@Model.ReferanceName</p>
+        </div>
+        <div class="container">
+
+            <div class="special-div container-header">
+                <h3>Profil Mesajı</h3>
+            </div>
+            <p>@Model.ProfileMessage</p>
+        </div>
+
+        @if (Model.PublicRoles != null && Model.PublicRoles.Count > 0)
+        {
+            <div class="container">
+
+                <div class="special-div  container-header">
+                    <h3>Kullanıcın sistemdeki rolleri.</h3>
+                </div>
+                @foreach (var item in Model.PublicRoles)
+                {
+                    <p>@item.Name</p>
+                }
+            </div>
+
+        }
+        @if (Model.PublicProperties != null && Model.PublicProperties.Count > 0)
+        {
+            <div class="container">
+
+                <div class="special-div container-header">
+                    <h3>Kullanıcın sistemdeki bilgileri.</h3>
+                </div>
+                @foreach (var item in Model.PublicProperties)
+                {
+                    <p>@item.PropertiesName : @item.PropertiesValue (@item.Verified.ToString())</p>
+                }
+            </div>
+        }
+        else
+        {
+
+            <p>Hesap hakkında ekstra bir bilgi yok.</p>
+
+        }
+        @if (Model.PublicEntities != null && Model.PublicEntities.Count > 0)
+        {
+            <div class="container">
+
+                <div class="special-div container-header">
+                    <h3>Varlıkları</h3>
+                </div>
+
+                @foreach (var item in Model.PublicEntities)
+                {
+                    @entitieService.CategoryHtmlTemplateAddValues(item, EntitieService.TemplateEnum.ListingView)
+                }
+            </div>
+        }
+        else
+        {
+
+            <p>Kişinin herhangi bir varlığı yok</p>
+            <p>yada daha veri elimize ulaşmadı.</p>
+
+        }
+    }
+    else
+    {
+        <p>Burada görülecek birşey yok!</p>
+    }
+
+</div>
+@code {
+
+    [Parameter]
+    public string UserGuid { get; set; }
+
+    [Parameter]
+    public YGate.Entities.ViewModels.UserPublicViewModel Model { get; set; } = new()
+        {
+            Username = "Yussefuynstein",
+            ProfileMessage = "Hiç utanmıyormusunuz?",
+            PublicProperties = new(){
+                new() { PropertiesName = "Country", PropertiesValue = "Turkey", Verified = true },
+                    new() { PropertiesName = "Gender", PropertiesValue = "Male", Verified = true },
+                        new() { PropertiesName = "Birth Date", PropertiesValue = "30/02/1998", Verified = false } },
+            ReferanceName = "System",
+            PublicRoles = new() { new() { Name = "Administrator", IsActive = true, } }
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await profileService.GetProfileByUserGuid(UserGuid);
+        Model = res.ConvertRequestObject<YGate.Entities.ViewModels.UserPublicViewModel>();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BasedModel\Language.cs" />
+    <Compile Remove="BasedModel\LanguageValueAndDescription.cs" />
+    <Compile Remove="BasedModel\Session.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\3-OperationLayer\YGate.Json.Operations\YGate.Json.Operations.csproj" />
+    <ProjectReference Include="..\..\3-OperationLayer\YGate.String.Operations\YGate.String.Operations.csproj" />
+    <ProjectReference Include="..\YGate.Interfaces\YGate.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

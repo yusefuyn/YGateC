@@ -1,0 +1,21 @@
+﻿<style>
+
+</style>
+<button class="special-button @Class"
+        style="@Style"
+        @onclick="OnClick">
+    @Text.ToString()
+</button>
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
+}

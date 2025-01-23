@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inherits LayoutComponentBase
+@attribute [Authorize]
+
+<div class="main">
+    <Sidebar></Sidebar>
+    <div class="main-content">
+        <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+
+            <button class="header-button" id="toggleButton">
+                <svg id="moonSun" width="100" height="100" viewBox="0 0 100 100" fill="currentColor">
+                    <circle cx="50" cy="50" r="50" fill="#ffffff06" />
+                    <circle cx="60" cy="50" r="40" fill="white" />
+                    <circle cx="40" cy="50" r="40" fill="#ffffff06" />
+                </svg>
+            </button>
+        </header>
+        <div class="main-app">
+            @Body
+        </div>
+    </div>
+</div>

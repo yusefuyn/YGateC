@@ -1,0 +1,109 @@
+﻿@page "/GetEntitiesButCategoryGuid/{CategoryGuid}"
+@page "/GetCategoryEntities/{CategoryNameAndId}"
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Category
+@using YGate.Client.Services.Entitie
+
+@using YGate.Entities
+@using YGate.Entities.ViewModels
+@inject IEntitieService entitieService
+
+@if (isAuthorized)
+{
+
+
+    @if (groups != null && groups.Count > 0)
+    {
+        <div class="container ">
+            <div class="row" style="display:flex;">
+                @foreach (var group in groups)
+                {
+                    <div class="container">
+                        <div class="container-header">
+                            <h3>@group.FirstOrDefault().CategoryName.ToString()</h3>
+                        </div>
+                        @foreach (EntitieViewModel entity in group)
+                        {
+                            @entitieService.CategoryHtmlTemplateAddValues(entity, EntitieService.TemplateEnum.ListingView)
+                        }
+
+                    </div>
+                }
+
+
+            </div>
+            <br />
+        </div>
+
+    }
+    else
+    {
+        <p>@localizer["There_is_no_data_at_all"]</p>
+    }
+
+}
+else
+{
+
+    <p>@Error</p>
+
+}
+
+@code {
+    [Parameter]
+    public string CategoryGuid { get; set; }
+
+    [Parameter]
+    public string CategoryNameAndId { get; set; }
+
+    List<IGrouping<string, EntitieViewModel>> groups { get; set; }
+
+
+    private string Error = "";
+
+    private bool isAuthorized = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(CategoryGuid))
+            await DataRefreshButCategoryGuid();
+
+        if (!string.IsNullOrEmpty(CategoryNameAndId))
+            await DataRefreshButCategoryNameAndId();
+
+        StateHasChanged();
+    }
+
+
+    /// <summary>
+    /// Seo'ya uygun değil
+    /// </summary>
+    /// <returns></returns>
+    public async Task DataRefreshButCategoryGuid()
+    {
+        RequestResult result = await entitieService.GetAllEntitieButCategoryGuid(CategoryGuid);
+        List<EntitieViewModel> entitiesList = result.ConvertRequestObject<List<EntitieViewModel>>();
+        groups = entitiesList.GroupBy(xd => xd.CategoryName).ToList();
+    }
+    /// <summary>
+    /// Seo'ya uygun
+    /// </summary>
+    /// <returns></returns>
+    public async Task DataRefreshButCategoryNameAndId()
+    {
+        string Id = CategoryNameAndId.Split("-").Last();
+
+        RequestResult result = await entitieService.GetAllEntitieButCategoryId(Id);
+
+        if (result.Result == EnumRequestResult.Success)
+            isAuthorized = true;
+        else
+        {
+            Error = result.LongDescription.ToString();
+            return;
+        }
+
+        List<EntitieViewModel> entitiesList = result.ConvertRequestObject<List<EntitieViewModel>>();
+        groups = entitiesList.GroupBy(xd => xd.CategoryName).ToList();
+    }
+}

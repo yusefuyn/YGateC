@@ -1,0 +1,82 @@
+﻿@page "/Management/MeasurementUnit"
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Measurement
+@using YGate.Client.Shared.Components
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@inject IMeasurementService measurementService
+@inject NavigationManager navigationManager
+@attribute [Authorize(Roles = "Administrator")]
+<div class="container">
+    <header class="container-header">
+        <h3>UnitManagement</h3>
+        <SpecialButton Text="Add Measurement Unit" Style="width:200px;color:white;" OnClick="AddMeasurementUnit"></SpecialButton>
+    </header>
+    @if (Source != null && Source.Count > 0)
+    {
+
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in Source)
+                {
+                    <tr>
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.Name</td>
+                        <td>@temp.Symbol</td>
+                        <td>@Categories.FirstOrDefault(xd => xd.DBGuid == temp.MeasurementCategoryGuid).Name</td>
+                        <td>
+                            <a class="btn btn-dark" @onclick="async ()=> await DeleteMeasurementUnit(temp.DBGuid)">Del</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    else
+    {
+        <p>@localizer["NoDataCurrentlyAvailable."]</p>
+    }
+</div>
+@code {
+    List<MeasurementUnit> Source { get; set; } = new();
+    List<MeasurementCategory> Categories { get; set; } = new();
+
+    public void AddMeasurementUnit()
+    {
+        navigationManager.NavigateTo("Management/MeasurementUnit/Add");
+    }
+
+    public async Task DataRefresh()
+    {
+        RequestResult requestResult = await measurementService.GetAllMeasurementUnit();
+        if (requestResult.Result == YGate.Entities.EnumRequestResult.Success)
+            Source = requestResult.ConvertRequestObject<List<MeasurementUnit>>();
+
+        RequestResult requestResult2 = await measurementService.GetAllMeasurementCategory();
+        if (requestResult2.Result == YGate.Entities.EnumRequestResult.Success)
+            Categories = requestResult2.ConvertRequestObject<List<MeasurementCategory>>();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DataRefresh();
+    }
+
+
+    public async Task DeleteMeasurementUnit(string guid)
+    {
+        RequestResult requestResult = await measurementService.DeleteMeasurermentUnit(guid);
+        if (requestResult.Result == YGate.Entities.EnumRequestResult.Success)
+            await DataRefresh();
+    }
+}

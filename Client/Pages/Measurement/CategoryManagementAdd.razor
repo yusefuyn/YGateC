@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Measurement
+@using YGate.Client.Shared.Components
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@page "/Management/MeasurementCategory/Add"
+@attribute [Authorize(Roles = "Administrator")]
+@inject IMeasurementService measurementService
+@inject IProfileService profileService
+<div>
+    <h3>CategoryManagementAdd</h3>
+    <br />
+    <Entry Placeholder="Name"
+           @bind-value="model.Name"></Entry>
+    <br />
+    <Entry Placeholder="Description"
+           @bind-value="model.ShortDescription"></Entry>
+    <br />
+    <a style="color:red;">@ErrorMessage.ToString()</a>
+    <br />
+
+    <SpecialButton Text="Ekle"
+                   OnClick="async()=> Ekle()"></SpecialButton>
+</div>
+@code {
+    public MeasurementCategory model { get; set; } = new();
+    public string ErrorMessage = "";
+    public async void Ekle()
+    {
+        model.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        RequestResult res = await measurementService.AddMeasurementCategory(model);
+        if (res.Result == EnumRequestResult.Success)
+            navigationManager.NavigateTo("/Management/MeasurementCategory");
+        else
+            ErrorMessage = res.ShortDescription.ToString();
+    }
+}

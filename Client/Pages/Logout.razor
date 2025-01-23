@@ -1,0 +1,74 @@
+﻿@* @inject IJSRuntime jsr *@
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using YGate.Client.Services
+@using YGate.Client.Services.Profile
+
+@inject CookieService cookieservice
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider asp
+@inject IProfileService profileService
+@page "/logout"
+
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Yatayda ortalama */
+        justify-content: center; /* Dikeyde ortalama */
+    }
+</style>
+<div class="container">
+    <h3>@localizer["The_exit_has_been_made"]</h3>
+    <h5>@localizer["You_will_be_redirected_to_the_main_page_within_seconds"].ToString().Replace("{second}",countdown.ToString())</h5>
+</div>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // var res = await jsr.InvokeAsync<string>("localStorage.removetemp", "Token", "");
+        var user = await asp.GetAuthenticationStateAsync();
+        if (user.User.Identity.IsAuthenticated)
+        {
+            await cookieservice.SetCookie("Token", "", 0);
+            navManager.Refresh(false);
+            profileService.ClearMyProperties();
+        }
+        else
+        {
+            StartCountdown();
+        }
+    }
+
+    int countdown = 3;
+
+    System.Timers.Timer timer;
+
+    private void StartCountdown()
+    {
+        timer = new(1000);
+        timer.Enabled = true;
+        timer.Elapsed += OnTimerElapsed;
+    }
+
+    private void OnTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    {
+        if (countdown > 0)
+        {
+            countdown--;
+            InvokeAsync(StateHasChanged); // UI'yi güncelle
+        }
+        else
+        {
+            navManager.NavigateTo("/");
+            timer?.Stop();
+            timer?.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Stop();
+        timer?.Dispose();
+    }
+}

@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+<AuthorizeView Roles="@Roles">
+    <Authorized>
+        @AuthorizeRenderer
+    </Authorized>
+    <NotAuthorized>
+        @NotAuthorizeRenderer
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    [Parameter]
+    public string Roles { get; set; }
+
+    [Parameter]
+    public RenderFragment AuthorizeRenderer { get; set; }
+
+    [Parameter]
+    public RenderFragment NotAuthorizeRenderer { get; set; }
+}

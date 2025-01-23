@@ -1,0 +1,79 @@
+﻿@page "/Management/Role"
+@using YGate.Client.Services.Role
+@using YGate.Entities.BasedModel
+@inject IRoleService roleService
+@inject IJSRuntime jsRuntime
+@using YGate.Client.Shared.Components
+<div class="container">
+    <div class="container-header">
+        <h3>Roles</h3>
+        <a href="/Management/Role/Add" style="width:100px;" class="special-button">Ekle</a>
+    </div>
+    @if (Source == null)
+    {
+
+        <p>Veri çekiliyor</p>
+
+    }
+    else if (Source.Count > 0)
+    {
+
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Management</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in Source)
+                {
+                    <tr>
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.Name</td>
+                        <td>@temp.ShortDescription</td>
+                        <td><SpecialButton Text="Delete" OnClick="async ()=> await DeleteRole(temp.DBGuid)"></SpecialButton></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+    }
+    else
+    {
+
+        <p>Gösterilecek veri yok.</p>
+
+    }
+</div>
+@code {
+
+    public List<Role> Source { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    public async Task RefreshData()
+    {
+        var res = await roleService.GetAllRole();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            Source = res.ConvertRequestObject<List<Role>>();
+    }
+
+    public async Task DeleteRole(string dbguid)
+    {
+        var res = await roleService.DeleteRole(dbguid);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            await jsRuntime.InvokeVoidAsync("showNotification", "Rol ve sahip kullanıcıların etiketleri silindi");
+        else
+            await jsRuntime.InvokeVoidAsync("showNotification", "Rol ve sahip kullanıcıların etiketleri Silinemedi !");
+
+        await RefreshData();
+    }
+}

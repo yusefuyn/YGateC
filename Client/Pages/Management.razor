@@ -1,0 +1,46 @@
+﻿@page "/Management"
+@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Administrator
+@using YGate.Client.Shared.Components
+@attribute [Authorize(Roles = "Administrator")]
+
+<div class="container">
+    <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+        <h3>Management</h3>
+    </header>
+    <br />
+    <SpecialButton OnClick="DbUpdateButton_Click" Class="btn-primary" Text="Update Db"></SpecialButton>
+    <br />
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/Category">Category</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/MeasurementUnit">Measurement Unit</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/MeasurementCategory">Measurement Category</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/PropertyGroup">Property Group</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/User">User</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/Role">Roles</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/AccountRole">AccountRoles</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <a class="btn btn-success special-button" href="/Management/BlockedIp">Blocked Ip List</a>
+        </div>
+    </div>
+</div>
+@code {
+    public void DbUpdateButton_Click()
+    {
+        adminService.DBUpdate();
+    }
+}

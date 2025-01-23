@@ -1,0 +1,137 @@
+﻿@page "/Management/Category/HtmlTemplate/{Id:int}"
+@using YGate.Client.Services.Category
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@using YGate.Client.Shared.Components
+@inject ICategoryService categoryService
+@inject IJSRuntime jsruntime
+@inject IProfileService profileService
+<div class="container">
+    <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+        <h3>HtmlTemplate</h3>
+    </header>
+    @if (template != null)
+    {
+        <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+            <h5>Varlığın özellikleri</h5>
+        </header>
+        <div class="row special-div">
+            @foreach (var temp in template.Category.Template)
+            {
+                <p>@temp.Name</p>
+                <p style="font-size:12px;">Bu özelliği Data Viewer'da yazdırabilmeniz için <span style="color:lime;">]>{@temp.Name}</span> şeklinde kullanmanız gerekir.</p>
+                <br />
+            }
+            <p>Ürün görüntülenme linki için</p>
+            <p style="font-size:12px;">Bir href,e <span style="color:lime;">]>{GoLink}</span> etiketi koyunuz.</p>
+            <br />
+
+            <p>Kategori adı için</p>
+            <p style="font-size:12px;">Bir href,e <span style="color:lime;">]>{CategoryName}</span> etiketi koyunuz.</p>
+            <br />
+
+            <p>Satıcı profil linki için</p>
+            <p style="font-size:12px;">Bir <span style="color:lime;">]>{GoOwnerLink}</span> etiketi koyunuz.</p>
+            <br />
+
+            <p>Satıcı ismi göstermek için</p>
+            <p style="font-size:12px;">Bir <span style="color:lime;">]>{OwnerName}</span> etiketi koyunuz.</p>
+            <br />
+
+            <p>Oluşturulma tarihi göstermek için</p>
+            <p style="font-size:12px;">Bir <span style="color:lime;">]>{CreateDate}</span> etiketi koyunuz.</p>
+
+
+            <p>Eğer bir varlık özelliği resim listesiyse</p>
+            <p style="font-size:12px; color:lime;">
+                &lt;ycustomimagelist&gt;]>{Resimlerim}&lt;/ycustomimagelist&gt;
+            <p style="color:white;">şeklinde yukarıdaki yeşil yazıya uygun şekilde yazınız.</p>
+            </p>
+
+            <p>Alt Elemanları Görüntülemek isterseniz.</p>
+            <p style="font-size:12px; color:lime;">
+                &lt;ChildEntitieTemplate&gt;&lt;/ChildEntitieTemplate&gt;
+            <p style="color:white;">şeklinde yukarıdaki etiketi ekleyiniz.</p>
+            <p style="color:white;">Alt elemanların ana görüntüsü eklenecektir.</p>
+            </p>
+
+        </div>
+
+
+
+
+        <div class="row special-div">
+            <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                <h5>Varlığın Liste Görünümü</h5>
+            </header>
+            <br />
+            <InputTextArea style="width:100%; height:400px;background-color: var(--panel-background);color:white;" @bind-Value="template.Template" DisplayName="Data Viewer Template"></InputTextArea>
+        </div>
+
+        <SpecialButton Text="Kaydet" OnClick="async ()=> await Save()"></SpecialButton>
+
+        <br />
+        <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+            <label>Önizleme</label>
+            <SpecialButton Text="Önizlemeyi yenile" Style="max-width:100px;" OnClick="ConvertStringToHtml"></SpecialButton>
+        </header>
+        <div class="row" style="display:flex;">
+
+            @for (int i = 0; i < 5; i++)
+            {
+                @Onizleme
+            }
+        </div>
+    }
+    else
+    {
+
+        <p>Veri gelmedi.</p>
+    }
+</div>
+@code {
+    [Parameter]
+    public int Id { get; set; } = -1;
+
+    public CategoryHtmlTemplate template { get; set; }
+
+    private MarkupString Onizleme { get; set; }
+    public void ConvertStringToHtml()
+    {
+        Onizleme = new(template.Template);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    public async Task RefreshData()
+    {
+        var res = await categoryService.GetHtmlTemplateButCategoryId(Id);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            template = res.ConvertRequestObject<CategoryHtmlTemplate>();
+        StateHasChanged();
+    }
+
+    public async Task Save()
+    {
+        RequestResult result = null;
+        if (template.OwnerGuid != null)
+        {
+            result = await categoryService.ModifyHtmlTemplate(template);
+        }
+        else
+        {
+            template.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+            result = await categoryService.AddHtmlTemplate(template);
+        }
+
+        if (result != null && result.Result == EnumRequestResult.Success)
+            await jsruntime.InvokeVoidAsync("showNotification", "Yeni Html Şeması eklendi.");
+        else
+            await jsruntime.InvokeVoidAsync("showNotification", "Yeni Html Şeması EKLENEMEDİ !");
+        navigationManager.NavigateTo("/Management/Category");
+
+    }
+}

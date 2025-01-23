@@ -1,0 +1,151 @@
+﻿
+
+/*SideBar*/
+
+.side-bar a {
+    text-decoration: none;
+}
+
+
+#LoginRegisterDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sidebar {
+    width: var(--sidebar-width);
+    width: 350px;
+    height: 100%;
+    border-right: 1px solid #1a1d21;
+    display: flex;
+    flex-direction: column; /* Dikey hizalama */
+    justify-content: space-between; /* Üst ve alt alanı eşit dağıtma */
+}
+
+.sidebar-title {
+    font-family: 'Garamond', serif; /* Garamond fontu */
+    letter-spacing: 2px;
+    font-size: 24px; /* Başlık boyutu */
+    color: white; /* Başlık rengi */
+    margin: 0; /* Kenar boşluklarını sıfırla */
+}
+
+.sidebar header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.sidebar-button {
+    height: 40px;
+    width: 90%;
+    margin: 5px;
+    font-size: 16px;
+    color: white;
+    background-color: transparent;
+    border: none;
+}
+
+    .sidebar-button:hover {
+        background-color: #FFFFFF04;
+    }
+
+.sidebar-div {
+    display: flex;
+    flex-direction: column; /* Dikey hizalama için kolon yönü */
+    align-items: center; /* Yatay ortalama */
+    margin-bottom: auto;
+}
+
+.sidebar footer {
+    text-align: center; /* Ortalamak için */
+    padding: 10px;
+    height: 40px;
+    justify-content: center; /* Yatayda ortalamak için */
+    align-items: center;
+    display: flex;
+}
+
+    .sidebar footer button {
+        height: 40px;
+        width: 40px;
+    }
+
+
+.sidebar header button {
+    display: none;
+}
+
+#sidebar-button {
+    display: none;
+    width: 45px;
+}
+
+.IconNavLinkAEllement {
+    margin: 5px;
+    width: 90%;
+    height: 45px;
+    justify-content: start;
+}
+
+.IconNavLinkIEllement {
+    width:45px;
+    margin-right: 8px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-align:center;
+}
+
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+        display:flex;
+        text-align:center;
+    }
+
+        .sidebar footer {
+            display: none;
+        }
+
+    .sidebar-title {
+        display: none;
+    }
+
+    .sidebar header button {
+        display: block;
+    }
+
+    .sidebar header {
+        padding: 0px;
+    }
+
+    .IconNavLinkAEllement {
+        width: 45px;
+        height: 45px;
+        justify-content: center;
+        align-items:center;
+    }
+
+    #sidebar-button {
+        display: flex;
+    }
+
+    .IconNavLinkSpanEllement {
+        display: none;
+    }
+
+    .IconNavLinkIEllement {
+        margin: 0px;
+        justify-content:center;
+        align-items:center;
+        text-align:center;
+
+    }
+}
+/*SideBar bitiş*/

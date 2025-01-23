@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Measurement
+@using YGate.Client.Shared.Components
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@inject NavigationManager navigationManager
+@page "/Management/MeasurementCategory"
+@inject IMeasurementService measurementService
+@attribute [Authorize(Roles = "Administrator")]
+
+<div class="container">
+    <header class="container-header">
+        <h3>CategoryManagement</h3>
+        <SpecialButton OnClick="NavigateAddCategory" Style="color:white; width:200px;" Text="Add Category"></SpecialButton>
+
+    </header>
+
+    @if (Source != null && Source.Count > 0)
+    {
+
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in Source)
+                {
+                    <tr>
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.Name</td>
+                        <td>@temp.ShortDescription</td>
+                        <td>
+                            <a class="btn btn-dark" @onclick="async ()=> await DeleteMeasurementCategory(temp.DBGuid)">Del</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    else
+    {
+        <p>@localizer["NoDataCurrentlyAvailable."]</p>
+
+    }
+</div>
+@code {
+    List<MeasurementCategory> Source = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DataRefresh();
+    }
+
+    public async Task DataRefresh()
+    {
+        RequestResult result = await measurementService.GetAllMeasurementCategory();
+        if (result.Result == EnumRequestResult.Success)
+            Source = (List<MeasurementCategory>)result.Object;
+    }
+
+    public void NavigateAddCategory()
+    {
+        navigationManager.NavigateTo("/Management/MeasurementCategory/Add");
+    }
+
+    public async Task DeleteMeasurementCategory(string guid)
+    {
+        RequestResult result = await measurementService.DeleteMeasurermentCategory(guid);
+        if (result.Result == EnumRequestResult.Success)
+            await DataRefresh();
+    }
+}

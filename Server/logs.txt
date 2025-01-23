@@ -1,0 +1,7 @@
+
+25.10.2024 15:00:01 : System.ArgumentNullException: Value cannot be null. (Parameter 'source')
+   at System.Linq.ThrowHelper.ThrowArgumentNullException(ExceptionArgument argument)
+   at System.Linq.Enumerable.TryGetFirst[TSource](IEnumerable`1 source, Func`2 predicate, Boolean& found)
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source, Func`2 predicate)
+   at YGate.BusinessLayer.EFCore.Operations.<>c__DisplayClass5_0.<.ctor>b__0() in C:\Users\Yusef\Desktop\YGate\3-OperationLayer\YGate.BusinessLayer.EFCore\Operations.cs:line 32
+   at YGate.Operation.Runner.Runner`1.Run(OperationResult`1& result, Action action) in C:\Users\Yusef\Desktop\YGate\3-OperationLayer\YGate.Operation.Runner\Runner.cs:line 31

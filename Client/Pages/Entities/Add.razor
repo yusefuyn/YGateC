@@ -1,0 +1,558 @@
+﻿@page "/Management/Entitie/Add/{SelectedCategoryGuid}"
+@using YGate.Client.Services.Category
+@using YGate.Client.Services.Entitie
+@using YGate.Client.Services.Property
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@using YGate.Entities.ViewModels
+@using YGate.Client.Shared.Components
+
+@inject ICategoryService categoryService
+@inject IPropertyService propertyService
+@inject IJSRuntime jsRuntime
+@inject IProfileService profileService
+@inject IEntitieService entitieService
+@inject NavigationManager navigationManager
+<div class="container">
+    @if (categoryViewModel != null)
+    {
+
+        <h3>@categoryViewModel.Name.ToString() kategorisine varlık ekliyorsunuz.</h3>
+        <h4>Lütfen aşağıda istenen bilgileri eksiksiz doldurmaya özen gösterin.</h4>
+        <h5>Yanlış eklemeniz durumunda listelenmeyebilir,listelenmesi azalabilir veya anlaşmazlığa varabilirsiniz.</h5>
+        <br />
+        <div class="container special-div">
+            <header class="container-header">
+                <h3>@categoryViewModel.Name</h3>
+            </header>
+            <br />
+
+            @foreach (CategoryTemplateViewModel temp in categoryViewModel.Template)
+            {
+                @if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.String)
+                {
+                    <Entry Placeholder="@temp.Name"
+                           entryType="Entry.EntryType.Text"
+                           @bind-value="temp.categoryTemplateValues[0].Value"></Entry>
+                }
+                else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Integer)
+                {
+                    <div class="special-div">
+                        <Entry Placeholder="@temp.Name"
+                               entryType="Entry.EntryType.Number"
+                               @bind-value="temp.categoryTemplateValues[0].Value"></Entry>
+                    </div>
+
+                }
+                else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Boolean)
+                {
+                    <div class="special-div">
+                        <label>
+                            <input type="radio" name="cevap" @onchange="()=>{ temp.categoryTemplateValues[0].Value=true.ToString(); }" value="evet"> Evet
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="cevap" @onchange="()=>{ temp.categoryTemplateValues[0].Value=false.ToString(); }" value="hayir"> Hayır
+                        </label>
+                    </div>
+
+                }
+                else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.CustomValidationRegex)
+                {
+                    <Entry Placeholder="@temp.Name" @bind-value="temp.categoryTemplateValues[0].Value"></Entry>
+                }
+                else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.ItemGroup)
+                {
+                    List<PropertyGroupValue> list = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(temp.Values.ToString());
+                    <div class="special-div">
+                        <label>@temp.Name</label>
+                        <ComboBox Source="list"
+                                  DataBinding="xd=> xd.DBGuid"
+                                  ValueBinding="xd=> xd.Value"
+                                  Empty="false"
+                                  SelectedValueChanged="(e)=>ChangeValueGroup(e,temp)"
+                                  Ttemp="PropertyGroupValue"></ComboBox>
+                    </div>
+                }
+                else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Unit)
+                {
+                    List<MeasurementUnit> list = YGate.Json.Operations.JsonDeserialize<List<MeasurementUnit>>.Deserialize(temp.Values.ToString());
+                    <div class="special-div">
+                        <label>@temp.Name</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <Entry Placeholder="" entryType="Entry.EntryType.Number" valueChanged='(e)=> ChangeUnitValueValue(temp,e.ToString())'></Entry>
+                            </div>
+                            <div class="col-md-6">
+                                <ComboBox Source="list"
+                                          DataBinding="xd=> xd.DBGuid"
+                                          Empty="false"
+                                          SelectedValueChanged='(e)=> ChangeUnitUnitValue(temp,e.Value.ToString())'
+                                          ValueBinding="xd=> GetFormattedValue(xd)"
+                                          Ttemp="MeasurementUnit"></ComboBox>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Combos)
+                {
+                    <label>@temp.Name</label>
+                    List<PropertyGroupValue> list = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(temp.Values.ToString());
+                    @foreach (var combo in list)
+                    {
+                        <div class="special-div">
+
+                            <CheckBox Text="@combo.Value"
+                                      CheckedChange="(e)=> ChangeCombosValue(e,temp,combo)"></CheckBox>
+                        </div>
+
+                    }
+                }
+                else if (temp.ValueType == PropertyValueType.RichText)
+                {
+                    <div class="special-div">
+                        <RichTextEditor @ref="richRef" Source="@temp.categoryTemplateValues[0].Value"></RichTextEditor>
+                    </div>
+                }
+                else if (temp.ValueType == PropertyValueType.ValueList)
+                {
+
+                    <div class="special-div" style="position: relative;">
+                        <br />
+                        @foreach (var vals in temp.categoryTemplateValues)
+                        {
+                            <div class="row">
+                                <div class="col-11">
+                                    <Entry Placeholder="@temp.Name"
+                                           @bind-value="vals.Value" />
+                                </div>
+                                <div class="col-1">
+                                    <SpecialButton Text="X"
+                                                   Style="height:45px;"
+                                                   OnClick="() => temp.categoryTemplateValues.Remove(vals)" />
+                                </div>
+                            </div>
+                        }
+                        <SpecialButton Text="+" Style="width:100%;height:45px;" OnClick="()=>temp.categoryTemplateValues.Add(new(){  })"></SpecialButton>
+                    </div>
+                }
+                <br />
+            }
+
+
+        </div>
+        <br />
+    }
+    else
+    {
+        <p>Veri modeli gelmedi.</p>
+    }
+
+    @if (AddedSubCategoryViewModel != null && AddedSubCategoryViewModel.Count > 0)
+    {
+        @foreach (var subCategoryViewModels in AddedSubCategoryViewModel)
+        {
+            <div class="container special-div">
+                <div class="container-header">
+                    <h3>@subCategoryViewModels.Name</h3>
+                    <SpecialButton Text="Objeyi Sil"
+                                   Style="width:100px;"
+                                   OnClick="()=> {SubCategoryRemove(subCategoryViewModels);}"></SpecialButton>
+                </div>
+
+
+
+                @foreach (CategoryTemplateViewModel temp in subCategoryViewModels.Template)
+                {
+                    @if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.String)
+                    {
+                        <Entry Placeholder="@temp.Name" entryType="Entry.EntryType.Text" @bind-value="temp.categoryTemplateValues[0].Value"></Entry>
+                    }
+                    else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Integer)
+                    {
+                        <Entry Placeholder="@temp.Name" entryType="Entry.EntryType.Number" @bind-value="temp.categoryTemplateValues[0].Value"></Entry>
+                    }
+                    else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Boolean)
+                    {
+                        <div class="special-div">
+                            <label>
+                                <input type="radio" name="cevap" @onchange="()=>{ temp.categoryTemplateValues[0].Value=true.ToString(); }" value="evet"> Evet
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="cevap" @onchange="()=>{ temp.categoryTemplateValues[0].Value=false.ToString(); }" value="hayir"> Hayır
+                            </label>
+                        </div>
+
+                    }
+                    else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.CustomValidationRegex)
+                    {
+                        <Entry Placeholder="@temp.Name" @bind-value="temp.categoryTemplateValues[0].Value"></Entry>
+                    }
+                    else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.ItemGroup)
+                    {
+                        List<PropertyGroupValue> list = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(temp.Values.ToString());
+                        <div class="special-div">
+                            <label>@temp.Name</label>
+                            <ComboBox Source="list"
+                                      DataBinding="xd=> xd.DBGuid"
+                                      ValueBinding="xd=> xd.Value"
+                                      Empty="false"
+                                      SelectedValueChanged="(e)=>ChangeValueGroup(e,temp)"
+                                      Ttemp="PropertyGroupValue"></ComboBox>
+                        </div>
+                    }
+                    else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Unit)
+                    {
+                        List<MeasurementUnit> list = YGate.Json.Operations.JsonDeserialize<List<MeasurementUnit>>.Deserialize(temp.Values.ToString());
+                        <div class="special-div">
+                            <label>@temp.Name</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <Entry Placeholder="" entryType="Entry.EntryType.Number" valueChanged='(e)=> ChangeUnitValueValue(temp,e.ToString())'></Entry>
+                                </div>
+                                <div class="col-md-6">
+                                    <ComboBox Source="list"
+                                              DataBinding="xd=> xd.DBGuid"
+                                              Empty="false"
+                                              SelectedValueChanged='(e)=> ChangeUnitUnitValue(temp,e.Value.ToString())'
+                                              ValueBinding="xd=> GetFormattedValue(xd)"
+                                              Ttemp="MeasurementUnit"></ComboBox>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    else if (temp.ValueType == YGate.Entities.BasedModel.PropertyValueType.Combos)
+                    {
+                        <label>@temp.Name</label>
+                        List<PropertyGroupValue> list = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(temp.Values.ToString());
+                        @foreach (var combo in list)
+                        {
+                            <div class="special-div">
+
+                                <CheckBox Text="@combo.Value"
+                                          CheckedChange="(e)=> ChangeCombosValue(e,temp,combo)"></CheckBox>
+                            </div>
+
+                        }
+                    }
+                    else if (temp.ValueType == PropertyValueType.RichText)
+                    {
+                        <div class="special-div">
+                            <RichTextEditor @ref="richRef" Source="@temp.categoryTemplateValues[0].Value"></RichTextEditor>
+                        </div>
+                    }
+                    else if (temp.ValueType == PropertyValueType.ValueList)
+                    {
+
+                        <div class="special-div" style="position: relative;">
+                            <br />
+                            @foreach (var vals in temp.categoryTemplateValues)
+                            {
+                                <div class="row">
+                                    <div class="col-11">
+                                        <Entry Placeholder="@temp.Name"
+                                               @bind-value="vals.Value" />
+                                    </div>
+                                    <div class="col-1">
+                                        <SpecialButton Text="X"
+                                                       Style="height:45px;"
+                                                       OnClick="() => temp.categoryTemplateValues.Remove(vals)" />
+                                    </div>
+                                </div>
+                            }
+                            <SpecialButton Text="+" Style="width:100%;height:45px;" OnClick="()=>temp.categoryTemplateValues.Add(new(){  })"></SpecialButton>
+                        </div>
+                    }
+                    <br />
+                }
+            </div>
+            <br />
+        }
+    }
+
+
+    <div class="special-div container">
+        <div class="container-header">
+            <h3>Alt öğe ekle</h3>
+        </div>
+        <ComboBox Source="subCategoryList"
+                  Ttemp="Category"
+                  ValueBinding="xd=> xd.Name"
+                  Empty="false "
+                  DataBinding="xd=> xd.DBGuid"
+                  SelectedValueChanged="(e)=> SelectedSubCategoryGuid = e.Value.ToString()"></ComboBox>
+        <SpecialButton Text="+" OnClick="async ()=> await AddSubCategory(SelectedSubCategoryGuid)"></SpecialButton>
+        <br />
+    </div>
+    <br />
+    <SpecialButton Text="Kaydet" Style="height:50px;" OnClick="async()=>SharedClick()"></SpecialButton>
+    <br />
+</div>
+
+@code {
+
+    [Parameter]
+    public string SelectedCategoryGuid { get; set; } // Ana kategoride seçilen
+    public string SelectedSubCategoryGuid { get; set; } // Alt kategorilerde seçilen
+
+
+
+
+    public CategoryViewModel categoryViewModel { get; set; } // Ana kategori
+    public List<CategoryViewModel> AddedSubCategoryViewModel { get; set; } // Eklenmek istenen alt kategoriler
+    public List<Category> subCategoryList { get; set; } // Alt kategori listesi
+    public EntitieViewModel mainEntitie { get; set; }
+    public List<EntitieViewModel> SubEntitie { get; set; }
+
+
+    List<RichTextEditor> Editors { get; set; }
+    RichTextEditor richRef
+    {
+        set { Editors.Add(value); }
+    }
+
+    public void SubCategoryRemove(CategoryViewModel removedCategory)
+    {
+        Category removedObj = subCategoryList.SingleOrDefault(xd => xd.DBGuid == removedCategory.DBGuid);
+        subCategoryList.Remove(removedObj);
+        StateHasChanged();
+    }
+
+    public async Task GetAllSubCategory(string dbguid)
+    {
+        var res = await categoryService.GetAllSubCategoryToParentCategoryGuid(dbguid);
+        if (res.Result == EnumRequestResult.Success)
+        {
+            var obj = res.ConvertRequestObject<List<Category>>();
+            if (obj != null && obj.Count > 0)
+                subCategoryList = obj;
+        }
+    }
+
+    public async Task AddSubCategory(string Guid)
+    {
+        var res = await categoryService.GetCategory(Guid);
+        if (res.Result == EnumRequestResult.Success)
+        {
+            var obj = res.ConvertRequestObject<CategoryViewModel>();
+            AddedSubCategoryViewModel.Add(obj);
+            await GetAllSubCategory(obj.DBGuid);
+            StateHasChanged();
+            await jsRuntime.InvokeVoidAsync("showNotification", $"{obj.Name} alt öğesi {categoryViewModel.Name} öğesi altına eklendi");
+
+        }
+        else
+            await jsRuntime.InvokeVoidAsync("showNotification", $"Obje gelmedi :,((");
+
+    }
+
+    private async void SharedClick()
+    {
+        int i = 0;
+        var lisst = categoryViewModel.Template.Where(xd => xd.ValueType == PropertyValueType.RichText).ToList();
+        string OwnerGuid = await profileService.GetPropertiesValue("Guid");
+
+        foreach (var xd in lisst)
+        {
+            var content = await Editors[i].GetEditorContent();
+            xd.categoryTemplateValues[0].Value = content;
+            i++;
+        }
+        foreach (var temp in categoryViewModel.Template.Where(xd => xd.Require == true))
+        {
+            if (temp.CheckData())
+                continue;
+            await jsRuntime.InvokeVoidAsync("showNotification", $"{temp.Name} zorunlu belirtilmesi gereken bir özelliktir.!\nLütfen doldurunuz.");
+            return;
+        }
+
+        await jsRuntime.InvokeVoidAsync("showNotification", $"Varlığınız şablona uygun gözüküyor.");
+        mainEntitie.SharedDateUTC = DateTime.UtcNow;
+
+
+
+
+        if (categoryViewModel.Template == null || !categoryViewModel.Template.Any())
+        {
+            Console.WriteLine("Template listesi boş.");
+            return;
+        }
+
+
+        foreach (var template in categoryViewModel.Template)
+        {
+            if (template.categoryTemplateValues == null || !template.categoryTemplateValues.Any())
+            {
+                Console.WriteLine($"Template {template.Name} için categoryTemplateValues boş.");
+                continue;
+            }
+
+            foreach (var templateValue in template.categoryTemplateValues)
+            {
+                string prdbgd = "";
+                if (!string.IsNullOrEmpty(templateValue.ValueGroupGuid)) prdbgd = templateValue.ValueGroupGuid.ToString();
+                EntitiePropertyValue entitiePropertyValue = new();
+                entitiePropertyValue.CategoryTemplateGuid = template.DBGuid;
+                entitiePropertyValue.PropertyName = template.Name;
+                entitiePropertyValue.PropertyValue = templateValue.Value.ToString();
+                entitiePropertyValue.PropertyDBGuid = prdbgd;
+                entitiePropertyValue.EntitieDbGuid = mainEntitie.DBGuid.ToString();
+                entitiePropertyValue.OwnerGuid = OwnerGuid;
+                mainEntitie.Values.Add(entitiePropertyValue);
+            }
+        }
+
+
+        foreach (CategoryViewModel subCatViewModel in AddedSubCategoryViewModel)
+        {
+            if (subCatViewModel == null)
+            {
+                Console.WriteLine($"Alt kategori verisi boş {subCatViewModel.Name}");
+                continue;
+            }
+
+
+            EntitieViewModel entityViewModel = new()
+                {
+                    CategoryName = subCatViewModel.Name,
+                    CategoryDBGuid = subCatViewModel.DBGuid,
+                    OwnerGuid = OwnerGuid,
+                    SharedDateUTC = DateTime.UtcNow,
+                    ParentEntitieDBGuid = mainEntitie.DBGuid,
+                    IsActive = true,
+                    Values = new List<EntitiePropertyValue>(),
+                };
+
+            foreach (var temp in subCatViewModel.Template)
+            {
+                foreach (var cattempval in temp.categoryTemplateValues)
+                {
+                    string prdbgd = "";
+                    if (!string.IsNullOrEmpty(cattempval.ValueGroupGuid)) prdbgd = cattempval.ValueGroupGuid.ToString();
+                    EntitiePropertyValue entitiePropertyValue = new();
+                    entitiePropertyValue.CategoryTemplateGuid = temp.DBGuid;
+                    entitiePropertyValue.PropertyName = temp.Name;
+                    entitiePropertyValue.PropertyValue = cattempval.Value.ToString();
+                    entitiePropertyValue.PropertyDBGuid = prdbgd;
+                    entitiePropertyValue.EntitieDbGuid = entityViewModel.DBGuid.ToString();
+                    entitiePropertyValue.OwnerGuid = OwnerGuid;
+                    entityViewModel.Values.Add(entitiePropertyValue);
+                }
+            }
+
+            SubEntitie.Add(entityViewModel);
+
+
+        }
+
+
+        var res = await entitieService.AddEntitie(mainEntitie, SubEntitie);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", $"Varlığınız eklenmiştir.");
+            navigationManager.NavigateTo("/Entity");
+        }
+        else
+            await jsRuntime.InvokeVoidAsync("showNotification", $"Varlığınız EKLENEMEMİŞTİR. \n {res.ShortDescription}");
+    }
+
+    public void ChangeCombosValue(ChangeEventArgs eventArgs, CategoryTemplateViewModel model, PropertyGroupValue val)
+    {
+        var addedGuid = val.DBGuid;
+        bool eventval = (bool)eventArgs.Value;
+
+        if (eventval)
+        {
+            CategoryTemplateValue categoryTemplateValue = new()
+                {
+                    OwnerGuid = mainEntitie.OwnerGuid,
+                    Value = addedGuid,
+                    CategoryTemplateGuid = model.DBGuid,
+                    ValueGroupGuid = val.PropertyGroupGuid
+                };
+            model.categoryTemplateValues.Add(categoryTemplateValue);
+        }
+        else
+        {
+            var obj = model.categoryTemplateValues.FirstOrDefault(xd => xd.Value == addedGuid);
+
+            if (obj == null)
+                return;
+
+            model.categoryTemplateValues.Remove(obj);
+        }
+    }
+
+    public void ChangeUnitUnitValue(CategoryTemplateViewModel model, string SelectedUnitGuid)
+    {
+        string OldInteger = "";
+        string OldUnit = SelectedUnitGuid;
+        dynamic oldValue = YGate.Json.Operations.JsonDeserialize<dynamic>.Deserialize(model.categoryTemplateValues[0].Value);
+
+        try
+        {
+            OldInteger = oldValue["IntegerVal"];
+        }
+        catch (Exception ex)
+        {
+
+        }
+        model.categoryTemplateValues[0].Value = YGate.Json.Operations.JsonSerialize.Serialize(new { IntegerVal = OldInteger, UnitGuid = OldUnit });
+    }
+
+    public void ChangeUnitValueValue(CategoryTemplateViewModel model, string Value)
+    {
+        string OldInteger = Value;
+        string OldUnit = "";
+        dynamic oldValue = YGate.Json.Operations.JsonDeserialize<dynamic>.Deserialize(model.categoryTemplateValues[0].Value);
+        try
+        {
+            OldUnit = oldValue["UnitGuid"];
+        }
+        catch (Exception ex)
+        {
+
+        }
+        model.categoryTemplateValues[0].Value = YGate.Json.Operations.JsonSerialize.Serialize(new { IntegerVal = OldInteger, UnitGuid = OldUnit });
+    }
+
+    private string GetFormattedValue(MeasurementUnit xd)
+    {
+        return $"{xd.Name} ({xd.Symbol})";
+    }
+
+    private void ChangeValueGroup(ChangeEventArgs eventArgs, CategoryTemplateViewModel model)
+    {
+        if (model.categoryTemplateValues == null)
+            return;
+
+        List<PropertyGroupValue> list = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(model.Values.ToString());
+
+        model.categoryTemplateValues[0].Value = list.FirstOrDefault(xd => xd.DBGuid == eventArgs.Value.ToString()).Value.ToString();
+        model.categoryTemplateValues[0].ValueGroupGuid = eventArgs.Value.ToString();
+    }
+
+    private async Task RefreshData()
+    {
+        Editors = new();
+        AddedSubCategoryViewModel = new();
+        var res = await categoryService.GetCategory(SelectedCategoryGuid);
+        if (res.Result == EnumRequestResult.Success)
+            categoryViewModel = res.ConvertRequestObject<CategoryViewModel>();
+        mainEntitie = new();
+        mainEntitie.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        mainEntitie.CategoryDBGuid = SelectedCategoryGuid;
+
+        SubEntitie = new();
+
+        await GetAllSubCategory(SelectedCategoryGuid);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+}

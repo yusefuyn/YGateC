@@ -1,0 +1,110 @@
+﻿@page "/Login"
+@using Microsoft.AspNetCore.Components.Authorization
+@using YGate.Client.Services
+@using YGate.Client.Services.Login
+@using YGate.Client.Services.Profile
+@using YGate.Client.Shared.Components
+@using YGate.Entities
+@using YGate.Entities.BasedModel
+@using YGate.Entities.ViewModels
+@using YGate.Json.Operations
+
+<PageTitle>@localizer["Login"]</PageTitle>
+
+<style>
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        position: relative;
+        color: white;
+    }
+
+        .input-container .label {
+            font-size: 15px;
+            padding-left: 10px;
+            position: absolute;
+            top: 13px;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+    .input {
+        height: 45px;
+        border: none;
+        outline: none;
+        padding: 0px 7px;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 15px;
+        background-color: transparent;
+        box-shadow: 3px 3px 10px rgba(0,0,0,1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+    }
+
+        .input:focus {
+            border: 2px solid transparent;
+            color: #fff;
+            box-shadow: 3px 3px 10px rgba(0,0,0,1), -1px -1px 6px rgba(255, 255, 255, 0.4), inset 3px 3px 10px rgba(0,0,0,1), inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+        }
+
+    .input-container .input:valid ~ .label,
+    .input-container .input:focus ~ .label {
+        transition: 0.3s;
+        padding-left: 2px;
+        transform: translateY(-35px);
+    }
+
+    .input-container .input:valid,
+    .input-container .input:focus {
+        box-shadow: 3px 3px 10px rgba(0,0,0,1), -1px -1px 6px rgba(255, 255, 255, 0.4), inset 3px 3px 10px rgba(0,0,0,1), inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+    }
+</style>
+
+<div class="login-container">
+    <h1>@localizer["Login"]</h1>
+    <div class="bd-transparent">
+        <div class="form">
+            <Entry @bind-value="@Model.UserName" Placeholder="@localizer["Username"]" entryType="Entry.EntryType.Text"></Entry>
+            <Entry @bind-value="@Model.Password" Placeholder="@localizer["Password"]" entryType="Entry.EntryType.Password"></Entry>
+            <label style="color:red;">@ErrorMessage</label>
+            <br>
+            <label>@localizer["Do_you_not_have_an_account"]<a href="/Register">@localizer["Click_register"]</a></label>
+            <SpecialButton OnClick="login" Class="btn-primary" Text="@localizer["Login"]"></SpecialButton>
+
+        </div>
+    </div>
+</div>
+@code {
+    public LoginViewModel Model { get; set; } = new();
+    public string? ErrorMessage { get; set; }
+
+    public async void login()
+    {
+        if (string.IsNullOrEmpty(Model.UserName) || string.IsNullOrEmpty(Model.Password))
+        {
+            ErrorMessage = "fill in the empty fields";
+            return;
+        }
+
+        var nmodel = new LoginViewModel();
+        nmodel.UserName = Model.UserName;
+        nmodel.Password = YGate.String.Operations.Hash.SaltAndSHA512(Model.Password);
+        RequestResult opres = await loginregisterService.LoginAsync(nmodel);
+
+
+        if (opres.Result != EnumRequestResult.Success)
+        {
+            ErrorMessage = opres.ShortDescription.ToString();
+            StateHasChanged();
+            return;
+        }
+
+        LoginReplyViewModel account = opres.ConvertRequestObject<LoginReplyViewModel>();
+        await cookieService.SetCookie("Token", account.Token, 90);
+
+        await AuthStateProvider.GetAuthenticationStateAsync();
+        await profileService.GetMyProfile(); // Profil bilgilerinin alınması için
+        navigationManager.NavigateTo("/");
+
+    }
+}

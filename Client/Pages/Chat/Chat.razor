@@ -1,0 +1,260 @@
+﻿@page "/Chat/{RoomName}"
+@implements IDisposable
+@using Microsoft.AspNetCore.SignalR.Client
+@using YGate.Client.Services.Profile
+@using YGate.Client.Shared.Components
+<PageTitle>@localizer["Chat"]</PageTitle>
+<style>
+    /* Ana container */
+    .chat-app-container {
+        display: flex;
+        height: 100vh;
+        max-width: 100%;
+        background-color: #121212;
+        color: #ffffff;
+    }
+
+    /* Sol Panel (Chat Odaları) */
+    .chat-rooms {
+        width: 250px;
+        background-color: #1e1e1e;
+        border-right: 1px solid #333;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .chat-rooms h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+    .chat-room {
+        padding: 10px;
+        border: 1px solid #444;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        .chat-room:hover {
+            background-color: #333;
+        }
+
+        .chat-room.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+    /* Sağ Panel (Chat Mesajları) */
+    .chat-container {
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Mesajlar için alan */
+    .messages {
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+        border-bottom: 1px solid #333;
+        height: 400px;
+        background-color: #181818;
+    }
+
+    /* Mesaj balonları */
+    .message {
+        margin-bottom: 15px;
+    }
+
+        .message .user {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .message .text {
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+    /* Kullanıcı mesajları sağda */
+    .message-right .text {
+        background-color: #007bff;
+        text-align: right;
+        color: #ffffff;
+    }
+
+    .message-center .text {
+        background-color: #007bff;
+        text-align: center;
+        color: lime;
+    }
+
+    /* Sohbet gönderme kutusu */
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        background-color: #1e1e1e;
+        border-top: 1px solid #333;
+    }
+
+        .chat-input input {
+            flex-grow: 1;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        .chat-input button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 18px;
+        }
+</style>
+
+@if (IsConnected)
+{
+    <div class="container-fluid" style="max-height:calc(100vh - 75px);">
+        <div class="chat-app-container">
+            <!-- Sol Panel (Chat Odaları) -->
+@*             <div class="chat-rooms">
+                <h4>Chat Odaları</h4>
+                <div class="chat-room active" data-room="room1">@RoomName</div>
+                <div class="chat-room" data-room="room2">Oda 2</div>
+                <div class="chat-room" data-room="room3">Oda 3</div>
+            </div> *@
+
+            <!-- Sağ Panel (Mesajlar ve Sohbet) -->
+            <div class="chat-container">
+                <!-- Mesajlar -->
+                <div class="messages" id="messages">
+                    @foreach (var item in Messages)
+                    {
+                        @if (item.Key == Username)
+                        {
+                            <div class="message message-right">
+                                <div class="user">Siz : </div>
+                                <div class="text">@item.Value.ToString()</div>
+                            </div>
+
+                        }
+                        else if (item.Key == "System")
+                        {
+                            <div class="message message-center">
+                                <div class="text">@item.Value.ToString()</div>
+                            </div>
+
+                        }
+                        else
+                        {
+
+                            <div class="message message-left">
+                                <div class="user">@item.Key : </div>
+                                <div class="text">@item.Value.ToString()</div>
+                            </div>
+                        }
+                    }
+                </div>
+                <!-- Mesaj Gönderme Alanı -->
+                <div class="chat-input">
+                    <input type="text" id="messageInput" @bind-value="MessageValue" placeholder="Mesajınızı yazın..." />
+                    <button id="sendButton" @onclick="SendMessage">→</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <span>Connection....</span>
+}
+
+
+
+@code {
+    private HubConnection? hubConnection;
+    [Parameter]
+    public string RoomName { get; set; }
+    private string MessageValue = string.Empty;
+    private string Username { get; set; } = "";
+    private List<(string Key, string Value)> Messages { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+             .WithUrl(navigationManager.ToAbsoluteUri("/MyHub"))
+             .Build();
+        hubConnection.On<string>("ReceiveMessage", (message) =>
+        {
+            (string Key, string Value) mm = YGate.Json.Operations.JsonDeserialize<(string Key, string Value)>.Deserialize(message);
+            Messages.Add(mm);
+            StateHasChanged();
+        });
+
+        try
+        { // TODO : Şu anda hiç uğraşamam misafir mi değil mi.
+            Username = await profileService.GetPropertiesValue("Username");
+        }
+        catch (Exception)
+        {
+            Username = $"Bozok-{new Random().Next(100, 999).ToString()}";
+        }
+
+
+        await hubConnection.StartAsync();
+        await JoinGroup();
+    }
+
+    private async void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SendMessage();
+        }
+    }
+
+    private async Task JoinGroup()
+    {
+        if (!string.IsNullOrEmpty(RoomName))
+        {
+            await hubConnection.SendAsync("JoinGroup", RoomName);
+        }
+    }
+
+    private async Task LeaveGroup()
+    {
+        if (!string.IsNullOrEmpty(RoomName))
+        {
+            await hubConnection.SendAsync("LeaveGroup", RoomName);
+        }
+    }
+
+    public async void Dispose()
+    {
+        await LeaveGroup();
+        await hubConnection.DisposeAsync();
+    }
+
+
+    public async Task SendMessage()
+    {
+        (string Key, string Value) message = new();
+        message.Key = Username;
+        message.Value = MessageValue;
+        await hubConnection.SendAsync("SendMessageToGroup", RoomName, YGate.Json.Operations.JsonSerialize.Serialize(message));
+        MessageValue = "";
+    }
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+}

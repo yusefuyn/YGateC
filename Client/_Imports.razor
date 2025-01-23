@@ -1,0 +1,26 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using YGate.Client
+@using YGate.Client.Services
+@using YGate.Client.Services.Administrator
+@using YGate.Client.Services.Login
+@using YGate.Client.Services.Profile
+@using YGate.Client.Shared
+@using Microsoft.Extensions.Localization
+@using YGate.Shared.Resources
+
+
+@inject IStringLocalizer<Resource> localizer
+@inject ILoginAndRegisterService loginregisterService
+@inject IProfileService profileService
+@inject CookieService cookieService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager navigationManager
+@inject IAdministratorService adminService

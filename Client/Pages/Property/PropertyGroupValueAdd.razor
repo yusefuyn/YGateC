@@ -1,0 +1,50 @@
+﻿@page "/Management/PropertyGroup/Value/Add/{Guid}"
+@using YGate.Client.Services.Property
+@inject IPropertyService propertService
+@using YGate.Client.Shared.Components
+@using YGate.Entities
+@inject IProfileService profileService
+@inject NavigationManager navigationManager
+<div>
+    <h3>PropertyGroupValueAdd @group.Name</h3>
+    <br />
+    <SpecialButton OnClick="async ()=> await Ekle()" Text="Add New Value"></SpecialButton>
+    <br />
+    @foreach (var value in Values)
+    {
+
+        <Entry Placeholder="Value" @bind-value="value.Value"></Entry>
+        <br />
+
+    }
+    <SpecialButton OnClick="async ()=> await Save()" Text="Save"></SpecialButton>
+</div>
+@code {
+    [Parameter]
+    public string Guid { get; set; }
+
+    public YGate.Entities.BasedModel.PropertyGroup group { get; set; } = new();
+    public List<YGate.Entities.BasedModel.PropertyGroupValue> Values { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await propertService.GetGroup(Guid);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            group = res.ConvertRequestObject<YGate.Entities.BasedModel.PropertyGroup>();
+    }
+
+    private async Task Ekle()
+    {
+        YGate.Entities.BasedModel.PropertyGroupValue obj = new() { PropertyGroupGuid = group.DBGuid };
+        obj.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        Values.Add(obj);
+        StateHasChanged();
+    }
+
+    private async Task Save()
+    {
+        RequestResult res = await propertService.AddValues(Values);
+        if (res.Result == EnumRequestResult.Success)
+            navigationManager.NavigateTo("/Management/PropertyGroup");
+    }
+}

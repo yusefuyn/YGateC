@@ -1,0 +1,41 @@
+﻿@page "/Management/Role/Add"
+@using YGate.Client.Services.Role
+@inject IProfileService profileService
+@inject IRoleService roleService
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@using YGate.Client.Shared.Components
+<div class="container">
+    <div class="container-header">
+        <h3>Add</h3>
+    </div>
+    <Entry Placeholder="Role Name" @bind-value="role.Name"></Entry>
+    <Entry Placeholder="Description" @bind-value="role.ShortDescription"></Entry>
+    <label style="color:red;">@ErrorMessage</label>
+    <SpecialButton Text="Ekle" OnClick="async()=> await Ekle()"></SpecialButton>
+</div>
+
+@code {
+    public YGate.Entities.BasedModel.Role role { get; set; } = new();
+    public string ErrorMessage { get; set; } = "";
+    protected override async Task OnInitializedAsync()
+    {
+        role.DBGuid = YGate.String.Operations.GuidGen.Generate("role");
+        role.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+    }
+
+    public async Task Ekle()
+    {
+        var res = await roleService.AddRole(role);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", "Yeni rol eklendi");
+            navigationManager.NavigateTo("/Management/Role");
+        }
+        else
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", "Rol eklenemedi.");
+            ErrorMessage = res.ShortDescription.ToString();
+        }
+    }
+}

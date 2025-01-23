@@ -1,0 +1,25 @@
+﻿<style>
+    .datepicker-div{
+        width:100%;
+        height:75px;
+        margin:5px 0px 5px 0px;
+    }
+    .datepicker-input{
+        width:100%;
+        height:45px;
+        box-shadow: var(--box-shadow);
+        background-color: var(--main-background-color);
+        color: var(--font-color);
+        border-radius:6px;
+        border:none;
+    }
+</style>
+
+<div class="datepicker-div">
+    <label for="Date">Date:</label>
+    <input type="date" class="datepicker-input" @bind-value="value" required>
+</div>
+@code {
+    [Parameter]
+    public DateTime value { get; set; }
+}

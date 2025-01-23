@@ -1,0 +1,26 @@
+﻿[
+  {
+    "Name": "PostgresqlConnectionString",
+    "Value": "",
+    "Active": false,
+    "Type": 1
+  },
+  {
+    "Name": "MysqlConnectionString",
+    "Value": "",
+    "Active": false,
+    "Type": 0
+  },
+  {
+    "Name": "MssqlConnectionString",
+    "Value": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False",
+    "Active": true,
+    "Type": 3
+  },
+  {
+    "Name": "SqLiteConnectionString",
+    "Value": "",
+    "Active": false,
+    "Type": 2
+  }
+]

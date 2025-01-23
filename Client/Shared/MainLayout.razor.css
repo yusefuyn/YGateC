@@ -1,0 +1,9 @@
+.main-app {
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    display: flex; /* Flexbox kullan */
+    /*justify-content: center;*/ /* Yatayda ortalamak için */
+    /*align-items: center;*/ /* Dikeyde ortalamak için */
+    padding: 10px;
+}

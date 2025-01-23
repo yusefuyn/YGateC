@@ -1,0 +1,143 @@
+﻿@page "/Management/Category"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+@using YGate.Client.Services.Category
+@attribute [Authorize(Roles = "Administrator")]
+@inject ICategoryService categoryService
+@using YGate.Client.Shared.Components
+@using YGate.Entities.ViewModels
+@inject IJSRuntime jsRuntime
+
+<style>
+    .treegrid-expander {
+        display: inline-block;
+        width: 1.5em;
+        height: 1.5em;
+        line-height: 1.5em;
+        text-align: center;
+        color: var(--font-color);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .treegrid-indent {
+        display: inline-block;
+        color: var(--font-color);
+        width: 1.5em;
+    }
+
+    .treegrid-expander span {
+        color: var(--font-color);
+        font-weight: bold;
+    }
+
+    .treegrid-div {
+        color: var(--font-color);
+    }
+
+    th, tr {
+        color: var(--font-color);
+    }
+</style>
+
+<div class="container">
+
+    <header class="container-header">
+        <h3>Kategori Yönetimi</h3>
+        @if (source != null)
+        {
+            <SpecialButton OnClick='()=> navigationManager.NavigateTo("/Management/Category/AddNewtemp")' Text="Add New Category" Style="color:White;width:200px;"></SpecialButton>
+        }
+    </header>
+
+    <div class="treegrid-div">
+        @if (source == null)
+        {
+            <a>Category çekilemedi</a>
+        }
+        else if (source.Count == 0)
+        {
+            <a>Category boş</a>
+        }
+        else
+        {
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Category Info</th>
+                        <th>AddNewtemp</th>
+                        <th>Entity Template</th>
+                        <th>Delete</th>
+                        <th>Html Template</th>
+                        <th>Roles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <TreeViewer Level="0"
+                                Source="source"
+                                Subtemps="xd=> xd.ChildCategories"
+                                VisibleText="xd=> xd.Name"
+                                Ttemp="CategoryViewModel"
+                                Binding="xd=> xd.DBGuid"
+                                TaskList="TaskList"
+                                Columns="Columns"
+                                ToggleVisibility="xd=> ShowOrHidetemp(xd)"
+                                Expanded="xd=> xd.IsExpanded"></TreeViewer>
+                </tbody>
+            </table>
+        }
+        <Modal @ref="modal"></Modal>
+
+    </div>
+
+</div>
+
+
+@code {
+    Modal modal;
+
+    List<YGate.Entities.ViewModels.CategoryViewModel> source { get; set; } = new();
+
+    List<Func<CategoryViewModel, string>> Columns { get; set; } = new();
+    List<Func<CategoryViewModel, Task>> TaskList { get; set; } = new();
+
+    private void ShowOrHidetemp(CategoryViewModel model)
+    {
+        model.IsExpanded = !model.IsExpanded;
+        StateHasChanged();
+    }
+
+    private async Task HandleDeleteCategory(CategoryViewModel categoryViewModel)
+    {
+        bool result = await jsRuntime.InvokeAsync<bool>("custom_confirm", "Silmek istediğinizden emin misiniz?");
+
+        if (!result)
+            return;
+
+        await categoryService.Delete(categoryViewModel.DBGuid);
+        await RefreshData();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TaskList.Add(async (xd) => navigationManager.NavigateTo($"/Management/Category/AddNewtemp/{xd.Id.ToString()}"));
+        TaskList.Add(async (xd) => navigationManager.NavigateTo($"/Management/Category/EntityTemplate/{xd.Id.ToString()}"));
+        TaskList.Add(async (xd) => await HandleDeleteCategory(xd));
+        TaskList.Add(async (xd) => navigationManager.NavigateTo($"/Management/Category/HtmlTemplate/{xd.Id.ToString()}"));
+        TaskList.Add(async (xd) => navigationManager.NavigateTo($"/Management/Category/Roles/{xd.DBGuid.ToString()}"));
+        await RefreshData();
+    }
+
+
+    public async Task RefreshData()
+    {
+        var res = await categoryService.GetAllButTreeView();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            source = res.ConvertRequestObject<List<CategoryViewModel>>();
+            StateHasChanged();
+        }
+    }
+
+}

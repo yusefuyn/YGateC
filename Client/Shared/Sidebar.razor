@@ -1,0 +1,79 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.Rendering
+@using YGate.Client.Services.Category
+@using YGate.Client.Shared.Components
+@using YGate.Entities.ViewModels
+@inject IProfileService profileService
+@inject ICategoryService categoryService
+<div class="sidebar">
+    <header>
+        <a href="/"><h2 class="sidebar-title">Yussefuynstein</h2></a>
+        <IconNavLink id="sidebar-button" Href="/" Icon="fa-home"></IconNavLink>
+    </header>
+    <div class="sidebar-div">
+
+        <AuthorizeView Roles="@RulesAndRoles.Rules.FirstOrDefault(xd=> xd.Id == 1).Roles.ToString()">
+            <IconNavLink Href="Management" Icon="fa-star" Text="@localizer["Management"]"></IconNavLink>
+        </AuthorizeView>
+        <AuthorizeView Roles="@RulesAndRoles.Rules.FirstOrDefault(xd=> xd.Id == 2).Roles.ToString()">
+            <IconNavLink Href="Entity" Icon="fa-star" Text="@localizer["Entity"]"></IconNavLink>
+        </AuthorizeView>
+
+
+        @if (categorySidebarViewModels != null)
+        {
+            foreach (var item in categorySidebarViewModels)
+            {
+                @RenderCategoryLinks(item)
+            }
+        }
+        else
+        {
+            <p>@localizer["There_is_no_data_at_all"]</p>
+
+        }
+
+
+    </div>
+    <div id="LoginRegisterDiv">
+        <AuthorizeView>
+            <Authorized>
+                <IconNavLink Href="logout" Icon="fa-sign-out" Text="@localizer["Exit"]"></IconNavLink>
+            </Authorized>
+            <NotAuthorized>
+                <IconNavLink Href="Login" Icon="fa-sign-in" Text="@localizer["Login"]"></IconNavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+    <footer>
+
+        @*
+        TODO : Daha sonra dinamik tutalım. Anladın sen.
+        <a href="https://www.instagram.com/" target="_blank" class="footer-button"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/" target="_blank" class="footer-button"><i class="fab fa-linkedin-in "></i></a>
+        <a href="https://github.com/" target="_blank" class="footer-button"><i class="fab fa-github "></i></a> *@
+    </footer>
+</div>
+@code {
+    List<CategorySidebarViewModel> categorySidebarViewModels;
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await categoryService.GetSidebarCategories();
+        if (res.Result == Entities.EnumRequestResult.Success)
+        {
+            categorySidebarViewModels = res.ConvertRequestObject<List<CategorySidebarViewModel>>();
+            StateHasChanged();
+        }
+    }
+
+    private RenderFragment RenderCategoryLinks(CategorySidebarViewModel categories)
+    {
+        string role = string.Join(",", categories.CategoryRole);
+        if (!categories.CategoryRole.Any(xd => xd == "All"))
+            return@<AuthorizeView Roles="@role"><IconNavLink Href="@categories.CategoryViewLink" Icon="@categories.CategorySymbol" Text="@localizer[categories.CategoryName]"></IconNavLink></AuthorizeView>  ;
+        else
+            return@<IconNavLink Href="@categories.CategoryViewLink" Icon="@categories.CategorySymbol" Text="@localizer[categories.CategoryName]"></IconNavLink>;
+    }
+}

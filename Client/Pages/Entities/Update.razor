@@ -1,0 +1,19 @@
+﻿@page "/Management/Entitie/Update/{EntityGuid}"
+@using YGate.Client.Services.Category
+@using YGate.Client.Services.Entitie
+
+@inject IEntitieService entityService
+@inject ICategoryService categoryService
+
+<div class="container">
+    <header class="container-header">
+        <h3>Update</h3>
+    </header>
+
+
+
+</div>
+@code {
+    [Parameter]
+    public string EntityGuid { get; set; }
+}

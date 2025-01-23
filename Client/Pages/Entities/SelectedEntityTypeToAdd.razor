@@ -1,0 +1,52 @@
+﻿@page "/Management/Entitie/SelectAdvertTypeToAdd"
+@using YGate.Client.Services.Category
+@using YGate.Entities.BasedModel
+@inject ICategoryService categoryService
+@using YGate.Client.Shared.Components
+<div class="container">
+    <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+        <h3>İlan oluştur</h3>
+
+    </header>
+    <h2>Varlığınızın kategorisini seciniz.</h2>
+    <ComboBox Source="categoryViewModels"
+              DataBinding="xd=> xd.DBGuid"
+              Empty="false"
+              SelectedValueChanged="SelectedCategoryChange"
+              ValueBinding="xd=> xd.Name"
+              Ttemp="Category"></ComboBox>
+    <SpecialButton Text="@ButtonText" Style="@ButtonDisplay.ToString()" OnClick="NavigateAdd"></SpecialButton>
+</div>
+@code {
+    private List<Category> categoryViewModels { get; set; } = new();
+    string ButtonText = "";
+    string SelectedCategoryGuid = "";
+    string ButtonDisplay = "width:100%;display:none";
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    public async Task RefreshData()
+    {
+
+        var res = await categoryService.GetAllButParentCategory();
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            categoryViewModels = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Category>>();
+        }
+    }
+
+    private void SelectedCategoryChange(ChangeEventArgs eventArgs)
+    {
+        Category obj = categoryViewModels.FirstOrDefault(xd => xd.DBGuid == eventArgs.Value.ToString());
+        ButtonText = $"{obj.Name} için varlık ekle";
+        SelectedCategoryGuid = obj.DBGuid;
+        ButtonDisplay = "width:100%;display:block;";
+    }
+
+    private void NavigateAdd()
+    {
+        navigationManager.NavigateTo($"/Management/Entitie/Add/{SelectedCategoryGuid}");
+    }
+}

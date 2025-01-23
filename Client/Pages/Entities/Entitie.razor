@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using YGate.Client.Services.Entitie
+@using YGate.Client.Services.Profile
+@attribute [Authorize(Roles = "Administrator,Admin,MarketMod,MarketUser,User")]
+@using YGate.Client.Shared.Components
+@using YGate.Entities.BasedModel
+@using YGate.Entities.ViewModels
+@page "/Entity"
+@inject IJSRuntime jsRuntime
+@inject IEntitieService entityService
+<PageTitle>Market</PageTitle>
+
+<style>
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Kartları sola hizalar */
+        margin: 5px;
+    }
+
+    .card {
+        margin-bottom: 15px;
+        margin-right: 10px; /* Kartlar arasındaki sağ boşluğu kontrol edebilirsiniz */
+    }
+</style>
+
+<div class="container">
+    <header class="container-header">
+        <h3>Entity</h3>
+        <SpecialButton Text='@localizer["MyEntity"]' Style="width:100px;color:white;" OnClick="NavigateToAddEntitie"></SpecialButton>
+    </header>
+
+
+    @if (entitiesList != null && entitiesList.Count > 0)
+    {
+        <div class="row">
+            @foreach (var temp in entitiesList)
+            {
+                @entityService.CategoryHtmlTemplateAddValues(temp, EntitieService.TemplateEnum.ListingView)
+            }
+        </div>
+
+    }
+    else
+    {
+        <p>@localizer["NoDataCurrentlyAvailable."]</p>
+    }
+
+</div>
+@code {
+    List<EntitieViewModel> entitiesList { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await InfoCheck();
+        await GetEntities();
+    }
+
+
+
+    private async Task GetEntities()
+    {
+        var res = await entityService.GetAllEntitie();
+        entitiesList = res.ConvertRequestObject<List<EntitieViewModel>>();
+    }
+
+    private async Task InfoCheck()
+    {
+        string Gender = await profileService.GetPropertiesValue("Gender");
+        if (string.IsNullOrEmpty(Gender))
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", "Varlık yönetimi bir kaç bilgiye ihtiyaç duyuyor lütfen doldurunuz.");
+
+            navigationManager.NavigateTo("/Profile/Info/Gender/Entity", false);
+            return;
+        }
+
+        string Country = await profileService.GetPropertiesValue("Country");
+        if (string.IsNullOrEmpty(Country))
+        {
+            await jsRuntime.InvokeVoidAsync("showNotification", "Varlık Yönetimi bir kaç bilgiye ihtiyaç duyuyor lütfen doldurunuz.");
+
+            navigationManager.NavigateTo("/Profile/Info/Country/Entity", false);
+            return;
+
+        }
+    }
+
+    private void NavigateToAddEntitie()
+    {
+        navigationManager.NavigateTo("/Management/MyEntities");
+    }
+}

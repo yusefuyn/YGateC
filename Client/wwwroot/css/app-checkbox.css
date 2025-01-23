@@ -1,0 +1,40 @@
+﻿/* Checkbox kutusunu büyütme ve arka plan rengini siyah yapma */
+.form-check-input {
+    width: 30px; /* Kutunun genişliği */
+    height: 30px; /* Kutunun yüksekliği */
+    background-color: black; /* Arkaplan rengini siyah yapma */
+    border-radius: 5px; /* Kenarları yuvarlatma */
+    border: 2px solid #ddd; /* Kenarlık */
+    vertical-align: middle; /* Dikeyde ortalama */
+}
+
+.form-check .form-check-input {
+    float:none;
+}
+/* İşaretli olduğunda kutuya yeşil tik işareti ekleme */
+.form-check-input:checked {
+    background-color: black; /* Kutu arka planını siyah tutmaya devam et */
+    border-color: #4CAF50; /* Sınır rengini yeşil yap */
+    position: relative;
+}
+
+        .form-check-input:checked[type=checkbox] {
+            background-image: none;
+        }
+
+        .form-check-input:checked::after {
+            content: '\2713'; /* Tik işareti karakteri */
+            font-size: 18px;
+            color: #4CAF50; /* Tik işaretini yeşil yap */
+            position: absolute;
+            top: 3px;
+            left: 5px;
+        }
+
+/* Etiket yazısını kutudan 5px uzaklaştırma ve dikeyde ortalama */
+.form-check-label {
+    margin-left: 10px; /* Kutudan yazıyı 10px uzaklaştır */
+    vertical-align: middle; /* Dikeyde ortalama */
+    display: inline-block; /* Etiketi blok element gibi davranmaya zorla */
+    line-height: 30px; /* Yüksekliği ayarla, böylece yazı ortalanır */
+}

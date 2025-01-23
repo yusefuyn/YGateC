@@ -1,0 +1,12 @@
+﻿<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" @onchange="OnSwitchChanged">
+    <label class="form-check-label" for="flexSwitchCheckDefault">@Placeholder.ToString()</label>
+</div>
+@code {
+
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnSwitchChanged { get; set; }
+}

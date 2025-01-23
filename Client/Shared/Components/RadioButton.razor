@@ -1,0 +1,27 @@
+﻿<label class="radio-container">
+    @Text
+    <input type="radio"
+           id="@Id"
+           name="@Name"
+           class="custom-control-input"
+           checked="@Checked"
+           @onchange="OnChange">
+    <span class="radio-checkmark"></span>
+</label>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public bool Checked { get; set; } = false;
+}

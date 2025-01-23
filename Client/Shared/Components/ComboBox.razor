@@ -1,0 +1,29 @@
+﻿@typeparam Ttemp
+<div class="combobox-div">
+    <select class="combobox" @onchange="SelectedValueChanged">
+        @if (!Empty)
+        {
+            <option value="-1">@localizer["PleaseChooseOne"]</option>
+        }
+        @foreach (var temp in Source)
+        {
+            <option class="combobox-option" value="@DataBinding(temp)">@ValueBinding(temp)</option>
+        }
+    </select>
+</div>
+@code {
+    [Parameter]
+    public IEnumerable<Ttemp> Source { get; set; }
+
+    [Parameter]
+    public Func<Ttemp, object> ValueBinding { get; set; }
+
+    [Parameter]
+    public Func<Ttemp, object> DataBinding { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> SelectedValueChanged { get; set; }
+
+    [Parameter]
+    public bool Empty { get; set; } = true;
+}

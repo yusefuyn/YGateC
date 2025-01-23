@@ -1,0 +1,46 @@
+﻿.notification {
+    position: fixed;
+    right: 20px;
+    background-color: #000000AA;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    flex-direction: column; /* Mesajı ve butonu dikeyde hizala */
+    justify-content: center; /* Yatayda içerikleri sola hizala */
+    align-items: flex-start; /* Dikeyde ortala */
+    min-width: 250px; /* Bildirimin en küçük genişliği */
+}
+
+    .notification p {
+        margin: 0;
+        font-size: 16px;
+        padding-right: 25px; /* Kapanma butonuna alan bırakmak için */
+    }
+
+#notification-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.notification.show {
+    opacity: 1;
+}
+
+.notification.hide {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
