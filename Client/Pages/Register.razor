@@ -57,15 +57,15 @@
     <div class="bd-transparent">
         <div class="form">
             <div class="mb-3 input-container">
-                <input required="" @bind-value="model.UserName" type="text" name="text" class="input">
+                <input required="" @bind-value="UserName" type="text" name="text" class="input">
                 <label class="label">@localizer["Username"]:</label>
             </div>
             <div class="mb-3 input-container">
-                <input required="" @bind-value="model.Password" type="password" name="text" class="input">
+                <input required="" @bind-value="Password" type="password" name="text" class="input">
                 <label class="label">@localizer["Password"]:</label>
             </div>
             <div class="mb-3 input-container">
-                <input required="" @bind-value="model.RPassword" type="password" name="text" class="input">
+                <input required="" @bind-value="RPassword" type="password" name="text" class="input">
                 <label class="label">@localizer["Password_Retry"]:</label>
             </div>
             <div class="mb-3 input-container">
@@ -81,17 +81,36 @@
     </div>
 </div>
 @code {
-    RegisterViewModel model = new();
+    RegisterViewModel model { get; set; }
+
+
+    private string UserName { get; set; }
+    private string Password { get; set; }
+    private string RPassword { get; set; }
     string ErrorMessage = "";
+
+    protected override void OnInitialized()
+    {
+        model = new();
+        UserName = "";
+        Password = "";
+        RPassword = "";
+    }
 
     public async void register()
     {
+        if (RPassword != Password)
+        {
+            ErrorMessage = "Şifre tekrarı uyuşmyuor";
+            return;
+        }
 
-        model.Password = YGate.String.Operations.Hash.SaltAndSHA512(model.Password);
-        model.RPassword = YGate.String.Operations.Hash.SaltAndSHA512(model.RPassword);
+        model.UserName = UserName;
+        model.Password = YGate.String.Operations.Hash.SaltAndSHA512(Password);
+        model.RPassword = YGate.String.Operations.Hash.SaltAndSHA512(RPassword);
 
         var res = await loginregisterService.RegisterAsync(model);
-        if (res.Result !=YGate.Entities.EnumRequestResult.Success)
+        if (res.Result != YGate.Entities.EnumRequestResult.Success)
         {
             ErrorMessage = res.ShortDescription.ToString();
             return;

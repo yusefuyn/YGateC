@@ -65,8 +65,11 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
-        public RequestResult Register([FromBody] RegisterViewModel model)
+        public RequestResult Register([FromBody] RequestParameter parameter)
         {
+
+            var model = parameter.ConvertParameters<RegisterViewModel>();
+
             RequestResult returnedResult = new("Register V1");
             Account account = operations.Context.Accounts.FirstOrDefault(xd => xd.Username == model.UserName || xd.Email == model.Email);
             if (account != null)
