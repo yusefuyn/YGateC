@@ -3,6 +3,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.DataAccess.Entities;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
+using YGate.Server.Attributes;
 
 namespace YGate.Server.Controllers
 {
@@ -17,33 +18,36 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
-        // TODO : Request'i atanın Rolü administrator olan bunu çekebilir.
-        public string GetAll([FromBody] RequestParameter parameter = null)
+        [Authorized("Administrator")]
+        public string GetAll([FromBody] RequestParameter parameter)
         {
             RequestResult result = new("Get All Role");
             result.Result = EnumRequestResult.Success;
+            result.To = EnumTo.Server;
             var objs = operations.Context.Roles.ToList();
             result.Object = objs;
             return YGate.Json.Operations.JsonSerialize.Serialize(result);
         }
 
         [HttpPost]
-        // TODO : Rolü administrator olan bunu ekleyebilir.
+        [Authorized("Administrator")]
         public string AddRole([FromBody] RequestParameter parameter)
         {
             Role role = parameter.ConvertParameters<Role>();
             RequestResult result = new("Add role");
+            result.To = EnumTo.Server;
+            result.Result = EnumRequestResult.Success;
+
             role.IsActive = true;
             role.DBGuid = YGate.String.Operations.GuidGen.Generate("role");
-            result.Result = EnumRequestResult.Success;
             operations.Context.Roles.Add(role);
             operations.Context.SaveChanges();
             result.Object = role;
             return YGate.Json.Operations.JsonSerialize.Serialize(result);
         }
         [HttpPost]
-        // TODO : Rolü administrator olan bunu ekleyebilir.
-        public async Task<string> DeleteRole([FromBody]RequestParameter parameter)
+        [Authorized("Administrator")]
+        public async Task<string> DeleteRole([FromBody] RequestParameter parameter)
         {
             string roledbguid = parameter.Parameters.ToString();
             RequestResult result = new($"Delete role {roledbguid}");
@@ -73,6 +77,6 @@ namespace YGate.Server.Controllers
         }
 
 
-        
+
     }
 }

@@ -35,22 +35,19 @@ namespace YGate.Json.Operations
             return jwt;
         }
 
-        public string GetUserIdFromToken(string token)
+        public string GetUserRolesFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
             if (jsonToken != null)
             {
-                // 'userId' claim'ini alıyoruz
-                var userId = jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null)
-                {
-                    // Eğer userId bulunmazsa, alternatif olarak "sub" claim'ini alabiliriz.
-                    userId = jsonToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
-                }
+                string roles = string.Join(",", jsonToken?.Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(xd => xd.Value.ToString().Replace("[","").Replace("]","").Replace("\"", "")) ?? Enumerable.Empty<string>());
 
-                return userId;
+
+                return roles;
             }
             return "";
         }

@@ -61,7 +61,7 @@
     {
         RequestResult result = await measurementService.GetAllMeasurementCategory();
         if (result.Result == EnumRequestResult.Success)
-            Source = (List<MeasurementCategory>)result.Object;
+            Source = result.ConvertRequestObject<List<MeasurementCategory>>();
     }
 
     public void NavigateAddCategory()

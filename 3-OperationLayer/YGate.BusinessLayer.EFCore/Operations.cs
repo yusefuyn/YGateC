@@ -123,7 +123,7 @@ namespace YGate.BusinessLayer.EFCore
         {
             // AccountRoles'u ve ilgili rolleri tek seferde çekiyoruz.
             var accountRoles = Context.AccountRoles
-                .Where(xd => xd.FromGuid == accountGuid)
+                .Where(xd => xd.ToGuid == accountGuid)
                 .Join(Context.Roles, ar => ar.RoleGuid, r => r.DBGuid, (ar, r) => r)
                 .Distinct()
                 .ToList();
@@ -571,6 +571,14 @@ namespace YGate.BusinessLayer.EFCore
             _EntitieViewModelGetInfo(ref allItems);
 
             return allItems;
+        }
+
+        public bool UserAuthorizeControlFromUserGuid(string UserGuid, List<string> Roles)
+        {
+            bool returned = false;
+            List<Role> userRole = GetUserRolesFromUserGuid(UserGuid);
+            returned = Roles.Any(role => userRole.Any(xd => xd.Name == role));
+            return returned;
         }
 
         public List<Role> GetUserRolesFromUserGuid(string UserGuid)

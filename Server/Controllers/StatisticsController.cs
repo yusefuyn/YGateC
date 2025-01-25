@@ -3,6 +3,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities.BasedModel;
 using YGate.Entities;
 using YGate.Entities.ViewModels;
+using System.Data.Entity;
 
 namespace YGate.Server.Controllers
 {
@@ -16,8 +17,8 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
-        public RequestResult GetStatistics([FromBody] RequestParameter parameter = null) 
-        {
+        public RequestResult GetStatistics([FromBody] RequestParameter parameter = null)
+        { // TODO : Eş zamanlı sorunu var hem configure ederken data çekmeye çalışınca patlıyor.
             RequestResult returned = new("GetStatistics");
             StatisticsViewModel model = new StatisticsViewModel();
             returned.To = EnumTo.Server;
@@ -31,7 +32,8 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
-        public RequestResult GetRequestLogs([FromBody] RequestParameter parameter = null) {
+        public RequestResult GetRequestLogs([FromBody] RequestParameter parameter = null)
+        {
             RequestResult returned = new("GetRequestLogs");
             returned.Result = EnumRequestResult.Success;
             returned.To = EnumTo.Server;

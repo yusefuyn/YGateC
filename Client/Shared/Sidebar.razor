@@ -14,7 +14,7 @@
     </header>
     <div class="sidebar-div">
 
-        <AuthorizeView Roles="@RulesAndRoles.Rules.FirstOrDefault(xd=> xd.Id == 1).Roles.ToString()">
+        <AuthorizeView Roles="Administrator">
             <IconNavLink Href="Management" Icon="fa-star" Text="@localizer["Management"]"></IconNavLink>
         </AuthorizeView>
         <AuthorizeView Roles="@RulesAndRoles.Rules.FirstOrDefault(xd=> xd.Id == 2).Roles.ToString()">
