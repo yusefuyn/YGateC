@@ -7,6 +7,7 @@
 @import 'app-notification.css';
 @import 'app-checkbox.css';
 @import 'app-combobox.css';
+@import 'app-customimagelistcomponent.css';
 
 .modal {
     height:auto;

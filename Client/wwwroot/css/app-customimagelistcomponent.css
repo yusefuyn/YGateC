@@ -1,0 +1,55 @@
+﻿/* Büyük resim alanı */
+.buyuk-resim {
+    width: 100%;
+    height: 400px;
+    background-image: url('https://via.placeholder.com/1200x400'); /* Başlangıç büyük resim */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative; /* Tuşların konumlanabilmesi için gerekli */
+}
+
+.navigasyon-tusu {
+    position: absolute;
+    top: 50%; /* Ortalamak için */
+    transform: translateY(-50%); /* Tam ortalamak için */
+    font-size: 30px;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı saydam arka plan */
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10; /* Tuşların her zaman üstte görünmesini sağlar */
+}
+
+#solTus {
+    left: 20px; /* Sol tuşu, sol köşeye yerleştir */
+}
+
+#sagTus {
+    right: 20px; /* Sağ tuşu, sağ köşeye yerleştir */
+}
+
+.resim-container {
+    display: flex; /* Flexbox kullanarak yan yana dizme */
+    gap: 10px; /* Resimler arasındaki boşluk */
+    justify-content: flex-start; /* Sol tarafta başlayacak şekilde hizalama */
+    flex-wrap: nowrap; /* Flex elemanlarının satır başına geçmesini engelle */
+    padding: 20px;
+    overflow-x: auto; /* Yatay kaydırma çubuğu ekle */
+    white-space: nowrap; /* İçerik taşarsa, satır kayması yerine yatay kaydırma yap */
+}
+
+    /* Resimlerin stilini ayarlıyoruz */
+    .resim-container img {
+        width: 150px; /* Resimlerin genişliğini küçültüyoruz */
+        height: auto; /* Yüksekliği otomatik olarak ayarla */
+        border-radius: 8px; /* Resimlerin köşelerini yuvarlıyoruz */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hafif gölge ekliyoruz */
+        cursor: pointer; /* Tıklanabilir gösterim */
+    }

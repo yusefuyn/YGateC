@@ -57,10 +57,14 @@ function showNotification(message) {
 
     notificationCount++;
 }
-
+function buyukResimGuncelle(resimUrl) {
+    var buyukResim = document.getElementById('buyukResim');
+    buyukResim.style.backgroundImage = 'url(' + resimUrl + ')';
+}
 
 function ycustomimagelistComponentLoad() {
     const customListComponent = document.querySelector('ycustomimagelist customlistcomponent');
+    let currentResimIndex = 0;
 
     if (!customListComponent) {
         return;
@@ -73,6 +77,67 @@ function ycustomimagelistComponentLoad() {
     }
 
     customListComponent.innerHTML = '';
+    customListComponent.classList.add("container");
+    customListComponent.style.borderRadius = '7px';
+    customListComponent.style.margin = '5px';
+
+
+    // Büyük resim div'ini oluşturuyoruz
+    const buyukResimDiv = document.createElement('div');
+    buyukResimDiv.classList.add('buyuk-resim');
+    buyukResimDiv.id = 'buyukResim';
+
+    // Başlık kısmını ekliyoruz
+    const buyukResimBaslik = document.createElement('p');
+    buyukResimBaslik.id = 'buyukResimBaslik';
+    buyukResimBaslik.textContent = 'Büyük Resim Başlığı';
+    buyukResimBaslik.style.color = "#00000000";
+
+    // Sol ve sağ ok tuşlarını ekliyoruz
+    const solTus = document.createElement('button');
+    solTus.id = 'solTus';
+    solTus.classList.add('navigasyon-tusu');
+    solTus.innerHTML = '&lt;'; // Sol ok işareti
+
+    const sagTus = document.createElement('button');
+    sagTus.id = 'sagTus';
+    sagTus.classList.add('navigasyon-tusu');
+    sagTus.innerHTML = '&gt;'; // Sağ ok işareti
+
+    // Ok tuşlarına işlevsellik ekliyoruz
+    solTus.onclick = function () {
+        if (currentResimIndex > 0) {
+            currentResimIndex--;
+        } else {
+            currentResimIndex = resimUrls.length - 1; // Son resme dön
+        }
+        buyukResimGuncelle(resimUrls[currentResimIndex]);
+    };
+
+    sagTus.onclick = function () {
+        if (currentResimIndex < resimUrls.length - 1) {
+            currentResimIndex++;
+        } else {
+            currentResimIndex = 0; // İlk resme dön
+        }
+        buyukResimGuncelle(resimUrls[currentResimIndex]);
+
+    };
+
+    // Büyük resim div'ine başlık ve tuşları ekliyoruz
+    buyukResimDiv.appendChild(solTus);
+    buyukResimDiv.appendChild(buyukResimBaslik);
+    buyukResimDiv.appendChild(sagTus);
+
+    // Sayfaya ekliyoruz
+    document.body.appendChild(buyukResimDiv);
+
+    customListComponent.appendChild(buyukResimDiv);
+
+    const resimContainer = document.createElement('div');
+    resimContainer.classList.add('resim-container');
+
+    const resimUrls = [];
 
     listComponents.forEach(listComponent => {
         const imageUrl = listComponent.textContent.trim();
@@ -84,13 +149,15 @@ function ycustomimagelistComponentLoad() {
         const img = document.createElement('img');
         img.src = imageUrl;
         img.alt = "Image";
-        img.style.maxWidth = "800px";
-        img.style.maxHeight = "600px";
-        img.style.width = "auto";
-        img.style.height = "auto";
+        img.onclick = function () {
+            buyukResimGuncelle(imageUrl);
+        };
 
-        customListComponent.appendChild(img);
+        resimUrls.push(imageUrl);
+        resimContainer.appendChild(img);
     });
+
+    customListComponent.appendChild(resimContainer);
 }
 
 
