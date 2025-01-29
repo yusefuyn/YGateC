@@ -23,6 +23,7 @@ builder.Services.AddSingleton<Operations>(xd => { // DbAyarlarý
     return returnedOperations; 
 });
 
+YGate.Server.StaticTools.SiteName = builder.Configuration.GetSection("SiteSettings").GetValue<string>("Title");
 
 builder.Services.AddScoped<MailServices>(xd => { // SMTP Ayalarý
     var res = new MailServices();

@@ -3,13 +3,15 @@
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Components.Rendering
 @using YGate.Client.Services.Category
+@using YGate.Client.Services.Statistics
 @using YGate.Client.Shared.Components
 @using YGate.Entities.ViewModels
 @inject IProfileService profileService
 @inject ICategoryService categoryService
+@inject IStatisticsService statisticService
 <div class="sidebar">
     <header>
-        <a href="/"><h2 class="sidebar-title">Yussefuynstein</h2></a>
+        <a href="/"><h2 class="sidebar-title">@YGate.Client.StaticTools.SiteName.ToString()</h2></a>
         <IconNavLink id="sidebar-button" Href="/" Icon="fa-home"></IconNavLink>
     </header>
     <div class="sidebar-div">
@@ -58,14 +60,16 @@
 </div>
 @code {
     List<CategorySidebarViewModel> categorySidebarViewModels;
+
     protected override async Task OnInitializedAsync()
     {
         var res = await categoryService.GetSidebarCategories();
-        if (res.Result == Entities.EnumRequestResult.Success)
-        {
-            categorySidebarViewModels = res.ConvertRequestObject<List<CategorySidebarViewModel>>();
-            StateHasChanged();
-        }
+        var res1 = await statisticService.GetSiteName();
+
+        categorySidebarViewModels = res.ConvertRequestObject<List<CategorySidebarViewModel>>();
+        YGate.Client.StaticTools.SiteName = res1.Object.ToString();
+        StateHasChanged();
+
     }
 
     private RenderFragment RenderCategoryLinks(CategorySidebarViewModel categories)

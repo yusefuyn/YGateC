@@ -594,13 +594,17 @@ namespace YGate.BusinessLayer.EFCore
 
         public List<Role> GetCategoryRoleFromCategoryGuid(string CategoryGuid)
         {
-            return Context.CategoryRoles
+            var returned = Context.CategoryRoles
                              .Where(xd => xd.CategoryGuid == CategoryGuid)
                              .Join(Context.Roles,
                                    categoryRole => categoryRole.RoleGuid,
                                    role => role.DBGuid,
                                    (categoryRole, role) => role)
                              .ToList();
+            var administratorRole = Context.Roles.FirstOrDefault(xd => xd.Name == "Administrator");
+            returned.Add(administratorRole);
+
+            return returned;
         }
         #endregion
 

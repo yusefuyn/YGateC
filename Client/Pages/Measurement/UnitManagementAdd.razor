@@ -45,7 +45,7 @@
     {
         RequestResult result = await measurementService.GetAllMeasurementCategory();
         if (result.Result == EnumRequestResult.Success)
-            Categories = (List<MeasurementCategory>)result.Object;
+            Categories = result.ConvertRequestObject<List<MeasurementCategory>>();
     }
 
     private async Task AddUnit()

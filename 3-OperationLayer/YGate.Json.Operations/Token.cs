@@ -35,21 +35,32 @@ namespace YGate.Json.Operations
             return jwt;
         }
 
+        public string GetUserIDFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            if (jsonToken == null)
+                return "";
+
+            string userToken = string.Join(",", jsonToken?.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value.ToString());
+
+            return userToken;
+        }
+
         public string GetUserRolesFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            if (jsonToken == null)
+                return "";
 
-            if (jsonToken != null)
-            {
-                string roles = string.Join(",", jsonToken?.Claims
+            string roles = string.Join(",", jsonToken?.Claims
                     .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(xd => xd.Value.ToString().Replace("[","").Replace("]","").Replace("\"", "")) ?? Enumerable.Empty<string>());
+                    .Select(xd => xd.Value.ToString().Replace("[", "").Replace("]", "").Replace("\"", "")) ?? Enumerable.Empty<string>());
 
 
-                return roles;
-            }
-            return "";
+            return roles;
         }
 
         public bool ValidateJwtToken(ref string token)

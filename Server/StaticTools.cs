@@ -5,6 +5,9 @@ namespace YGate.Server
 {
     public static class StaticTools
     {
+
+        public static string SiteName { get; set; } = "Yussefuynstein";
+
         public static Token tokenService { get; set; }
 
         public static T ConvertParameters<T>(this RequestParameter parameter)

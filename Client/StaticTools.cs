@@ -22,5 +22,7 @@ namespace YGate.Client
 
         public static List<DateTime> MyRequestLog = new();
 
+        public static string SiteName { get; set; } = "Yussefuynstein";
+
     }
 }

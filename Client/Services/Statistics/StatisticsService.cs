@@ -9,6 +9,13 @@ namespace YGate.Client.Services.Statistics
         {
             this.httpClientService = httpClientService;
         }
+
+        public async Task<RequestResult> GetSiteName()
+        {
+            var res = await httpClientService.GetPostAsync<RequestResult>(null, "api/Statistics/GetSiteName");
+            return res;
+        }
+
         public async Task<RequestResult> GetStatistics() 
         {
             var res = await httpClientService.GetPostAsync<RequestResult>(null, "api/Statistics/GetStatistics");

@@ -40,5 +40,15 @@ namespace YGate.Server.Controllers
             returned.Object = StaticTools.IpAndDate;
             return returned;
         }
+
+        [HttpPost]
+        public RequestResult GetSiteName([FromBody] RequestParameter parameter = null)
+        {
+            RequestResult returned = new("GetSiteName");
+            returned.Result = EnumRequestResult.Success;
+            returned.To = EnumTo.Server;
+            returned.Object = StaticTools.SiteName;
+            return returned;
+        }
     }
 }

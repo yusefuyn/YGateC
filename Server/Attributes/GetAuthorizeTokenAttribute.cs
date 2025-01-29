@@ -29,7 +29,7 @@ namespace YGate.Server.Attributes
             {
                 if (StaticTools.tokenService.ValidateJwtToken(ref requestToken))
                 {
-                    string userId = StaticTools.tokenService.GetUserRolesFromToken(requestToken);
+                    string userId = StaticTools.tokenService.GetUserIDFromToken(requestToken);
                     requestToken = userId;
                 }
             }

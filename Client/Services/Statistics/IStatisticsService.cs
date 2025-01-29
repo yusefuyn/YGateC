@@ -6,5 +6,6 @@ namespace YGate.Client.Services.Statistics
     {
 
         public Task<RequestResult> GetStatistics();
+        public Task<RequestResult> GetSiteName();
     }
 }
