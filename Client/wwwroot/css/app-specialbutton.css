@@ -1,0 +1,65 @@
+﻿.special-button {
+    position: relative;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid var(--button-border-color); /* Kenarlık yok */
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s;
+    box-shadow: var(--box-shadow);
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3); 
+  border-top: 3px solid white; 
+  border-radius: 50%;
+  animation: spin 1s linear infinite; 
+  margin-right: 10px;
+  display: none; 
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.special-button:disabled .spinner {
+  display: block;
+}
+
+.special-button:not(:disabled) .spinner {
+  display: none;
+}
+
+.special-button:disabled {
+  background-color: #ccc;
+  border-color: #999;
+  cursor: not-allowed;
+}
+
+.btn span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.special-button:hover {
+    box-shadow: 0 0 10px #C8C8C825;
+    /*0 0 10px rgba(200, 200, 200, 0.6);*/ /* Daha geniş bir yansıma */
+}

@@ -72,7 +72,7 @@
             <label style="color:red;">@ErrorMessage</label>
             <br>
             <label>@localizer["Do_you_not_have_an_account"]<a href="/Register">@localizer["Click_register"]</a></label>
-            <SpecialButton OnClick="async ()=>await login()" Id="LoginButton" Class="btn-primary" Text="@localizer["Login"]"></SpecialButton>
+            <SpecialButton Style="height:50px;width:100%;" OnClick="async ()=>await login()" Id="LoginButton" Class="btn-primary" Text="@localizer["Login"]"></SpecialButton>
 
         </div>
     </div>
@@ -91,6 +91,7 @@
         if (string.IsNullOrEmpty(Model.UserName) || string.IsNullOrEmpty(Model.Password))
         {
             ErrorMessage = "fill in the empty fields";
+            await jsRuntime.InvokeVoidAsync("enableButton", "LoginButton");
             return;
         }
 

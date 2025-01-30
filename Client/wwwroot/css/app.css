@@ -8,14 +8,12 @@
 @import 'app-checkbox.css';
 @import 'app-combobox.css';
 @import 'app-customimagelistcomponent.css';
+@import 'app-specialbutton.css';
 
 .modal {
     height:auto;
 }
 
-.special-button {
-    color: White;
-}
 
 body {
     background-color: var(--background-color);
@@ -138,19 +136,6 @@ input {
 
 
 
-.special-button {
-    border-radius: 7px; /* Kenar yuvarlama */
-    border: 1px solid var(--button-border-color); /* Kenarlýk yok */
-    background-color: var(--button-color);
-    cursor: pointer; /* Fare iþareti */
-    display: flex; /* Flexbox ile ortalama */
-    justify-content: center; /* Yatayda ortalama */
-    width: 100%;
-    align-items: center; /* Dikeyde ortalama */
-    overflow: hidden; /* Taþmayý engelle */
-    transition: all 0.5s;
-    box-shadow: var(--box-shadow);
-}
 
 .special-div {
     border-radius: 7px; /* Kenar yuvarlama */
@@ -163,10 +148,7 @@ input {
     box-shadow: var(--box-shadow);
 }
 
-    .special-button:hover {
-        box-shadow: 0 0 10px #C8C8C825;
-        /*0 0 10px rgba(200, 200, 200, 0.6);*/ /* Daha geniþ bir yansýma */
-    }
+
 
 #app {
     height: 98vh;

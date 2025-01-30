@@ -1,11 +1,9 @@
-﻿<style>
-
-</style>
-<button class="special-button @Class"
+﻿<button class="special-button @Class"
         style="@Style"
         id="@Id"
         @onclick="OnClick">
-    @Text.ToString()
+    <div class="spinner"></div>
+    <span>@Text.ToString()</span>
 </button>
 @code {
     [Parameter]

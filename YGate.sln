@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.Client", "Client\YGat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.Html.Operations", "3-OperationLayer\YGate.Html.Operations\YGate.Html.Operations.csproj", "{4AF5BA61-5D2C-4A4F-BB63-D991F1F040FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGate.Security", "YGate.Runner\YGate.Security.csproj", "{2C449CF3-A317-4D06-9D8F-06D7844E23B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.Security", "YGate.Runner\YGate.Security.csproj", "{2C449CF3-A317-4D06-9D8F-06D7844E23B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
