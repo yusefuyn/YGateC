@@ -3,6 +3,7 @@
 </style>
 <button class="special-button @Class"
         style="@Style"
+        id="@Id"
         @onclick="OnClick">
     @Text.ToString()
 </button>
@@ -18,4 +19,7 @@
 
     [Parameter]
     public string Style { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
 }

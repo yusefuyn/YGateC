@@ -1,4 +1,24 @@
-﻿window.custom_confirm = function (message, title = 'Yussefuynstein',yesbtn='Evet',nobtn='Hayır') {
+﻿function enableButton(buttonId) {
+    var button = document.getElementById(buttonId);
+    if (button) {
+        button.disabled = false;
+    } else {
+        console.log('Button not found');
+    }
+}
+
+function disableButton(buttonId) {
+    var button = document.getElementById(buttonId);
+    if (button) {
+        button.disabled = true;
+    } else {
+        console.log('Button not found');
+    }
+}
+
+
+
+window.custom_confirm = function (message, title = 'Yussefuynstein', yesbtn = 'Evet', nobtn = 'Hayır') {
     return new Promise((resolve, reject) => {
         var modal = document.getElementById('myModal');
         var modalHelpText = document.getElementById('modalDescription');

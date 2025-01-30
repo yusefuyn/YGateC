@@ -8,6 +8,7 @@
 @using YGate.Entities.BasedModel
 @using YGate.Entities.ViewModels
 @using YGate.Json.Operations
+@inject IJSRuntime jsRuntime
 
 <PageTitle>@localizer["Login"]</PageTitle>
 
@@ -62,14 +63,16 @@
 
 <div class="login-container">
     <h1>@localizer["Login"]</h1>
+    <br />
     <div class="bd-transparent">
         <div class="form">
-            <Entry @bind-value="@Model.UserName" Placeholder="@localizer["Username"]" entryType="Entry.EntryType.Text"></Entry>
-            <Entry @bind-value="@Model.Password" Placeholder="@localizer["Password"]" entryType="Entry.EntryType.Password"></Entry>
+            <Entry @bind-value="Model.UserName" Placeholder="@localizer["Username"]" entryType="Entry.EntryType.Text"></Entry>
+            <br />
+            <Entry @bind-value="Model.Password" Placeholder="@localizer["Password"]" entryType="Entry.EntryType.Password"></Entry>
             <label style="color:red;">@ErrorMessage</label>
             <br>
             <label>@localizer["Do_you_not_have_an_account"]<a href="/Register">@localizer["Click_register"]</a></label>
-            <SpecialButton OnClick="login" Class="btn-primary" Text="@localizer["Login"]"></SpecialButton>
+            <SpecialButton OnClick="async ()=>await login()" Id="LoginButton" Class="btn-primary" Text="@localizer["Login"]"></SpecialButton>
 
         </div>
     </div>
@@ -78,8 +81,13 @@
     public LoginViewModel Model { get; set; } = new();
     public string? ErrorMessage { get; set; }
 
-    public async void login()
+    public async Task login()
     {
+        await jsRuntime.InvokeVoidAsync("disableButton", "LoginButton");
+        ErrorMessage = "";
+        StateHasChanged();
+
+
         if (string.IsNullOrEmpty(Model.UserName) || string.IsNullOrEmpty(Model.Password))
         {
             ErrorMessage = "fill in the empty fields";
@@ -95,6 +103,7 @@
         if (opres.Result != EnumRequestResult.Success)
         {
             ErrorMessage = opres.ShortDescription.ToString();
+            await jsRuntime.InvokeVoidAsync("enableButton", "LoginButton");
             StateHasChanged();
             return;
         }

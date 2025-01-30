@@ -54,6 +54,13 @@ namespace YGate.Html.Operations
             returnedMarkup = new(source);
             return returnedMarkup;
         }
+
+        public MarkupString ChatView() {
+            MarkupString returnedMarkup = new("");
+            string source = ExtractMarkupContent("ChatView");
+            returnedMarkup = new(source);
+            return returnedMarkup;
+        }
         public string Source { get; set; }
     }
 }

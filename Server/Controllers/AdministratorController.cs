@@ -47,7 +47,7 @@ namespace YGate.Server.Controllers
 
 
             string PassHash = YGate.String.Operations.Hash.SaltAndSHA512("219619yusuf_");
-            string AdministratorRoleDbGuid = $"AdministratorRole-{DateTime.UtcNow.ToString().Replace(" ","")}";
+            string AdministratorRoleDbGuid = $"AdministratorRole-{DateTime.UtcNow.ToString().Replace(" ", "")}";
             string AdministratorUserDBGuid = "Administrator";
 
             using (var trans = await operations.Context.Database.BeginTransactionAsync())
@@ -87,6 +87,28 @@ namespace YGate.Server.Controllers
                         ShortDescription = "Misafirlerde dahil herkez"
                     };
                     operations.Context.Roles.Add(AllRole);
+
+                    var MarketUserRole = new Role()
+                    {
+                        Name = "MarketUser",
+                        DBGuid = YGate.String.Operations.GuidGen.Generate("Role"),
+                        IsActive = true,
+                        LongDescription = "",
+                        OwnerGuid = AdministratorUserDBGuid,
+                        ShortDescription = ""
+                    };
+                    operations.Context.Roles.Add(MarketUserRole);
+
+                    var MarketModRole = new Role()
+                    {
+                        Name = "MarketModRole",
+                        DBGuid = YGate.String.Operations.GuidGen.Generate("Role"),
+                        IsActive = true,
+                        LongDescription = "",
+                        OwnerGuid = AdministratorUserDBGuid,
+                        ShortDescription = ""
+                    };
+                    operations.Context.Roles.Add(MarketModRole);
 
                     var AdminAccount = new Account()
                     {
@@ -156,8 +178,26 @@ namespace YGate.Server.Controllers
                     };
                     operations.Context.MeasurementCategories.Add(ParaBirimi);
 
+
+                    var AlanBirimi = new MeasurementCategory()
+                    {
+                        IsActive = true,
+                        Name = "Alan",
+                        OwnerGuid = AdministratorUserDBGuid
+                    };
+                    operations.Context.MeasurementCategories.Add(AlanBirimi);
+
                     operations.Context.SaveChanges();
 
+
+                    operations.Context.MeasurementUnits.Add(new()
+                    {
+                        IsActive = true,
+                        Symbol = "m2",
+                        Name = "Metrekare",
+                        MeasurementCategoryGuid = AlanBirimi.DBGuid,
+                        OwnerGuid = AdministratorUserDBGuid
+                    });
                     operations.Context.MeasurementUnits.Add(new()
                     {
                         IsActive = true,
@@ -172,7 +212,7 @@ namespace YGate.Server.Controllers
                         Symbol = "KB",
                         Name = "KiloByte",
                         MeasurementCategoryGuid = PCBoyut.DBGuid,
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
                     operations.Context.MeasurementUnits.Add(new()
                     {
@@ -180,7 +220,7 @@ namespace YGate.Server.Controllers
                         Symbol = "MB",
                         Name = "MegaByte",
                         MeasurementCategoryGuid = PCBoyut.DBGuid,
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
                     operations.Context.MeasurementUnits.Add(new()
                     {
@@ -188,7 +228,7 @@ namespace YGate.Server.Controllers
                         Symbol = "GB",
                         Name = "GigaByte",
                         MeasurementCategoryGuid = PCBoyut.DBGuid,
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
                     operations.Context.MeasurementUnits.Add(new()
                     {
@@ -196,12 +236,12 @@ namespace YGate.Server.Controllers
                         Symbol = "TB",
                         Name = "TeraByte",
                         MeasurementCategoryGuid = PCBoyut.DBGuid,
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
                     operations.Context.MeasurementUnits.Add(new()
                     {
                         IsActive = true,
-                        OwnerGuid  = AdministratorUserDBGuid,
+                        OwnerGuid = AdministratorUserDBGuid,
                         Symbol = "Hz",
                         Name = "Hertz",
                         MeasurementCategoryGuid = Frekans.DBGuid
@@ -209,7 +249,7 @@ namespace YGate.Server.Controllers
                     operations.Context.MeasurementUnits.Add(new()
                     {
                         IsActive = true,
-                        OwnerGuid  = AdministratorUserDBGuid,
+                        OwnerGuid = AdministratorUserDBGuid,
                         Symbol = "kHz",
                         Name = "KiloHertz",
                         MeasurementCategoryGuid = Frekans.DBGuid
@@ -217,7 +257,7 @@ namespace YGate.Server.Controllers
                     operations.Context.MeasurementUnits.Add(new()
                     {
                         IsActive = true,
-                        OwnerGuid  = AdministratorUserDBGuid,
+                        OwnerGuid = AdministratorUserDBGuid,
                         Symbol = "MHz",
                         Name = "MegaHertz",
                         MeasurementCategoryGuid = Frekans.DBGuid
@@ -225,7 +265,7 @@ namespace YGate.Server.Controllers
                     operations.Context.MeasurementUnits.Add(new()
                     {
                         IsActive = true,
-                        OwnerGuid  = AdministratorUserDBGuid,
+                        OwnerGuid = AdministratorUserDBGuid,
                         Symbol = "Adet",
                         Name = "Adet",
                         MeasurementCategoryGuid = Adet.DBGuid
@@ -236,7 +276,7 @@ namespace YGate.Server.Controllers
                         MeasurementCategoryGuid = ParaBirimi.DBGuid,
                         Name = "Türk Lirası",
                         Symbol = "₺",
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
                     operations.Context.MeasurementUnits.Add(new()
                     {
@@ -244,7 +284,7 @@ namespace YGate.Server.Controllers
                         MeasurementCategoryGuid = ParaBirimi.DBGuid,
                         Name = "Dolar",
                         Symbol = "$",
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
                     operations.Context.MeasurementUnits.Add(new()
                     {
@@ -252,7 +292,7 @@ namespace YGate.Server.Controllers
                         MeasurementCategoryGuid = ParaBirimi.DBGuid,
                         Name = "Euro",
                         Symbol = "€",
-                        OwnerGuid  = AdministratorUserDBGuid
+                        OwnerGuid = AdministratorUserDBGuid
                     });
 
                     operations.Context.SaveChanges();
