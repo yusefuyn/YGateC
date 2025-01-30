@@ -46,12 +46,18 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
 
             var user = operations.Context.Accounts.FirstOrDefault(xd => xd.DBGuid == userGuid);
-            var userReferance = operations.Context.Accounts.FirstOrDefault(xd => xd.DBGuid == user.OwnerGuid.ToString());
+            Account userReferance = operations.Context.Accounts.FirstOrDefault(xd => xd.DBGuid == user.OwnerGuid.ToString());
+
+            if (user.OwnerGuid.ToString() == "System")
+            {
+                userReferance = new() { Username = "System" };
+            }
             List<string> userARole = operations.Context.AccountRoles
                 .Where(xd => xd.ToGuid == user.DBGuid)
                 .Select(xd=> xd.RoleGuid)
                 .Distinct()
                 .ToList();
+
 
             UserPublicViewModel model = new()
             {

@@ -2,6 +2,7 @@
 @using YGate.Client.Services.Login
 @using YGate.Client.Shared.Components
 @using YGate.Entities.ViewModels
+@inject IJSRuntime jsRuntime
 <PageTitle>@localizer["Register"]</PageTitle>
 
 <style>
@@ -72,10 +73,10 @@
                 <input required="" @bind-value="model.Email" type="text" name="text" class="input">
                 <label class="label">@localizer["Email"]:</label>
             </div>
-            <label style="color:red;">@ErrorMessage</label>
+            <label style="color:red;">@localizer[ErrorMessage]</label>
             <br>
             <label>@localizer["Do_you_have_an_account"]<a href="/Login">@localizer["Click_log_in"]</a></label>
-            <SpecialButton OnClick="register" Class="" Text="@localizer["Register"]"></SpecialButton>
+            <SpecialButton OnClick="register" Id="RegisterButton" Class="" Text="@localizer["Register"]"></SpecialButton>
 
         </div>
     </div>
@@ -99,6 +100,10 @@
 
     public async void register()
     {
+        await jsRuntime.InvokeVoidAsync("disableButton", "RegisterButton");
+        ErrorMessage = "";
+        StateHasChanged();
+
         if (RPassword != Password)
         {
             ErrorMessage = "Şifre tekrarı uyuşmyuor";
@@ -113,6 +118,8 @@
         if (res.Result != YGate.Entities.EnumRequestResult.Success)
         {
             ErrorMessage = res.ShortDescription.ToString();
+            await jsRuntime.InvokeVoidAsync("enableButton", "RegisterButton");
+            StateHasChanged();
             return;
         }
         StartCountdown();

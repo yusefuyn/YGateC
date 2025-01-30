@@ -59,17 +59,17 @@ function showNotification(message) {
     <p id="notification-message">${message}</p>
   `;
 
-    notification.style.top = `${20 + notificationCount * 80}px`; // Her yeni bildirim 80px yukarıda olacak
+    notification.style.top = `${20 + notificationCount * 80}px`;
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
         notification.classList.add('show');
-    }, 10); // Kısa bir gecikme ile görsel efekt ekleyelim
+    }, 10);
 
     setTimeout(() => {
         hideNotification(notification);
-    }, 5000); // 5 saniye sonra kaybolacak
+    }, 5000);
 
     notification.querySelector('#notification-close-btn').addEventListener('click', () => {
         hideNotification(notification);
@@ -102,34 +102,33 @@ function ycustomimagelistComponentLoad() {
     customListComponent.style.margin = '5px';
 
 
-    // Büyük resim div'ini oluşturuyoruz
     const buyukResimDiv = document.createElement('div');
     buyukResimDiv.classList.add('buyuk-resim');
+    buyukResimDiv.onclick = function () {
+        // TODO : Resim hızlı cercevesiz bir popup ile açılsın kenarlara tıklanınca cıkılsın.
+    };
     buyukResimDiv.id = 'buyukResim';
 
-    // Başlık kısmını ekliyoruz
     const buyukResimBaslik = document.createElement('p');
     buyukResimBaslik.id = 'buyukResimBaslik';
     buyukResimBaslik.textContent = 'Büyük Resim Başlığı';
     buyukResimBaslik.style.color = "#00000000";
 
-    // Sol ve sağ ok tuşlarını ekliyoruz
     const solTus = document.createElement('button');
     solTus.id = 'solTus';
     solTus.classList.add('navigasyon-tusu');
-    solTus.innerHTML = '&lt;'; // Sol ok işareti
+    solTus.innerHTML = '&lt;'; 
 
     const sagTus = document.createElement('button');
     sagTus.id = 'sagTus';
     sagTus.classList.add('navigasyon-tusu');
-    sagTus.innerHTML = '&gt;'; // Sağ ok işareti
+    sagTus.innerHTML = '&gt;';
 
-    // Ok tuşlarına işlevsellik ekliyoruz
     solTus.onclick = function () {
         if (currentResimIndex > 0) {
             currentResimIndex--;
         } else {
-            currentResimIndex = resimUrls.length - 1; // Son resme dön
+            currentResimIndex = resimUrls.length - 1; 
         }
         buyukResimGuncelle(resimUrls[currentResimIndex]);
     };
@@ -138,18 +137,16 @@ function ycustomimagelistComponentLoad() {
         if (currentResimIndex < resimUrls.length - 1) {
             currentResimIndex++;
         } else {
-            currentResimIndex = 0; // İlk resme dön
+            currentResimIndex = 0; 
         }
         buyukResimGuncelle(resimUrls[currentResimIndex]);
 
     };
 
-    // Büyük resim div'ine başlık ve tuşları ekliyoruz
     buyukResimDiv.appendChild(solTus);
     buyukResimDiv.appendChild(buyukResimBaslik);
     buyukResimDiv.appendChild(sagTus);
 
-    // Sayfaya ekliyoruz
     document.body.appendChild(buyukResimDiv);
 
     customListComponent.appendChild(buyukResimDiv);
@@ -188,8 +185,8 @@ function hideNotification(notification) {
 
     setTimeout(() => {
         notification.remove();
-        notificationCount--; // Bildirim sayısını azalt
-    }, 500); // Gizlendikten sonra öğeyi DOM'dan sil
+        notificationCount--;
+    }, 500); 
 }
 
 window.applyCss = function (css) {

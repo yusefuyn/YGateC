@@ -69,7 +69,7 @@
             <Entry @bind-value="Model.UserName" Placeholder="@localizer["Username"]" entryType="Entry.EntryType.Text"></Entry>
             <br />
             <Entry @bind-value="Model.Password" Placeholder="@localizer["Password"]" entryType="Entry.EntryType.Password"></Entry>
-            <label style="color:red;">@ErrorMessage</label>
+            <label style="color:red;">@localizer[ErrorMessage]</label>
             <br>
             <label>@localizer["Do_you_not_have_an_account"]<a href="/Register">@localizer["Click_register"]</a></label>
             <SpecialButton Style="height:50px;width:100%;" OnClick="async ()=>await login()" Id="LoginButton" Class="btn-primary" Text="@localizer["Login"]"></SpecialButton>
@@ -79,7 +79,7 @@
 </div>
 @code {
     public LoginViewModel Model { get; set; } = new();
-    public string? ErrorMessage { get; set; }
+    public string ErrorMessage { get; set; } = "";
 
     public async Task login()
     {
