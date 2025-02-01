@@ -2,8 +2,28 @@
 using System.Buffers;
 using YGate.Entities;
 
-namespace YGate.Operation.Runner
+namespace YGate.Operation
 {
+    public static class Runner
+    {
+        public static void TryCatchRunner(Action TryAction, Action CatchAction)
+        {
+            try
+            {
+                TryAction.Invoke();
+            }
+            catch (Exception ex)
+            {
+                TryCatchRunner(CatchAction, new Action(() =>
+                {
+                    Console.WriteLine(ex.ToString());
+                }));
+                Console.WriteLine(ex.ToString());
+            }
+
+        }
+    }
+
     public static class Runner<T>
     {
         public async static Task<T> RunAsync(OperationResult<T> result, Task<Func<object>> action)
@@ -58,7 +78,8 @@ namespace YGate.Operation.Runner
         }
 
 
-        public static void SaveLog(string log) {
+        public static void SaveLog(string log)
+        {
             YGate.IO.Operations.File.SaveLog($"{DateTime.Now.ToString()} : {log.ToString()}");
         }
     }

@@ -31,7 +31,7 @@ namespace YGate.BusinessLayer.EFCore
         {
             DbSettings.AddRange(addedDbSettings);
             var res = new OperationResult<bool>("Settings Read");
-            Operation.Runner.Runner<bool>.Run(ref res, () =>
+            Operation.Runner<bool>.Run(ref res, () =>
             {
                 SetContext(DbSettings.FirstOrDefault(xd => xd.Active == true));
                 res.Obj = true;
@@ -134,7 +134,7 @@ namespace YGate.BusinessLayer.EFCore
         public OperationResult<bool> RegisterAccount(string username, string password, string emial)
         {
             OperationResult<bool> result = new("Register Account");
-            YGate.Operation.Runner.Runner<bool>.Run(ref result, () =>
+            YGate.Operation.Runner<bool>.Run(ref result, () =>
             {
                 if (Context.Accounts.Where(xd => xd.Email == emial).Count() > 0)
                 {

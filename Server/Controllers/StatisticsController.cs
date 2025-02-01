@@ -22,10 +22,20 @@ namespace YGate.Server.Controllers
             RequestResult returned = new("GetStatistics");
             StatisticsViewModel model = new StatisticsViewModel();
             returned.To = EnumTo.Server;
-            model.UserCount = operations.Context.Accounts.Count();
-            model.IdentifiedEntityCount = operations.Context.Categories.Count();
-            model.EntityPropertyCount = operations.Context.CategoryTemplateValues.Count();
-            model.CreatedEntityCount = operations.Context.Entities.Count();
+
+            YGate.Operation.Runner.TryCatchRunner(() =>
+            {
+                model.UserCount = operations.Context.Accounts.Count();
+                model.IdentifiedEntityCount = operations.Context.Categories.Count();
+                model.EntityPropertyCount = operations.Context.CategoryTemplateValues.Count();
+                model.CreatedEntityCount = operations.Context.Entities.Count();
+            }, () =>
+            {
+                model.UserCount = 0;
+                model.IdentifiedEntityCount = 0;
+                model.EntityPropertyCount = 0;
+                model.CreatedEntityCount = 0;
+            });
             returned.Result = EnumRequestResult.Success;
             returned.Object = model;
             return returned;
