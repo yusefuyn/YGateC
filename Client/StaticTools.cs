@@ -14,7 +14,7 @@ namespace YGate.Client
         /// <returns></returns>
         public static T ConvertRequestObject<T>(this RequestResult result)
         {
-            if (result.Result == EnumRequestResult.Success)
+            if (result != null && result.Result == EnumRequestResult.Success)
                 return YGate.Json.Operations.JsonDeserialize<T>.Deserialize(result.Object.ToString());
             else
                 return default(T);

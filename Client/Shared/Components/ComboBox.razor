@@ -5,10 +5,11 @@
         {
             <option value="-1">@localizer["PleaseChooseOne"]</option>
         }
-        @foreach (var temp in Source)
-        {
-            <option class="combobox-option" value="@DataBinding(temp)">@ValueBinding(temp)</option>
-        }
+        @if (Source != null && Source.Count() != 0)
+            @foreach (var temp in Source)
+            {
+                <option class="combobox-option" value="@DataBinding(temp)">@ValueBinding(temp)</option>
+            }
     </select>
 </div>
 @code {

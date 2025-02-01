@@ -20,6 +20,8 @@ namespace YGate.Entities.ViewModels
         public object Values { get; set; }
         public bool Added { get; set; } = true;
 
+        public void NewValueAdd() => categoryTemplateValues.Add(new()); 
+        public void RemoveValue(CategoryTemplateValue temp) => categoryTemplateValues.Remove(temp); 
         public bool CheckData()
         {
             if (this.categoryTemplateValues == null && this.categoryTemplateValues.Count == 0)
