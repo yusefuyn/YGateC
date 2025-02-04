@@ -26,12 +26,12 @@
                 <h3>@categoryViewModel.Name</h3>
             </header>
             <br />
-
-            @foreach (CategoryTemplateViewModel temp in categoryViewModel.Template)
+            @for (int i = 0; i < categoryViewModel.Template.Count; i++)
             {
-                @operations.GetCategoryTemplateViewModel(temp)
-            }
+                @operations.GetCategoryTemplateViewModel(categoryViewModel,i)
+                <br />
 
+            }
 
         </div>
         <br />
@@ -43,25 +43,29 @@
 
     @if (AddedSubCategoryViewModel != null && AddedSubCategoryViewModel.Count > 0)
     {
-        @foreach (var subCategoryViewModels in AddedSubCategoryViewModel)
+
+        @for (int i = 0; i < AddedSubCategoryViewModel.Count(); i++)
         {
             <div class="container special-div">
                 <div class="container-header">
-                    <h3>@subCategoryViewModels.Name</h3>
+                    <h3>@AddedSubCategoryViewModel[i].Name</h3>
                     <SpecialButton Text="Objeyi Sil"
                                    Style="width:100px;"
-                                   OnClick="async ()=> await SubCategoryRemove(subCategoryViewModels)"></SpecialButton>
+                                   OnClick="async ()=> await SubCategoryRemove(AddedSubCategoryViewModel[i])"></SpecialButton>
                 </div>
 
-
-
-                @foreach (CategoryTemplateViewModel temp in subCategoryViewModels.Template)
+                @for (int a = 0; a < AddedSubCategoryViewModel[i].Template.Count; a++)
                 {
-                    @operations.GetCategoryTemplateViewModel(temp)
+                    @operations.GetCategoryTemplateViewModel(AddedSubCategoryViewModel[i], a)
                     <br />
                 }
             </div>
             <br />
+        }
+
+        @foreach (var subCategoryViewModels in AddedSubCategoryViewModel)
+        {
+           
         }
     }
 

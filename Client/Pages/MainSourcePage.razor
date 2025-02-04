@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@implements IRootPage
+<h3>testPage</h3>
+
+@code {
+    public string SignalRGroupName { get; set; }
+
+    public HubConnection hubConnection { get; set; }
+
+    public async void Dispose()
+    {
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+
+    }
+
+    public async Task RefreshData()
+    {
+
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+}

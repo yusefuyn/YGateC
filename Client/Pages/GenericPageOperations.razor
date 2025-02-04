@@ -3,35 +3,35 @@
 @using YGate.Entities.ViewModels
 
 @code {
-    public RenderFragment GetCategoryTemplateViewModel(CategoryTemplateViewModel categoryTemplateViewModel)
+    public RenderFragment GetCategoryTemplateViewModel(CategoryViewModel viewModel, int i = 0)
     {
-        switch (categoryTemplateViewModel.ValueType)
+        switch (viewModel.Template[i].ValueType)
         {
             case YGate.Entities.BasedModel.PropertyValueType.String:
-                return CreateValueTypeStringObject(categoryTemplateViewModel);
+                return CreateValueTypeStringObject(viewModel.Template[i]);
             case YGate.Entities.BasedModel.PropertyValueType.Integer:
-                return CreateValueTypeIntegerObject(categoryTemplateViewModel);
+                return CreateValueTypeIntegerObject(viewModel.Template[i]);
             case YGate.Entities.BasedModel.PropertyValueType.Boolean:
-                return CreateValueTypeBooleanObject(categoryTemplateViewModel);
+                return CreateValueTypeBooleanObject(viewModel.Template[i]);
             case YGate.Entities.BasedModel.PropertyValueType.CustomValidationRegex:
-                return CreateValueTypeCustomValidationRegexObject(categoryTemplateViewModel);
+                return CreateValueTypeCustomValidationRegexObject(viewModel.Template[i]);
             case YGate.Entities.BasedModel.PropertyValueType.ItemGroup:
-                return CreateValueTypeItemGroupObject(categoryTemplateViewModel);
+                return CreateValueTypeItemGroupObject(viewModel.Template[i]);
             case PropertyValueType.Unit:
-                return CreateValueTypeUnitObject(categoryTemplateViewModel);
+                return CreateValueTypeUnitObject(viewModel.Template[i]);
             case PropertyValueType.Combos:
-                return CreateValueTypeCombosObject(categoryTemplateViewModel);
+                return CreateValueTypeCombosObject(viewModel.Template[i]);
             case PropertyValueType.RichText:
-                return CreateValueTypeRichTextObject(categoryTemplateViewModel);
+                return CreateValueTypeRichTextObject(viewModel.Template[i]);
             case PropertyValueType.ValueList:
-                return CreateValueTypeValueListObject(categoryTemplateViewModel);
+                return CreateValueTypeValueListObject(viewModel.Template[i]);
             default:
                 throw new Exception("Böyle bir tip yok yada tanımlanmamış.");
         }
-
     }
 
-    public RenderFragment CreateValueTypeStringObject(CategoryTemplateViewModel categoryTemplateViewModel) =>@<Entry Placeholder="@categoryTemplateViewModel.Name" entryType="Entry.EntryType.Text" @bind-value="categoryTemplateViewModel.categoryTemplateValues[0].Value"></Entry>;
+    public RenderFragment CreateValueTypeStringObject(CategoryTemplateViewModel categoryTemplateViewModel) =>
+    @<Entry Placeholder="@categoryTemplateViewModel.Name" entryType="Entry.EntryType.Text" @bind-value="categoryTemplateViewModel.categoryTemplateValues[0].Value"></Entry>;
 
     public RenderFragment CreateValueTypeIntegerObject(CategoryTemplateViewModel categoryTemplateViewModel) =>@<div class="special-div"> <Entry Placeholder="@categoryTemplateViewModel.Name" entryType="Entry.EntryType.Number" @bind-value="categoryTemplateViewModel.categoryTemplateValues[0].Value"></Entry></div>;
 
@@ -109,7 +109,9 @@
         return@<p>Combos'ta bir sorun var onu oturtamadık tekrar dön bak .</p>;
     }
 
-    public RenderFragment CreateValueTypeRichTextObject(CategoryTemplateViewModel categoryTemplateViewModel) =>@<div class="special-div"><RichTextEditor Source="@categoryTemplateViewModel.categoryTemplateValues[0].Value"></RichTextEditor></div>;
+    public RenderFragment CreateValueTypeRichTextObject(CategoryTemplateViewModel categoryTemplateViewModel) =>
+    @<Entry Placeholder="@categoryTemplateViewModel.Name" entryType="Entry.EntryType.Text" @bind-value="categoryTemplateViewModel.categoryTemplateValues[0].Value"></Entry>;
+    // <div class="special-div"><RichTextEditor @bind-Content="categoryTemplateViewModel.categoryTemplateValues[0].Value"></RichTextEditor></div>;
 
     public RenderFragment CreateValueTypeValueListObject(CategoryTemplateViewModel categoryTemplateViewModel)
     {
@@ -134,12 +136,6 @@
     ;
     }
 
-    List<RichTextEditor> Editors { get; set; }
-    RichTextEditor richRef
-    {
-        set { Editors.Add(value); }
-    }
-
     public void ChangeUnitUnitValue(CategoryTemplateViewModel model, string SelectedUnitGuid)
     {
         string OldInteger = "";
@@ -157,7 +153,6 @@
         model.categoryTemplateValues[0].Value = YGate.Json.Operations.JsonSerialize.Serialize(new { IntegerVal = OldInteger, UnitGuid = OldUnit });
     }
 
-
     public void ChangeUnitValueValue(CategoryTemplateViewModel model, string Value)
     {
         string OldInteger = Value;
@@ -174,7 +169,6 @@
         model.categoryTemplateValues[0].Value = YGate.Json.Operations.JsonSerialize.Serialize(new { IntegerVal = OldInteger, UnitGuid = OldUnit });
     }
 
-
     private void ChangeValueGroup(ChangeEventArgs eventArgs, CategoryTemplateViewModel model)
     {
         if (model.categoryTemplateValues == null)
@@ -185,7 +179,6 @@
         model.categoryTemplateValues[0].Value = list.FirstOrDefault(xd => xd.DBGuid == eventArgs.Value.ToString()).Value.ToString();
         model.categoryTemplateValues[0].ValueGroupGuid = eventArgs.Value.ToString();
     }
-
 
     private string GetFormattedValue(MeasurementUnit xd)
     {

@@ -200,8 +200,13 @@ window.initializeSummernote = function (htmlName) {
     $(document).ready(function () {
         $("#" + htmlName).summernote({
             height: 300,
-            minHeight: 400,
+            minHeight: 160000,
             maxHeight: null,
+            callbacks: {
+                onChange: function (contents, $editable) {
+                    console.log("Source updated");
+                }
+            }
         });
     });
 };

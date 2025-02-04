@@ -1,45 +1,79 @@
-﻿@using System.Reflection
-@inject IJSRuntime jsRuntime
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime Js
+
+<div style="width:100%;min-width:50px;">
+    <div id="@NoteId">@_markupContent</div>
+    @if (ShowEditButton)
+    {
+        <div align="right">
+            @if (_edit)
+            {
+                <button class="btn btn-primary" @onclick="Save">
+                    <span class="oi oi-lock-locked"></span>
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-primary" @onclick="Edit">
+                    <span class="oi oi-lock-unlocked"></span>
+                </button>
+            }
+        </div>
+    }
+</div>
+
 
 @code {
-    protected override async Task OnInitializedAsync()
+    private BlazingSummerJsInterop _blazingSummerJsInterop;
+    private bool _edit = true;
+    private MarkupString _markupContent = new MarkupString();
+
+    [Parameter]
+    public string Content
     {
-        await jsRuntime.InvokeVoidAsync("initializeSummernote", HtmlName);
-        await jsRuntime.InvokeVoidAsync("changeSummernoteFontColor", HtmlName, FontColorToHex);
-        // await jsRuntime.InvokeVoidAsync("registerEditorChangeEvent", HtmlName, Assembly.GetExecutingAssembly().GetName().Name);
+        get
+        {
+            return _markupContent.ToString();
+        }
+
+        set
+        {
+            _markupContent = (MarkupString)value;
+        }
     }
 
-
-    public string HtmlName { get; set; } = YGate.String.Operations.Name.Generate();
-
-    [Parameter]
-    public string Source { get; set; } = "";
-
+    [Parameter] public EventCallback<string> ContentChanged { get; set; }
 
     [Parameter]
-    public string FontColorToHex { get; set; } = "#FFF";
+    public bool ShowEditButton { get; set; } = false;
 
+    private string NoteId { get; } = $"BlazingSummerNote{new Random().Next(0, 1000000).ToString()}";
 
-    [Parameter]
-    public EventCallback<string> SourceChanged { get; set; }
-
-
-    // [JSInvokable("UpdateSource")] // Javascript tarafında tetiklenebilir olarak işaretlendi ve adıda UpdateSource olarak verildi..
-    // public static async Task UpdateSource(string ElementId, string newSource)
-    // {
-    //     // if (ElementId != HtmlName)
-    //     //     return;
-    //     // Source = newSource;
-    //     // StateHasChanged();
-    // }
-
-    public async Task<string> GetEditorContent()
+    private void EditorUpdate(object sender, MarkupString editorText)
     {
-        var editorContent = await jsRuntime.InvokeAsync<string>("getSummernoteContent", HtmlName);
-        return editorContent.ToString();
+        _markupContent = editorText;
+        ContentChanged.InvokeAsync(Content);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+        _blazingSummerJsInterop = new BlazingSummerJsInterop(Js, NoteId, EditorUpdate);
+        await _blazingSummerJsInterop.Init();
+    }
+
+    private async Task Save()
+    {
+        _edit = false;
+        await _blazingSummerJsInterop.Save();
+        StateHasChanged();
+    }
+
+    private async Task Edit()
+    {
+        _edit = true;
+        var response = await _blazingSummerJsInterop.Edit(_markupContent);
+        StateHasChanged();
     }
 }
-
-
-
-<div id="@HtmlName">@Source</div>
