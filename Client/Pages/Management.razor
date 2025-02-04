@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using YGate.Client.Services.Administrator
 @using YGate.Client.Shared.Components
+@inject IAdministratorService administratorService
 @attribute [Authorize(Roles = "Administrator")]
 
 <div class="container">
@@ -36,11 +37,24 @@
         <div class="col-12 col-sm-6 col-md-4 col-lg-2">
             <a class="btn btn-success special-button" href="/Management/BlockedIp">Blocked Ip List</a>
         </div>
+        <br />
+        <div class="col-12">
+            <Entry Placeholder="Site Adı" @bind-Value="SiteName"></Entry>
+            <SpecialButton Text="Değiştir" OnClick="async ()=> await ChangeSiteNameButtonOnClick()"></SpecialButton>
+        </div>
     </div>
 </div>
 @code {
+
+    private string SiteName { get; set; }
+
     public void DbUpdateButton_Click()
     {
         adminService.DBUpdate();
+    }
+
+    private async Task ChangeSiteNameButtonOnClick()
+    {
+       var res = await administratorService.ChangeSiteName(SiteName);
     }
 }

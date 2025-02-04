@@ -311,7 +311,17 @@ namespace YGate.Server.Controllers
 
 
         [HttpPost]
+        public string ChangeSiteName([FromBody] RequestParameter parameter)
+        {
+            RequestResult result = new("Change Site Name");
+            result.Result = EnumRequestResult.Success;
+            result.To = EnumTo.Server;
+            StaticTools.SiteName = parameter.Parameters.ToString();
+            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+        }
 
+
+        [HttpPost]
         public string GetAllUser([FromBody] RequestParameter pars = null)
         {
             RequestResult result = new("GetAllUser AdministratorModule");

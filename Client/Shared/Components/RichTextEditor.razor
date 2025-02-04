@@ -1,79 +1,40 @@
 ﻿@using Microsoft.JSInterop
-@inject IJSRuntime Js
+@inject IJSRuntime jsRuntime
 
-<div style="width:100%;min-width:50px;">
-    <div id="@NoteId">@_markupContent</div>
-    @if (ShowEditButton)
-    {
-        <div align="right">
-            @if (_edit)
-            {
-                <button class="btn btn-primary" @onclick="Save">
-                    <span class="oi oi-lock-locked"></span>
-                </button>
-            }
-            else
-            {
-                <button class="btn btn-primary" @onclick="Edit">
-                    <span class="oi oi-lock-unlocked"></span>
-                </button>
-            }
-        </div>
-    }
-</div>
+<div id="@NoteId">@Content</div>
+
 
 
 @code {
-    private BlazingSummerJsInterop _blazingSummerJsInterop;
-    private bool _edit = true;
-    private MarkupString _markupContent = new MarkupString();
-
-    [Parameter]
-    public string Content
-    {
-        get
-        {
-            return _markupContent.ToString();
-        }
-
-        set
-        {
-            _markupContent = (MarkupString)value;
-        }
-    }
+    [Parameter] public string Content { get; set; }
 
     [Parameter] public EventCallback<string> ContentChanged { get; set; }
 
-    [Parameter]
-    public bool ShowEditButton { get; set; } = false;
+    private string NoteId { get; } = $"RichTextEditor{new Random().Next(0, 1000000).ToString()}";
 
-    private string NoteId { get; } = $"BlazingSummerNote{new Random().Next(0, 1000000).ToString()}";
-
-    private void EditorUpdate(object sender, MarkupString editorText)
+    [JSInvokable]
+    public Task UpdateContent(string content)
     {
-        _markupContent = editorText;
+        Content = content;
         ContentChanged.InvokeAsync(Content);
+        Console.WriteLine("RichTextEditor updatecontent");
+        StateHasChanged(); 
+        return Task.CompletedTask;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private DotNetObjectReference<RichTextEditor> objRef;
+    protected override async Task OnInitializedAsync()
     {
-        if (!firstRender)
-            return;
-        _blazingSummerJsInterop = new BlazingSummerJsInterop(Js, NoteId, EditorUpdate);
-        await _blazingSummerJsInterop.Init();
+        // await jsRuntime.InvokeVoidAsync("initializeSummernote", NoteId);
+
+        objRef = DotNetObjectReference.Create(this);
+        await jsRuntime.InvokeVoidAsync("initializeSummernote", NoteId, objRef);
+
+
     }
 
-    private async Task Save()
+    public void Dispose()
     {
-        _edit = false;
-        await _blazingSummerJsInterop.Save();
-        StateHasChanged();
-    }
-
-    private async Task Edit()
-    {
-        _edit = true;
-        var response = await _blazingSummerJsInterop.Edit(_markupContent);
-        StateHasChanged();
+        objRef?.Dispose();
     }
 }

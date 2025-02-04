@@ -58,20 +58,16 @@
     <div class="bd-transparent">
         <div class="form">
             <div class="mb-3 input-container">
-                <input required="" @bind-value="UserName" type="text" name="text" class="input">
-                <label class="label">@localizer["Username"]:</label>
+                <Entry @bind-Value="UserName" entryType="Entry.EntryType.Text" Placeholder="@localizer["Username"]"></Entry>
             </div>
             <div class="mb-3 input-container">
-                <input required="" @bind-value="Password" type="password" name="text" class="input">
-                <label class="label">@localizer["Password"]:</label>
+                <Entry @bind-Value="Password" entryType="Entry.EntryType.Password" Placeholder="@localizer["Password"]"></Entry>
             </div>
             <div class="mb-3 input-container">
-                <input required="" @bind-value="RPassword" type="password" name="text" class="input">
-                <label class="label">@localizer["Password_Retry"]:</label>
+                <Entry @bind-Value="RPassword" entryType="Entry.EntryType.Password" Placeholder="@localizer["Password_Retry"]"></Entry>
             </div>
             <div class="mb-3 input-container">
-                <input required="" @bind-value="model.Email" type="text" name="text" class="input">
-                <label class="label">@localizer["Email"]:</label>
+                <Entry @bind-Value="model.Email" entryType="Entry.EntryType.Text" Placeholder="@localizer["Email"]"></Entry>
             </div>
             <label style="color:red;">@localizer[ErrorMessage]</label>
             <br>

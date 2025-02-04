@@ -9,8 +9,8 @@
     <div class="container-header">
         <h3>Add</h3>
     </div>
-    <Entry Placeholder="Role Name" @bind-value="role.Name"></Entry>
-    <Entry Placeholder="Description" @bind-value="role.ShortDescription"></Entry>
+    <Entry Placeholder="Role Name" @bind-Value="role.Name"></Entry>
+    <Entry Placeholder="Description" @bind-Value="role.ShortDescription"></Entry>
     <label style="color:red;">@ErrorMessage</label>
     <SpecialButton Text="Ekle" OnClick="async()=> await Ekle()"></SpecialButton>
 </div>

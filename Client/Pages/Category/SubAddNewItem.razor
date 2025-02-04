@@ -8,9 +8,9 @@
     <h3>@SubCategory.Name için alt kategori</h3>
     <br />
     <Entry Placeholder="Name"
-           @bind-value="AddedCategory.Name"></Entry>
+           @bind-Value="AddedCategory.Name"></Entry>
     <Entry Placeholder="Description"
-           @bind-value="AddedCategory.ShortDescription"></Entry>
+           @bind-Value="AddedCategory.ShortDescription"></Entry>
 
     <span style="color:red;">@ErrorMessage</span>
     <SpecialButton OnClick="async()=>await Click()"

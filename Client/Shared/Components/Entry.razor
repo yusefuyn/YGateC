@@ -1,42 +1,20 @@
-﻿
-<div style="@Style" class="input-container">
-    <input required="" @bind-value="value" type="@entryType.ToString()" name="text" class="input">
+﻿<div style="@Style" class="input-container">
+    <input value="@Value" @oninput="OnInputChanged" type="@entryType.ToString().ToLower()" name="text" class="input">
     <label class="label">@Placeholder</label>
 </div>
+
 @code {
+    [Parameter] public string Placeholder { get; set; } = "";
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EntryType entryType { get; set; } = EntryType.Text;
+    [Parameter] public string Style { get; set; }
 
-    [Parameter]
-    public string Placeholder { get; set; } = "";
-
-    private string _value = "";
-
-    [Parameter]
-    public string value
+    private async Task OnInputChanged(ChangeEventArgs e)
     {
-        get => _value;
-        set
-        {
-            if (_value != value)
-            {
-                _value = value;
-                valueChanged.InvokeAsync(value); // Olayı tetikle
-            }
-        }
+        Value = e.Value.ToString();
+        await ValueChanged.InvokeAsync(Value);
     }
-
-    [Parameter]
-    public EventCallback<string> valueChanged { get; set; } // Olay parametresi
-
-    [Parameter]
-    public EntryType entryType { get; set; } = EntryType.Text;
-
-    private void OnValueChanged(ChangeEventArgs e)
-    {
-        value = e.Value.ToString();
-    }
-
-    [Parameter]
-    public string Style { get; set; }
 
     public enum EntryType
     {

@@ -24,6 +24,12 @@ namespace YGate.Client.Services.Administrator
             RequestResult res = await httpClientService.GetPostAsync<RequestResult>("", "api/Administrator/UpdateDatabase");
         }
 
+        public async Task<RequestResult> ChangeSiteName(string Name) {
+            var res = await httpClientService.GetPostAsync<RequestResult>(Name, "api/Administrator/ChangeSiteName");
+            return res;
+        }
+
+
         public async Task<RequestResult> GetAllUser()
         {
             var res = await httpClientService.GetPostAsync<RequestResult>("", "api/Administrator/GetAllUser");

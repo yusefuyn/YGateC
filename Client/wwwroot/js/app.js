@@ -196,20 +196,28 @@ window.applyCss = function (css) {
 };
 
 
-window.initializeSummernote = function (htmlName) {
+window.initializeSummernote = function (htmlName, dotnetHelper) {
     $(document).ready(function () {
         $("#" + htmlName).summernote({
-            height: 300,
-            minHeight: 160000,
+            height: 400,
+            minHeight: 400,
             maxHeight: null,
             callbacks: {
                 onChange: function (contents, $editable) {
-                    console.log("Source updated");
+                    // DotNetObjectReference üzerinden C# metodunu çağırıyoruz
+                    dotnetHelper.invokeMethodAsync('UpdateContent', contents)
+                        .then(result => {
+                            console.log('C# metodu başarılı bir şekilde çağrıldı.');
+                        })
+                        .catch(error => {
+                            console.error('C# metoduna çağrı hatası:', error);
+                        });
                 }
             }
         });
     });
 };
+
 
 window.getSummernoteContent = function (htmlName) {
     return $("#" + htmlName).summernote('code');

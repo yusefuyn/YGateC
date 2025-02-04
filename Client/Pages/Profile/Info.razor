@@ -6,8 +6,7 @@
 
     <label>Lütfen bizimle şu bilgiyi paylaşın</label>
     <div class="mb-3">
-        <label>@InformationNeeded.ToString():</label>
-        <input type="text" @bind-value="Value" required>
+        <Entry @bind-Value="Value" entryType="Entry.EntryType.Text" Placeholder="@InformationNeeded.ToString()"></Entry>
     </div>
     <label style="color:red">@ErrorMessage</label>
     <label><a>Buna neden ihtiyaç duyuyoruz ?</a></label><br />

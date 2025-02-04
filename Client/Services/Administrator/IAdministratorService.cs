@@ -17,5 +17,7 @@ namespace YGate.Client.Services.Administrator
 
         public Task<RequestResult> RemoveBlockedListToIp(string ip);
         public Task<RequestResult> AddBlockedIpList(string ip);
+
+        public Task<RequestResult> ChangeSiteName(string Name);
     }
 }

@@ -168,9 +168,10 @@
                     }
                 </div>
                 <!-- Mesaj Gönderme Alanı -->
+
                 <div class="chat-input">
-                    <input type="text" id="messageInput" @bind-value="MessageValue" placeholder="Mesajınızı yazın..." />
-                    <button id="sendButton" @onclick="SendMessage">→</button>
+                    <Entry Placeholder="Mesajınız." entryType="Entry.EntryType.Text" @bind-Value="MessageValue"></Entry>
+                    <SpecialButton Id="sendButton" @onclick="SendMessage">→</SpecialButton>
                 </div>
             </div>
         </div>
