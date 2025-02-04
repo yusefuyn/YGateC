@@ -1,15 +1,11 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
-@attribute [Authorize]
-@using Microsoft.AspNetCore.Components.Rendering
-@using Microsoft.AspNetCore.SignalR.Client
-@using YGate.Client.Services.Category
+﻿@using YGate.Client.Services.Category
 @using YGate.Client.Services.Statistics
 @using YGate.Client.Shared.Components
 @using YGate.Entities.ViewModels
-@inject IProfileService profileService
 @inject ICategoryService categoryService
-@inject IStatisticsService statisticService
+@inject IStatisticsService statisticService;
+
+
 <div class="sidebar">
     <header>
         <a href="/"><h2 class="sidebar-title">@YGate.Client.StaticTools.SiteName.ToString()</h2></a>
@@ -58,58 +54,13 @@
         <a href="https://github.com/" target="_blank" class="footer-button"><i class="fab fa-github "></i></a> *@
     </footer>
 </div>
+
 @code {
-    List<CategorySidebarViewModel> categorySidebarViewModels = null;
-    private HubConnection? hubConnection;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        await CheckForNewDataPeriodically();
-
-        var res1 = await statisticService.GetSiteName();
-        YGate.Client.StaticTools.SiteName = res1.Object.ToString();
-
-        StateHasChanged();
-
-        hubConnection = new HubConnectionBuilder()
-         .WithUrl(navigationManager.ToAbsoluteUri("/MyHub"))
-         .Build();
-
-    }
-
-    private async Task CheckForNewDataPeriodically()
-    {
-        while (categorySidebarViewModels == null)
-        {
-            if (!isRefreshing)
-            {
-                isRefreshing = true;
-                await RefreshSideBar();
-                isRefreshing = false;
-            }
-
-            await Task.Delay(1000);
-        }
-    }
-
-    private bool isRefreshing = false;
-
-    private async Task RefreshSideBar()
-    {
-        // Veriyi çekiyoruz
-
-        var res = await categoryService.GetSidebarCategories();
-        categorySidebarViewModels = res.ConvertRequestObject<List<CategorySidebarViewModel>>();
-        StateHasChanged();
-    }
-
     private RenderFragment RenderCategoryLinks(CategorySidebarViewModel categories)
     {
         string role = string.Join(",", categories.CategoryRole);
         if (!categories.CategoryRole.Any(xd => xd == "All"))
-            return@<AuthorizeView Roles="@role"><IconNavLink Href="@categories.CategoryViewLink" Icon="@categories.CategorySymbol" Text="@localizer[categories.CategoryName]"></IconNavLink></AuthorizeView>  ;
+            return@<AuthorizeView Roles="@role"><IconNavLink Href="@categories.CategoryViewLink" Icon="@categories.CategorySymbol" Text="@localizer[categories.CategoryName]"></IconNavLink></AuthorizeView>;
         else
             return@<IconNavLink Href="@categories.CategoryViewLink" Icon="@categories.CategorySymbol" Text="@localizer[categories.CategoryName]"></IconNavLink>;
     }

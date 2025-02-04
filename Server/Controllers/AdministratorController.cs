@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Data;
 using System.Numerics;
@@ -17,9 +18,11 @@ namespace YGate.Server.Controllers
     public class AdministratorController : Controller
     {
         Operations operations;
-        public AdministratorController(Operations operations)
+        IHubContext<MyHub> hub;
+        public AdministratorController(IHubContext<MyHub> hub,Operations operations)
         {
             this.operations = operations;
+            this.hub = hub;
         }
 
         [HttpPost]
@@ -311,12 +314,15 @@ namespace YGate.Server.Controllers
 
 
         [HttpPost]
-        public string ChangeSiteName([FromBody] RequestParameter parameter)
+        public async Task<string> ChangeSiteName([FromBody] RequestParameter parameter)
         {
             RequestResult result = new("Change Site Name");
             result.Result = EnumRequestResult.Success;
             result.To = EnumTo.Server;
             StaticTools.SiteName = parameter.Parameters.ToString();
+
+            await hub.Clients.Groups("SideBar").SendAsync("RefreshSiteName");
+
             return YGate.Json.Operations.JsonSerialize.Serialize(result);
         }
 

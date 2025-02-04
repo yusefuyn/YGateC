@@ -8,5 +8,6 @@ namespace YGate.Client
         public string SignalRGroupName { get; set; }
         public HubConnection? hubConnection { get; set; }
         public ValueTask DisposeAsync();
+        public Task JoinGroup();
     }
 }

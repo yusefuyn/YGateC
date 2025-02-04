@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data.Entity;
@@ -10,28 +11,36 @@ using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ResultModel;
 using YGate.Entities.ViewModels;
+using YGate.Entities.ViewModels.Chat;
 namespace YGate.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class CategoryController : Controller
     {
         Operations operations;
-        public CategoryController(Operations operations)
+        IHubContext<MyHub> hub;
+        public CategoryController(IHubContext<MyHub> hub,Operations operations)
         {
             this.operations = operations;
+            this.hub = hub;
         }
         [HttpPost]
-        public string AddNewCategory([FromBody] RequestParameter parameter)
+        public async Task<string> AddNewCategory([FromBody] RequestParameter parameter)
         {
             RequestResult returned = new("AddNewCategory");
             Category category = parameter.ConvertParameters<Category>();
             category.DBGuid = YGate.String.Operations.GuidGen.Generate("Category");
+
+
 
             if (string.IsNullOrEmpty(category.Icon))
                 category.Icon = "fa fa-star";
 
             operations.Context.Categories.Add(category);
             operations.Context.SaveChanges();
+
+            await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
+
             returned.Result = EnumRequestResult.Success;
             returned.Object = category;
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
@@ -47,7 +56,7 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
-        public string AddCategoryRoles([FromBody] RequestParameter parameter)
+        public async Task<string> AddCategoryRoles([FromBody] RequestParameter parameter)
         {
             CategoryRoles ob = parameter.ConvertParameters<CategoryRoles>();
 
@@ -59,6 +68,9 @@ namespace YGate.Server.Controllers
             operations.Context.CategoryRoles.Add(ob);
             operations.Context.SaveChanges();
             returned.Object = operations.GetCategoryRole(ob.CategoryGuid);
+
+            await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
+
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
         }
 
@@ -73,7 +85,7 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
-        public string RemoveCategoryRole([FromBody] RequestParameter parameter)
+        public async Task<string> RemoveCategoryRole([FromBody] RequestParameter parameter)
         {
             dynamic param = parameter.ConvertParameters<dynamic>();
             string CategoryGuid = param["CategoryGuid"];
@@ -86,6 +98,8 @@ namespace YGate.Server.Controllers
             if (ob != null)
                 operations.Context.CategoryRoles.Remove(ob);
             operations.Context.SaveChanges();
+
+            await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
 
             returned.Object = operations.GetCategoryRole(ob.CategoryGuid);
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
@@ -181,6 +195,9 @@ namespace YGate.Server.Controllers
                     throw;
                 }
             }
+
+            await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
+
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
         }
 
