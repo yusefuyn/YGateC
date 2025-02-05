@@ -151,7 +151,6 @@ namespace YGate.Client.Services.Entitie
             ChildView, // Veri başka bir verinin alt öğesi ise gösterilecek template'i
         }
 
-
         public MarkupString GetChildView(EntitieViewModel entitieViewModel)
         {
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ChildView);
@@ -168,7 +167,28 @@ namespace YGate.Client.Services.Entitie
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ListingView);
         }
 
+        public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel) {
+            var page = new YGate.Client.Pages.Entities.Add();
+            return RenderFragmentToMarkupString(page.GetCategoryTemplate(categoryTemplateViewModel));
+        }
 
+
+        private MarkupString RenderFragmentToMarkupString(RenderFragment fragment)
+        {
+            // RenderTreeBuilder kullanarak RenderFragment içeriğini HTML olarak render etme
+            var sb = new System.Text.StringBuilder();
+            var writer = new System.IO.StringWriter(sb);
+
+            // Burada RenderTreeBuilder kullanarak HTML içeriğini yakalıyoruz
+            var builder = new Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder();
+            fragment(builder);
+
+            // RenderTreeBuilder'dan HTML string oluşturmak
+            builder.CloseComponent();
+
+            // Sonuç olarak string'i MarkupString'e dönüştürme
+            return new MarkupString(sb.ToString());
+        }
 
 
     }

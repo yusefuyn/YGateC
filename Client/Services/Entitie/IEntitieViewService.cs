@@ -6,11 +6,9 @@ namespace YGate.Client.Services.Entitie
 {
     public interface IEntitieViewService
     {
-
-
-
         public MarkupString GetListView(EntitieViewModel entitieViewModel);
         public MarkupString GetDataView(EntitieViewModel entitieViewModel);
         public MarkupString GetChildView(EntitieViewModel entitieViewModel);
+        public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel);
     }
 }
