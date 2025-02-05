@@ -44,6 +44,7 @@ builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 builder.Services.AddScoped<IEntitieService, EntitieService>();
+builder.Services.AddScoped<IEntitieViewService, EntitieViewService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddLocalization();
 builder.Services.AddAuthorizationCore();

@@ -2,6 +2,8 @@
 @using YGate.Client.Services.Category
 @using YGate.Client.Services.Entitie
 @inject IEntitieService entitieService
+@inject IEntitieViewService entitieViewService
+
 @inject ICategoryService categoryService
 @inject IJSRuntime jsRuntime
 <style>
@@ -25,7 +27,7 @@
         if (res1.Result == YGate.Entities.EnumRequestResult.Success)
             entitieviewModel = res1.ConvertRequestObject<YGate.Entities.ViewModels.EntitieViewModel>();
 
-            view = entitieService.CategoryHtmlTemplateAddValues(entitieviewModel, EntitieService.TemplateEnum.DataView);
+            view = entitieViewService.CategoryHtmlTemplateAddValues(entitieviewModel, EntitieViewService.TemplateEnum.DataView);
 
         StateHasChanged();
 

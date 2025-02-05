@@ -2,6 +2,8 @@
 @using YGate.Client.Services.Entitie
 @inject IProfileService profileService
 @inject IEntitieService entitieService
+@inject IEntitieViewService entitieViewService
+
 <div class="container">
 
     @if (Model != null)
@@ -67,7 +69,7 @@
 
                 @foreach (var item in Model.PublicEntities)
                 {
-                    @entitieService.CategoryHtmlTemplateAddValues(item, EntitieService.TemplateEnum.ListingView)
+                    @entitieViewService.CategoryHtmlTemplateAddValues(item, EntitieViewService.TemplateEnum.ListingView)
                 }
             </div>
         }

@@ -5,6 +5,8 @@
 @using YGate.Client.Shared.Components
 @inject IEntitieService entityService
 @inject IProfileService profileService
+@inject IEntitieViewService entitieViewService
+
 @inject IJSRuntime jsRuntime
 @attribute [Authorize(Roles = "Administrator,Admin,MarketMod,MarketUser,User")]
 
@@ -36,7 +38,7 @@
             {
                 <div class="row">
                     <div class="col-12">
-                        @entityService.CategoryHtmlTemplateAddValues(temp,EntitieService.TemplateEnum.ListingView)
+                        @entitieViewService.CategoryHtmlTemplateAddValues(temp, EntitieViewService.TemplateEnum.ListingView)
                     </div>   
                         <SpecialButton Style="width:100%;"
                             OnClick='()=>Navigate("/Management/Entitie/SelectAdvertTypeToAdd")'

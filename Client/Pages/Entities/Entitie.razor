@@ -8,6 +8,8 @@
 @page "/Entity"
 @inject IJSRuntime jsRuntime
 @inject IEntitieService entityService
+@inject IEntitieViewService entitieViewService
+
 <PageTitle>Market</PageTitle>
 
 <style>
@@ -36,7 +38,7 @@
         <div class="row">
             @foreach (var temp in entitiesList)
             {
-                @entityService.CategoryHtmlTemplateAddValues(temp, EntitieService.TemplateEnum.ListingView)
+                @entitieViewService.CategoryHtmlTemplateAddValues(temp, EntitieViewService.TemplateEnum.ListingView)
             }
         </div>
 

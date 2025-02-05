@@ -7,6 +7,7 @@
 @using YGate.Entities
 @using YGate.Entities.ViewModels
 @inject IEntitieService entitieService
+@inject IEntitieViewService entitieViewService
 
 @if (isAuthorized)
 {
@@ -24,7 +25,7 @@
                         </div>
                         @foreach (EntitieViewModel entity in group)
                         {
-                            @entitieService.CategoryHtmlTemplateAddValues(entity, EntitieService.TemplateEnum.ListingView)
+                            @entitieViewService.CategoryHtmlTemplateAddValues(entity, EntitieViewService.TemplateEnum.ListingView)
                         }
 
                     </div>
