@@ -6,7 +6,11 @@ namespace YGate.Client.Services.Entitie
 {
     public interface IEntitieViewService
     {
-        public MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, TemplateEnum TempType);
-        public MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, string temp, TemplateEnum TempType);
+
+
+
+        public MarkupString GetListView(EntitieViewModel entitieViewModel);
+        public MarkupString GetDataView(EntitieViewModel entitieViewModel);
+        public MarkupString GetChildView(EntitieViewModel entitieViewModel);
     }
 }

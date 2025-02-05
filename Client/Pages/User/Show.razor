@@ -69,7 +69,7 @@
 
                 @foreach (var item in Model.PublicEntities)
                 {
-                    @entitieViewService.CategoryHtmlTemplateAddValues(item, EntitieViewService.TemplateEnum.ListingView)
+                    @entitieViewService.GetListView(item)
                 }
             </div>
         }

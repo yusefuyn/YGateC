@@ -25,7 +25,7 @@
                         </div>
                         @foreach (EntitieViewModel entity in group)
                         {
-                            @entitieViewService.CategoryHtmlTemplateAddValues(entity, EntitieViewService.TemplateEnum.ListingView)
+                            @entitieViewService.GetListView(entity)
                         }
 
                     </div>

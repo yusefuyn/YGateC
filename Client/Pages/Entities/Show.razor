@@ -27,7 +27,7 @@
         if (res1.Result == YGate.Entities.EnumRequestResult.Success)
             entitieviewModel = res1.ConvertRequestObject<YGate.Entities.ViewModels.EntitieViewModel>();
 
-            view = entitieViewService.CategoryHtmlTemplateAddValues(entitieviewModel, EntitieViewService.TemplateEnum.DataView);
+            view = entitieViewService.GetDataView(entitieviewModel);
 
         StateHasChanged();
 

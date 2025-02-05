@@ -6,32 +6,8 @@ namespace YGate.Client.Services.Entitie
 {
     public class EntitieViewService : IEntitieViewService
     {
-
-        /// <summary>
-        /// Verilen Varlık Modelinin Template'ini kullanır
-        /// </summary>
-        /// <param name="entitie"></param>
-        /// <param name="TempType"></param>
-        /// <returns></returns>
-        public MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, TemplateEnum TempType)
-        {
-            if (entitie == null)
-                return new("<p>Öğe yok ;( Oluşturmamış lavuk.</p>");
-
-            if (entitie.HtmlTemplate == null || string.IsNullOrEmpty(entitie.HtmlTemplate.Template))
-                return new($"<p>{entitie.DBGuid} numaralı öğenin görseli yok ;( {entitie.OwnerName} isimli lavuk oluşturmamış.</p>");
-
-            return CategoryHtmlTemplateAddValues(entitie, entitie.HtmlTemplate.Template, TempType);
-        }
-
-        /// <summary>
-        /// Verilen Template'i Verilen Varlıkla Doldurur.
-        /// </summary>
-        /// <param name="entitie"></param>
-        /// <param name="temp"></param>
-        /// <param name="TempType"></param>
-        /// <returns></returns>
-        public MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, string temp, TemplateEnum TempType)
+        private MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, TemplateEnum TempType) => CategoryHtmlTemplateAddValues(entitie, entitie.HtmlTemplate.Template.ToString(), TempType);
+        private MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, string temp, TemplateEnum TempType)
         {
             if (entitie == null || string.IsNullOrEmpty(temp))
                 return new("");
@@ -59,7 +35,7 @@ namespace YGate.Client.Services.Entitie
                         var replace = entitieProperty.PropertyValue;
 
 
-                        if (entitieProperty.Type == PropertyValueType.ValueList)
+                        if (entitieProperty.Type == Entities.BasedModel.PropertyValueType.ValueList)
                         {
                             if (!Grouped)
                             {
@@ -141,7 +117,6 @@ namespace YGate.Client.Services.Entitie
 
             return markupString;
         }
-
         private string PrepateTheLink(EntitieViewModel entitie)
         {
             string returnedLink = "";
@@ -152,7 +127,6 @@ namespace YGate.Client.Services.Entitie
             returnedLink = $"/Show/Entitie/{TurkceKarakterleriDegistir(returnedLink)}";
             return returnedLink;
         }
-
         private string TurkceKarakterleriDegistir(string deger)
         {
             string returned = deger.ToLower();
@@ -170,12 +144,32 @@ namespace YGate.Client.Services.Entitie
                 returned = returned.Replace(item.Key.ToString(), item.Value);
             return returned;
         }
-
-        public enum TemplateEnum
+        private enum TemplateEnum
         {
             DataView, // Verinin gösterileceği sayfadaki template'i
             ListingView, // Veri listelenirken gösterilecek template'i
             ChildView, // Veri başka bir verinin alt öğesi ise gösterilecek template'i
         }
+
+
+        public MarkupString GetChildView(EntitieViewModel entitieViewModel)
+        {
+            return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ChildView);
+        }
+
+        public MarkupString GetDataView(EntitieViewModel entitieViewModel)
+        {
+            return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.DataView);
+
+        }
+
+        public MarkupString GetListView(EntitieViewModel entitieViewModel)
+        {
+            return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ListingView);
+        }
+
+
+
+
     }
 }
