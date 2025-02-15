@@ -14,10 +14,13 @@ namespace YGate.Client.Services.Administrator
         public Task<RequestResult> UserIsActiveTrue(string Guid);
         public Task<RequestResult> DeleteRoleAccountToObjectGuid(string AccountGuid,string RoleGuid);
         public Task<RequestResult> GetBlockedIpList();
+        public Task<RequestResult> GetWhiteIpList();
+        public Task<RequestResult> GetConnectIpList();
 
         public Task<RequestResult> RemoveBlockedListToIp(string ip);
         public Task<RequestResult> AddBlockedIpList(string ip);
-
+        public Task<RequestResult> AddWhiteIpList(string ip);
+        
         public Task<RequestResult> ChangeSiteName(string Name);
     }
 }

@@ -23,7 +23,7 @@ namespace YGate.Server.Middlewares
             if (!string.IsNullOrEmpty(blockedIp))
             {
                 // HTML yanıtı
-                var htmlResponse = @"
+                string htmlResponse = @"
         <!DOCTYPE html>
         <html lang='en'>
         <head>

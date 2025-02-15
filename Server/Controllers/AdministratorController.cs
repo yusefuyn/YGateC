@@ -374,6 +374,33 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
+        public string GetConnectIpList([FromBody] RequestParameter parameter)
+        {
+            RequestResult result = new($"Get Connect Ip List");
+
+
+            result.Result = EnumRequestResult.Success;
+            result.To = EnumTo.Server;
+            result.Object = GetConnectIpList();
+            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+        }
+
+        private List<string> GetConnectIpList() => StaticTools.IpAndDate.Select(xd => xd.Ip).Distinct().ToList();
+
+        [HttpPost]
+        public string GetWhiteIpList([FromBody] RequestParameter parameter)
+        {
+            RequestResult result = new($"Get White List");
+
+
+            result.Result = EnumRequestResult.Success;
+            result.To = EnumTo.Server;
+            result.Object = GetWhiteIpList();
+            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+
+        }
+
+        [HttpPost]
         public string AddBlockList([FromBody] RequestParameter parameter)
         {
             RequestResult result = new($"AddBlockList {parameter.Parameters.ToString()}");
@@ -385,6 +412,24 @@ namespace YGate.Server.Controllers
             result.Object = GetBlockedIpAddress();
             return YGate.Json.Operations.JsonSerialize.Serialize(result);
         }
+
+        [HttpPost]
+        public string AddWhiteIpList([FromBody] RequestParameter parameter)
+        {
+            RequestResult result = new($"AddWhiteIpList {parameter.Parameters.ToString()}");
+
+
+            result.Result = EnumRequestResult.Success;
+            result.To = EnumTo.Server;
+            StaticTools.WhiteList.Add(parameter.Parameters.ToString());
+            result.Object = GetWhiteIpList();
+            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+        }
+
+        
+
+
+        private List<string> GetWhiteIpList() => StaticTools.WhiteList.ToList();
 
         private List<string> GetBlockedIpAddress()
         {

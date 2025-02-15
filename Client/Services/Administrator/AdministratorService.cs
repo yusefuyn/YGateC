@@ -75,8 +75,17 @@ namespace YGate.Client.Services.Administrator
             var res = await httpClientService.GetPostAsync<RequestResult>("", "api/Administrator/GetBlockedIpList");
             return res;
         }
-
-
+        public async Task<RequestResult> GetWhiteIpList()
+        {
+            var res = await httpClientService.GetPostAsync<RequestResult>("", "api/Administrator/GetWhiteIpList");
+            return res;
+        }
+        public async Task<RequestResult> GetConnectIpList()
+        {
+            var res = await httpClientService.GetPostAsync<RequestResult>("", "api/Administrator/GetConnectIpList");
+            return res;
+        }
+        
         public async Task<RequestResult> RemoveBlockedListToIp(string ip) {
             var res = await httpClientService.GetPostAsync<RequestResult>(ip, "api/Administrator/RemoveBlockedIpList");
             return res;
@@ -86,6 +95,11 @@ namespace YGate.Client.Services.Administrator
             var res = await httpClientService.GetPostAsync<RequestResult>(ip, "api/Administrator/AddBlockList");
             return res;
         }
-
+        public async Task<RequestResult> AddWhiteIpList(string ip)
+        {
+            var res = await httpClientService.GetPostAsync<RequestResult>(ip, "api/Administrator/AddWhiteIpList");
+            return res;
+        }
+        
     }
 }

@@ -5,51 +5,134 @@
 @inject IAdministratorService administratorService
 @using YGate.Client.Shared.Components;
 <div class="container">
-    <div class="container-header">
-        <h3>Show Blocked Ip List</h3>
+
+    <div class="col-12 container">
+        <div class="container-header">
+            <h3>Show Blocked Ip List</h3>
+        </div>
+
+        <Entry Placeholder="Blocked Ip Address"
+               entryType="Shared.Components.Entry.EntryType.Text"
+               @bind-Value="BlockIpValue"></Entry>
+        <SpecialButton Text="Block" OnClick="async()=> await BlockIp()"></SpecialButton>
+
+        @if (BlockList != null)
+        {
+
+            <table class="table table-dark table-striped-columns">
+                <thead>
+                    <tr>
+                        <th scope="col">Ip</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var temp in BlockList)
+                    {
+                        <tr class="table-row">
+                            <td>@temp.ToString()</td>
+                            <td>
+                                <YGate.Client.Shared.Components.SpecialButton Text="Remove" OnClick="async ()=> await RemoveIp(temp.ToString())"></YGate.Client.Shared.Components.SpecialButton>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+
+            <p>@localizer["NoDataCurrentlyAvailable."]</p>
+
+
+        }
+    </div>
+    <div class="col-12 container">
+        <div class="container-header">
+            <h3>Show White Ip List</h3>
+        </div>
+
+        <Entry Placeholder="White Ip Address"
+               entryType="Shared.Components.Entry.EntryType.Text"
+               @bind-Value="AddIpValue"></Entry>
+        <SpecialButton Text="Add" OnClick="async()=> await AddIp()"></SpecialButton>
+
+        @if (WhiteList != null)
+        {
+
+            <table class="table table-dark table-striped-columns">
+                <thead>
+                    <tr>
+                        <th scope="col">Ip</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var temp in WhiteList)
+                    {
+                        <tr class="table-row">
+                            <td>@temp.ToString()</td>
+                            <td>
+                                <YGate.Client.Shared.Components.SpecialButton Text="Remove" OnClick="async ()=> await RemoveIp(temp.ToString())"></YGate.Client.Shared.Components.SpecialButton>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+
+            <p>@localizer["NoDataCurrentlyAvailable."]</p>
+
+
+        }
+    </div>
+    <div class="col-12 container">
+        <div class="container-header">
+            <h3>Show Connect Ip List</h3>
+        </div>
+        @if (IpList != null)
+        {
+
+            <table class="table table-dark table-striped-columns">
+                <thead>
+                    <tr>
+                        <th scope="col">Ip</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var temp in IpList)
+                    {
+                        <tr class="table-row">
+                            <td>@temp.ToString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+
+            <p>@localizer["NoDataCurrentlyAvailable."]</p>
+
+
+        }
     </div>
 
-    <Entry Placeholder="Blocked Ip Address"
-                                          entryType="Shared.Components.Entry.EntryType.Text"
-                                          @bind-Value="BlockIpValue"></Entry>
-    <SpecialButton Text="Block" OnClick="async()=> await BlockIp()"></SpecialButton>
-
-    @if (source != null)
-    {
-
-        <table class="table table-dark table-striped-columns">
-            <thead>
-                <tr>
-                    <th scope="col">Ip</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var temp in source)
-                {
-                    <tr class="table-row">
-                        <td>@temp.ToString()</td>
-                        <td>
-                            <YGate.Client.Shared.Components.SpecialButton Text="Remove" OnClick="async ()=> await RemoveIp(temp.ToString())"></YGate.Client.Shared.Components.SpecialButton>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-    }
-    else
-    {
-
-        <p>@localizer["NoDataCurrentlyAvailable."]</p>
 
 
-    }
+
 </div>
-
 @code {
-    public List<string> source = new();
+    public List<string> BlockList = new();
+    public List<string> WhiteList = new();
+    public List<string> IpList = new();
     public string BlockIpValue = "";
+    public string AddIpValue = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,15 +142,22 @@
     public async Task DataRefresh()
     {
         RequestResult res = await administratorService.GetBlockedIpList();
-        if (res.Result == EnumRequestResult.Success)
-            source = res.ConvertRequestObject<List<string>>();
+        BlockList = res.ConvertRequestObject<List<string>>();
+
+        RequestResult res1 = await administratorService.GetWhiteIpList();
+        WhiteList = res1.ConvertRequestObject<List<string>>();
+
+        RequestResult res2 = await administratorService.GetConnectIpList();
+        IpList = res2.ConvertRequestObject<List<string>>();
+
+
     }
 
     public async Task RemoveIp(string ip)
     {
         RequestResult res = await administratorService.RemoveBlockedListToIp(ip);
         if (res.Result == EnumRequestResult.Success)
-            source = res.ConvertRequestObject<List<string>>();
+            BlockList = res.ConvertRequestObject<List<string>>();
     }
 
     public async Task BlockIp()
@@ -75,8 +165,19 @@
         RequestResult res = await administratorService.AddBlockedIpList(BlockIpValue);
         if (res.Result == EnumRequestResult.Success)
         {
-            source = res.ConvertRequestObject<List<string>>();
+            BlockList = res.ConvertRequestObject<List<string>>();
             BlockIpValue = "";
+
+        }
+    }
+
+    public async Task AddIp()
+    {
+        RequestResult res = await administratorService.AddWhiteIpList(AddIpValue);
+        if (res.Result == EnumRequestResult.Success)
+        {
+            WhiteList = res.ConvertRequestObject<List<string>>();
+            AddIpValue = "";
 
         }
     }

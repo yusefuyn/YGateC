@@ -47,8 +47,8 @@ namespace YGate.Entities.ViewModels
                 case PropertyValueType.CustomValidationRegex:
                     return Regex.IsMatch(value, this.ValidateRegex);
                 case PropertyValueType.ItemGroup:
-                    // TODO ValueGroup Values'den kontrol edilecek.
-                    return true;
+                    if (value == "0") return false;
+                    else return true;
                 case PropertyValueType.Unit:
                     dynamic dynamicobj = YGate.Json.Operations.JsonDeserialize<dynamic>.Deserialize(value);
                     string val1 = dynamicobj?.IntegerVal;
