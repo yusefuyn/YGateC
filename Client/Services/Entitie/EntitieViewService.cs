@@ -113,6 +113,10 @@ namespace YGate.Client.Services.Entitie
                 case TemplateEnum.ChildView:
                     markupString = template.ChildView();
                     break;
+
+                case TemplateEnum.ListingPage:
+                    markupString = template.ListPage();
+                    break;
             }
 
             return markupString;
@@ -148,6 +152,7 @@ namespace YGate.Client.Services.Entitie
         {
             DataView, // Verinin gösterileceği sayfadaki template'i
             ListingView, // Veri listelenirken gösterilecek template'i
+            ListingPage, // Verinin liste template'ini içine alan görünüm.
             ChildView, // Veri başka bir verinin alt öğesi ise gösterilecek template'i
         }
 
@@ -167,7 +172,8 @@ namespace YGate.Client.Services.Entitie
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ListingView);
         }
 
-        public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel) {
+        public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel)
+        {
             var page = new YGate.Client.Pages.Entities.Add();
             return RenderFragmentToMarkupString(page.GetCategoryTemplate(categoryTemplateViewModel));
         }
@@ -190,6 +196,17 @@ namespace YGate.Client.Services.Entitie
             return new MarkupString(sb.ToString());
         }
 
-
+        public MarkupString GetListPage(EntitieViewModel PageViewModel, List<EntitieViewModel> ListEntitieViewModel)
+        {
+            MarkupString ListView = new("");
+            foreach (EntitieViewModel item in ListEntitieViewModel)
+            {
+                MarkupString ob = GetListView(item);
+                ListView = new(ListView.Value.ToString() + ob.Value.ToString());
+            }
+            MarkupString ListPage = CategoryHtmlTemplateAddValues(PageViewModel, TemplateEnum.ListingPage);
+            ListPage = new(ListPage.Value.Replace("<IListView></IListView>", ListView.Value.ToString()));
+            return ListPage;
+        }
     }
 }

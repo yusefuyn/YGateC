@@ -61,6 +61,14 @@ namespace YGate.Html.Operations
             returnedMarkup = new(source);
             return returnedMarkup;
         }
+
+        public MarkupString ListPage() {
+            MarkupString returnedMarkup = new("");
+            string source = ExtractMarkupContent("ListPage");
+            returnedMarkup = new(source);
+            return returnedMarkup;
+        }
+
         public string Source { get; set; }
     }
 }

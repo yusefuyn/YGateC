@@ -17,17 +17,17 @@
     {
         <div class="container ">
             <div class="row" style="display:flex;">
+
+       
+
                 @foreach (var group in groups)
                 {
                     <div class="container">
                         <div class="container-header">
-                            <h3>@group.FirstOrDefault().CategoryName.ToString()</h3>
+                            <h3>@group.Value.FirstOrDefault().CategoryName.ToString()</h3>
                         </div>
-                        @foreach (EntitieViewModel entity in group)
-                        {
-                            @entitieViewService.GetListView(entity)
-                        }
 
+                        @entitieViewService.GetListPage(group.Value.FirstOrDefault(), group.Value)
                     </div>
                 }
 
@@ -57,7 +57,7 @@ else
     [Parameter]
     public string CategoryNameAndId { get; set; }
 
-    List<IGrouping<string, EntitieViewModel>> groups { get; set; }
+    List<KeyValuePair<string, List<EntitieViewModel>>> groups { get; set; }
 
 
     private string Error = "";
@@ -84,7 +84,10 @@ else
     {
         RequestResult result = await entitieService.GetAllEntitieButCategoryGuid(CategoryGuid);
         List<EntitieViewModel> entitiesList = result.ConvertRequestObject<List<EntitieViewModel>>();
-        groups = entitiesList.GroupBy(xd => xd.CategoryName).ToList();
+        groups = entitiesList
+            .GroupBy(xd => xd.CategoryName) // Kategorilere göre grupla
+            .Select(g => new KeyValuePair<string, List<EntitieViewModel>>(g.Key, g.ToList())) // her grubu listeye çevir
+            .ToList();
     }
     /// <summary>
     /// Seo'ya uygun
@@ -105,6 +108,9 @@ else
         }
 
         List<EntitieViewModel> entitiesList = result.ConvertRequestObject<List<EntitieViewModel>>();
-        groups = entitiesList.GroupBy(xd => xd.CategoryName).ToList();
+        groups = entitiesList
+            .GroupBy(xd => xd.CategoryName) // Kategorilere göre grupla
+            .Select(g => new KeyValuePair<string, List<EntitieViewModel>>(g.Key, g.ToList())) // her grubu listeye çevir
+            .ToList();
     }
 }
