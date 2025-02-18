@@ -24,6 +24,8 @@ builder.Services.AddSingleton<Operations>(xd => { // DbAyarlarý
 });
 
 YGate.Server.StaticTools.SiteName = builder.Configuration.GetSection("SiteSettings").GetValue<string>("Title");
+YGate.Server.StaticTools.AllowedRequestCountTimeout = builder.Configuration.GetSection("SiteSettings").GetValue<int>("AllowedRequestCountTimeout");
+YGate.Server.StaticTools.NumberOfAllowedRequests = builder.Configuration.GetSection("SiteSettings").GetValue<int>("NumberOfAllowedRequests");
 
 builder.Services.AddScoped<MailServices>(xd => { // SMTP Ayalarý
     var res = new MailServices();

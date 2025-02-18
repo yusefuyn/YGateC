@@ -75,6 +75,11 @@ else
         StateHasChanged();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnInitializedAsync();
+    }
+
 
     /// <summary>
     /// Seo'ya uygun değil
