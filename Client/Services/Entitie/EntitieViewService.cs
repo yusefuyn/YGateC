@@ -67,7 +67,7 @@ namespace YGate.Client.Services.Entitie
             var ozelliklerDict = new System.Collections.Generic.Dictionary<string, string>
             {
                 { "]>{GoLink}", PrepateTheLink(entitie) },
-                { "]>{GoOwnerLink}", $"/Show/User/{entitie.OwnerGuid}" },
+                { "]>{GoOwnerLink}", $"/Show/User/{entitie.CreatorGuid}" },
                 { "]>{OwnerName}", entitie.OwnerName },
                 { "]>{CreateDate}", entitie.SharedDateUTC.ToString() },
                 { "]>{CategoryName}", entitie.CategoryName.ToString()}

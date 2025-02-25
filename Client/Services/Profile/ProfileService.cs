@@ -67,7 +67,7 @@ namespace YGate.Client.Services.Profile
 
             var addedObj = new AccountProperties()
             {
-                OwnerGuid = UserID,
+                CreatorGuid = UserID,
                 DBGuid = YGate.String.Operations.GuidGen.Generate("AProperties"),
                 IsActive = true,
                 PropertiesName = PropertiesName,

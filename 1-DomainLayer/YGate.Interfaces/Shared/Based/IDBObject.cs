@@ -10,7 +10,7 @@ namespace YGate.Interfaces.Shared.Based
 {
     public interface IDBObject
     {
-        public string OwnerGuid { get; set; }
+        public string CreatorGuid { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string DBGuid { get; set; }
         [DefaultValue(true)]

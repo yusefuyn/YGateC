@@ -20,7 +20,7 @@
 
     public async Task Ekle()
     {
-        Model.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        Model.CreatorGuid = await profileService.GetPropertiesValue("Guid");
         RequestResult result = await propertService.AddGroup(Model);
         if (result.Result == EnumRequestResult.Success)
             navigationManager.NavigateTo("/Management/PropertyGroup");

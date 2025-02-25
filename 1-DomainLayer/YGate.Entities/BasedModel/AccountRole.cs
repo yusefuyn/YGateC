@@ -13,7 +13,7 @@ namespace YGate.Entities.BasedModel
     {
         [Key]
         public int Id { get; set; }
-        public string OwnerGuid{ get; set; }
+        public string CreatorGuid{ get; set; }
         public string DBGuid{ get; set; }
         [DefaultValue(true)]
         public bool IsActive{ get; set; }

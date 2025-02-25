@@ -30,7 +30,7 @@ namespace YGate.Entities.BasedModel
         [DisplayName("Aktif")]
         public bool IsActive { get; set; }
         [DisplayName("Sahibi")]
-        public string OwnerGuid { get; set; }
+        public string CreatorGuid { get; set; }
         [DisplayName("Şifrenin Sha256 algoritma İmzası")]
         public string Password { get; set; }
         [DisplayName("Email")]

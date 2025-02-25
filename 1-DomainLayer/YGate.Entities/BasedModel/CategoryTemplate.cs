@@ -23,7 +23,7 @@ namespace YGate.Entities.BasedModel
         public string Name { get; set; }
         public PropertyValueType ValueType { get; set; }
         public string? ValidateRegex { get; set; }
-        public string OwnerGuid { get; set; }
+        public string CreatorGuid { get; set; }
         public string DBGuid { get; set; }
         public bool IsActive { get; set; }
         public bool Seo { get; set; } = false;

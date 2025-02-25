@@ -16,7 +16,7 @@ namespace YGate.Entities.BasedModel
         public string Symbol { get; set; }  // Örneğin "kg", "pcs", "MHz"
         public string MeasurementCategoryGuid { get; set; } // {guid = "123123123", name = "computer measurement",description = ""}
         public string DBGuid { get; set; }
-        public string OwnerGuid { get; set; }
+        public string CreatorGuid { get; set; }
         public bool IsActive { get; set; }
 
         public MeasurementUnit()

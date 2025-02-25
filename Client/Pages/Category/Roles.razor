@@ -86,7 +86,7 @@
                 IsActive = true
             };
 
-        role.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        role.CreatorGuid = await profileService.GetPropertiesValue("Guid");
 
         RequestResult requestResult = await categoryService.AddCategoryRoles(role);
         if (requestResult.Result == EnumRequestResult.Success)

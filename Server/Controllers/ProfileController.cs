@@ -20,7 +20,7 @@ namespace YGate.Server.Controllers
         {
             string UserID = parameter.Parameters.ToString();
             RequestResult result = new("GetMyProperties");
-            var objs = operations.Context.AccountProperties.Where(xd => xd.OwnerGuid == UserID);
+            var objs = operations.Context.AccountProperties.Where(xd => xd.CreatorGuid == UserID);
             result.Object = objs;
             result.Result = EnumRequestResult.Success;
             return YGate.Json.Operations.JsonSerialize.Serialize(result);
@@ -46,9 +46,9 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
 
             var user = operations.Context.Accounts.FirstOrDefault(xd => xd.DBGuid == userGuid);
-            Account userReferance = operations.Context.Accounts.FirstOrDefault(xd => xd.DBGuid == user.OwnerGuid.ToString());
+            Account userReferance = operations.Context.Accounts.FirstOrDefault(xd => xd.DBGuid == user.CreatorGuid.ToString());
 
-            if (user.OwnerGuid.ToString() == "System")
+            if (user.CreatorGuid.ToString() == "System")
             {
                 userReferance = new() { Username = "System" };
             }
@@ -64,7 +64,7 @@ namespace YGate.Server.Controllers
                 Username = user.Username,
                 Status = user.Status.ToString(),
                 ReferanceName = userReferance.Username.ToString(),
-                PublicProperties = operations.Context.AccountProperties.Where(xd => xd.OwnerGuid == user.DBGuid).ToList(),
+                PublicProperties = operations.Context.AccountProperties.Where(xd => xd.CreatorGuid == user.DBGuid).ToList(),
                 PublicRoles = new(),
                 PublicEntities = operations.GetEntitieListByUserDBGuid(userGuid)
             };

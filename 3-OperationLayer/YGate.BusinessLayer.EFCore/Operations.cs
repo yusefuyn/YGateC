@@ -158,14 +158,14 @@ namespace YGate.BusinessLayer.EFCore
                     Email = emial,
                     DBGuid = YGate.String.Operations.GuidGen.Generate("account"),
                     IsActive = true,
-                    OwnerGuid = "Admin",
+                    CreatorGuid = "Admin",
                 };
                 AccountPasswords passwords = new()
                 {
                     CreateDate = DateTime.Now,
                     DBGuid = YGate.String.Operations.GuidGen.Generate("passwd"),
                     IsActive = true,
-                    OwnerGuid = account.DBGuid,
+                    CreatorGuid = account.DBGuid,
                     Password = password,
                 };
 
@@ -200,7 +200,7 @@ namespace YGate.BusinessLayer.EFCore
                     IsActive = c.IsActive,
                     LongDescription = c.LongDescription,
                     Icon = c.Icon,
-                    OwnerGuid = c.OwnerGuid,
+                    CreatorGuid = c.CreatorGuid,
                     ShortDescription = c.ShortDescription,
                     Id = c.Id,
                 }).ToList();
@@ -219,7 +219,7 @@ namespace YGate.BusinessLayer.EFCore
                     Name = c.Name,
                     IsActive = c.IsActive,
                     LongDescription = c.LongDescription,
-                    OwnerGuid = c.OwnerGuid,
+                    CreatorGuid = c.CreatorGuid,
                     ShortDescription = c.ShortDescription,
                     Id = c.Id,
                 })
@@ -238,7 +238,7 @@ namespace YGate.BusinessLayer.EFCore
                     Name = c.Name,
                     IsActive = c.IsActive,
                     LongDescription = c.LongDescription,
-                    OwnerGuid = c.OwnerGuid,
+                    CreatorGuid = c.CreatorGuid,
                     ShortDescription = c.ShortDescription,
                     Id = c.Id,
                 })
@@ -310,15 +310,15 @@ namespace YGate.BusinessLayer.EFCore
             var opres = GetAccount(UserGuid);
             if (opres.Result == EnumOperationResult.Success)
                 list.Accounts = opres.Obj;
-            list.AccountPasswords = Context.AccountsPasswords.Where(xd => xd.OwnerGuid == UserGuid).ToList();
-            list.AccountProperties = Context.AccountProperties.Where(xd => xd.OwnerGuid == UserGuid).ToList();
+            list.AccountPasswords = Context.AccountsPasswords.Where(xd => xd.CreatorGuid == UserGuid).ToList();
+            list.AccountProperties = Context.AccountProperties.Where(xd => xd.CreatorGuid == UserGuid).ToList();
             list.AssignableRoles = Context.Roles.Where(xd => xd.IsActive == true).ToList();
             return list;
         }
 
         public List<EntitieViewModel> GetEntitieListByUserDBGuid(string userDBGuid)
         {
-            var entities = Context.Entities.Where(xd => xd.OwnerGuid == userDBGuid).Select(dx => dx.DBGuid).ToList();
+            var entities = Context.Entities.Where(xd => xd.CreatorGuid == userDBGuid).Select(dx => dx.DBGuid).ToList();
             var returnedList = new List<EntitieViewModel>();
             entities.ForEach(xd =>
             {
@@ -419,7 +419,7 @@ namespace YGate.BusinessLayer.EFCore
         {
             List<string> ListDbGuids = list.Select(l => l.DBGuid).ToList();
             List<string> ListCategoryDBGuids = list.Select(l => l.CategoryDBGuid).ToList();
-            List<string> ownerGuids = list.Select(l => l.OwnerGuid).ToList();
+            List<string> ownerGuids = list.Select(l => l.CreatorGuid).ToList();
 
 
 
@@ -442,8 +442,8 @@ namespace YGate.BusinessLayer.EFCore
             {
                 entitieViewModel.Values = _GetEntitiePropertyValues(xd => xd.EntitieDbGuid == entitieViewModel.DBGuid);
 
-                entitieViewModel.OwnerName = accountDictionary.ContainsKey(entitieViewModel.OwnerGuid)
-                    ? accountDictionary[entitieViewModel.OwnerGuid]
+                entitieViewModel.OwnerName = accountDictionary.ContainsKey(entitieViewModel.CreatorGuid)
+                    ? accountDictionary[entitieViewModel.CreatorGuid]
                     : null;
 
                 if (categoryDictionary.TryGetValue(entitieViewModel.CategoryDBGuid, out var categoryName))

@@ -19,7 +19,7 @@ namespace YGate.Client.Services.Category
 
         public async Task<RequestResult> AddCategory(YGate.Entities.BasedModel.Category category)
         {
-            category.OwnerGuid = await profileService.GetPropertiesValue("Guid"); 
+            category.CreatorGuid = await profileService.GetPropertiesValue("Guid"); 
             var res = await httpClientService.GetPostAsync<RequestResult>(category, "api/Category/AddNewCategory");
             return res;
         }

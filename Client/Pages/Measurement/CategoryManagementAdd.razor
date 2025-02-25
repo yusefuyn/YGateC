@@ -27,7 +27,7 @@
     public string ErrorMessage = "";
     public async void Ekle()
     {
-        model.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        model.CreatorGuid = await profileService.GetPropertiesValue("Guid");
         RequestResult res = await measurementService.AddMeasurementCategory(model);
         if (res.Result == EnumRequestResult.Success)
             navigationManager.NavigateTo("/Management/MeasurementCategory");

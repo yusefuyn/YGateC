@@ -86,7 +86,7 @@ namespace YGate.Server.Controllers
                 DBGuid = userGuid,
                 Email = model.Email,
                 IsActive = true,
-                OwnerGuid = "Admin",
+                CreatorGuid = "Admin",
                 Password = model.Password,
                 Username = model.UserName,
                 Status = AccountStatus.NotVerified
@@ -104,7 +104,7 @@ namespace YGate.Server.Controllers
                 IsActive = true,
                 IssueDate = DateTime.Now,
                 RoleGuid = userRole.DBGuid,
-                OwnerGuid = "Admin",
+                CreatorGuid = "Admin",
             };
 
             operations.Context.AccountRoles.Add(role);
@@ -112,7 +112,7 @@ namespace YGate.Server.Controllers
             var PasswordModel = new AccountPasswords()
             {
                 CreateDate = DateTime.Now,
-                OwnerGuid = accountModel.DBGuid,
+                CreatorGuid = accountModel.DBGuid,
                 IsActive = true,
                 Password = model.Password,
             };

@@ -182,7 +182,7 @@
                 entitiePropertyValue.PropertyValue = templateValue.Value.ToString();
                 entitiePropertyValue.PropertyDBGuid = prdbgd;
                 entitiePropertyValue.EntitieDbGuid = mainEntitie.DBGuid.ToString();
-                entitiePropertyValue.OwnerGuid = OwnerGuid;
+                entitiePropertyValue.CreatorGuid = OwnerGuid;
                 mainEntitie.Values.Add(entitiePropertyValue);
             }
         }
@@ -201,7 +201,7 @@
                 {
                     CategoryName = subCatViewModel.Name,
                     CategoryDBGuid = subCatViewModel.DBGuid,
-                    OwnerGuid = OwnerGuid,
+                    CreatorGuid = OwnerGuid,
                     SharedDateUTC = DateTime.UtcNow,
                     ParentEntitieDBGuid = mainEntitie.DBGuid,
                     IsActive = true,
@@ -220,7 +220,7 @@
                     entitiePropertyValue.PropertyValue = cattempval.Value.ToString();
                     entitiePropertyValue.PropertyDBGuid = prdbgd;
                     entitiePropertyValue.EntitieDbGuid = entityViewModel.DBGuid.ToString();
-                    entitiePropertyValue.OwnerGuid = OwnerGuid;
+                    entitiePropertyValue.CreatorGuid = OwnerGuid;
                     entityViewModel.Values.Add(entitiePropertyValue);
                 }
             }
@@ -247,7 +247,7 @@
         var res = await categoryService.GetCategory(SelectedCategoryGuid);
         categoryViewModel = res.ConvertRequestObject<CategoryViewModel>();
         mainEntitie = new();
-        mainEntitie.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        mainEntitie.CreatorGuid = await profileService.GetPropertiesValue("Guid");
         mainEntitie.CategoryDBGuid = SelectedCategoryGuid;
 
         SubEntitie = new();
@@ -467,7 +467,7 @@
         {
             CategoryTemplateValue categoryTemplateValue = new()
                 {
-                    OwnerGuid = model.OwnerGuid,
+                    CreatorGuid = model.CreatorGuid,
                     Value = addedGuid,
                     CategoryTemplateGuid = model.DBGuid,
                     ValueGroupGuid = val.PropertyGroupGuid

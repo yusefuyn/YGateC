@@ -158,7 +158,7 @@
     {
         CategoryTemplateValue obj = new CategoryTemplateValue()
             {
-                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                CreatorGuid = await profileService.GetPropertiesValue("Guid"),
                 DBGuid = YGate.String.Operations.GuidGen.Generate("CategoryTemplateValue"),
                 CategoryTemplateGuid = model.DBGuid,
                 IsActive = true,
@@ -171,7 +171,7 @@
     {
         CategoryTemplateValue res = new CategoryTemplateValue()
             {
-                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                CreatorGuid = await profileService.GetPropertiesValue("Guid"),
                 ValueGroupGuid = eventArgs.Value.ToString(),
                 DBGuid = YGate.String.Operations.GuidGen.Generate("CategoryTemplateValue"),
                 CategoryTemplateGuid = model.DBGuid,
@@ -184,7 +184,7 @@
     {
         CategoryTemplateValue res = new CategoryTemplateValue()
             {
-                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                CreatorGuid = await profileService.GetPropertiesValue("Guid"),
                 ValueGroupGuid = eventArgs.Value.ToString(),
                 DBGuid = YGate.String.Operations.GuidGen.Generate("categorytemplatevalue"),
                 CategoryTemplateGuid = model.DBGuid,
@@ -199,11 +199,11 @@
             {
                 DBGuid = YGate.String.Operations.GuidGen.Generate("categorytemplate"),
                 CategoryId = SelectedCategory.Id,
-                OwnerGuid = await profileService.GetPropertiesValue("Guid"),
+                CreatorGuid = await profileService.GetPropertiesValue("Guid"),
                 Added = false,
                 categoryTemplateValues = new() { new() {
                     CategoryTemplateGuid = model.DBGuid,
-                    OwnerGuid = await profileService.GetPropertiesValue("Guid")
+                    CreatorGuid = await profileService.GetPropertiesValue("Guid")
                 }}
             };
 

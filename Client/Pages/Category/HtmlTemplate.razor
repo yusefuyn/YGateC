@@ -117,13 +117,13 @@
     public async Task Save()
     {
         RequestResult result = null;
-        if (template.OwnerGuid != null)
+        if (template.CreatorGuid != null)
         {
             result = await categoryService.ModifyHtmlTemplate(template);
         }
         else
         {
-            template.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+            template.CreatorGuid = await profileService.GetPropertiesValue("Guid");
             result = await categoryService.AddHtmlTemplate(template);
         }
 

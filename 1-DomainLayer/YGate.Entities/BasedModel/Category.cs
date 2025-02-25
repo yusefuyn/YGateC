@@ -17,7 +17,7 @@ namespace YGate.Entities.BasedModel
         public string? LongDescription { get; set; }
         public string? ShortDescription { get; set; }
         public string Icon { get; set; }
-        public string OwnerGuid { get; set; }
+        public string CreatorGuid { get; set; }
         public string DBGuid { get; set; }
         public bool IsActive { get; set; }
         public int? ParentCategoryId { get; set; }

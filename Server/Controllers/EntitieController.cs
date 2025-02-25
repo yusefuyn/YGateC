@@ -143,7 +143,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
 
             List<EntitieViewModel> list = YGate.Mapping.Operations.ConvertToList<EntitieViewModel>(
-                operations.Context.Entities.Where(xd => xd.OwnerGuid == ownerGuid).ToList()
+                operations.Context.Entities.Where(xd => xd.CreatorGuid == ownerGuid).ToList()
                 );
 
 

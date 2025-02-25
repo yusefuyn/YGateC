@@ -21,7 +21,7 @@
     protected override async Task OnInitializedAsync()
     {
         role.DBGuid = YGate.String.Operations.GuidGen.Generate("role");
-        role.OwnerGuid = await profileService.GetPropertiesValue("Guid");
+        role.CreatorGuid = await profileService.GetPropertiesValue("Guid");
     }
 
     public async Task Ekle()

@@ -61,7 +61,7 @@ namespace YGate.Server.Controllers
             CategoryRoles ob = parameter.ConvertParameters<CategoryRoles>();
 
 
-            RequestResult returned = new($"AddCategoryRoles {ob.RoleGuid} {ob.CategoryGuid} {ob.OwnerGuid}");
+            RequestResult returned = new($"AddCategoryRoles {ob.RoleGuid} {ob.CategoryGuid} {ob.CreatorGuid}");
             returned.To = EnumTo.Server;
             returned.Result = EnumRequestResult.Success;
             ob.DBGuid = YGate.String.Operations.GuidGen.Generate("CategoryRole");
