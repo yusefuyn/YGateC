@@ -1,0 +1,68 @@
+﻿@page "/Management/Entitie/Transfer/{Hash}/{ObjectGuid}"
+@using YGate.Client.Services.Entitie
+@inject IEntitieService entitieService
+@inject IJSRuntime jSRuntime
+@inject NavigationManager navigationManager
+<div class="container">
+    <div class="container-header">
+        <h3>Transfer @ObjectGuid.ToString()</h3>
+    </div>
+    <YGate.Client.Shared.Components.Entry Placeholder="Victim Guid" @bind-Value="VictimGuid" entryType="Shared.Components.Entry.EntryType.Text"></YGate.Client.Shared.Components.Entry>
+    <YGate.Client.Shared.Components.Entry Placeholder="Your Password" entryType="Shared.Components.Entry.EntryType.Password" @bind-Value="Password"></YGate.Client.Shared.Components.Entry>
+    <YGate.Client.Shared.Components.SpecialButton OnClick="async ()=> await TransferOp()" Text="Transfer Et"></YGate.Client.Shared.Components.SpecialButton>
+</div>
+
+
+@code {
+
+    [Parameter] public string Hash { get; set; }
+    [Parameter] public string ObjectGuid { get; set; }
+    public string VictimGuid { get; set; } = "";
+    public string Password { get; set; } = "";
+
+    public async Task TransferOp()
+    {
+        var res = await entitieService.Transfer(VictimGuid, ObjectGuid, Password);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        {
+            StartCountdown();
+            await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString() + "\n 3 Saniye sonra yönlendirileceksiniz. \nLütfen bekleyiniz.");
+        }
+        else
+            await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
+
+    }
+
+
+    int countdown = 3;
+
+    System.Timers.Timer timer;
+
+    private void StartCountdown()
+    {
+        timer = new(1000);
+        timer.Enabled = true;
+        timer.Elapsed += OnTimerElapsed;
+    }
+
+    private void OnTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    {
+        if (countdown > 0)
+        {
+            countdown--;
+            InvokeAsync(StateHasChanged); // UI'yi güncelle
+        }
+        else
+        {
+            navigationManager.NavigateTo("/Management/MyEntities");
+            timer?.Stop();
+            timer?.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Stop();
+        timer?.Dispose();
+    }
+}

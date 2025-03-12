@@ -6,6 +6,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
+using YGate.Interfaces.Application.Advanced;
 using YGate.Json.Operations;
 using YGate.Server.Attributes;
 
@@ -33,7 +34,6 @@ namespace YGate.Server.Controllers
             EntitieRequestViewModel RequestModel = parameter.ConvertParameters<EntitieRequestViewModel>();
             RequestResult result = new("Add Entitie");
             result.Result = EnumRequestResult.Success;
-
             #region ModeliDuzenleme
             RequestModel.MainModel.DBGuid = YGate.String.Operations.GuidGen.Generate("Entitie");
             RequestModel.MainModel.Values = RequestModel.MainModel.Values
@@ -58,9 +58,7 @@ namespace YGate.Server.Controllers
                 return subModel;
             }).ToList();
             #endregion
-
             string json = YGate.Json.Operations.JsonSerialize.Serialize(RequestModel);
-
             #region DBKayıt
             operations.Context.Entities.Add(RequestModel.MainModel);
             operations.Context.EntitiePropertyValues.AddRange(RequestModel.MainModel.Values);
@@ -70,14 +68,75 @@ namespace YGate.Server.Controllers
                 operations.Context.EntitiePropertyValues.AddRange(xd.Values);
             });
             #endregion
-
+            #region TransferObjesiHazirlama
+            EntitieOwnerTransfer entitieOwnerTransfer = new()
+            {
+                DateTimeUTC = DateTime.UtcNow,
+                EntitieGuid = RequestModel.MainModel.DBGuid,
+                OldOwnerGuid = "System",
+                NewOwnerGuid = RequestModel.MainModel.CreatorGuid,
+                Hash = YGate.String.Operations.Hash.ComputeSHA256("System")
+            };
+            operations.Context.EntitieOwner.Add(entitieOwnerTransfer);
+            #endregion
             operations.Context.SaveChanges();
             result.Object = RequestModel;
             return YGate.Json.Operations.JsonSerialize.Serialize(result);
         }
 
+        [HttpPost]
+        [GetAuthorizeToken]
+        public string Transfer([FromBody] RequestParameter parameter)
+        {
+            RequestResult result = new("Transfer Object");
+            dynamic dn = parameter.ConvertParameters<dynamic>();
 
+            string EntitieGuid = dn["ObjectGuid"];
+            string TransferVictimGuid = dn["VictimGuid"];
+            string OwnerPassword = dn["Password"];
+            string OwnerID = parameter.Token.ToString();
 
+            if (!operations.ObjectOwnedByTheUser(EntitieGuid, OwnerID))
+            {
+                result.Result = EnumRequestResult.Error;
+                result.ShortDescription = "The object is not yours.";
+                result.LongDescription = "The object is not yours.";
+                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            }
+
+            if (!operations.IsThereSuchAUser(TransferVictimGuid))
+            {
+                result.Result = EnumRequestResult.Error;
+                result.ShortDescription = "There is no such user.";
+                result.LongDescription = "There is no such user.";
+                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            }
+
+            if (!operations.UserPasswordIsCorrect(OwnerID,OwnerPassword))
+            {
+                result.Result = EnumRequestResult.Error;
+                result.ShortDescription = "Your password is incorrect.";
+                result.LongDescription = "Your password is incorrect.";
+                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            }
+
+            EntitieOwnerTransfer entitieOwnerTransfer = new() {
+                EntitieGuid = EntitieGuid,
+                NewOwnerGuid = TransferVictimGuid,
+                OldOwnerGuid = OwnerID,
+                DateTimeUTC = DateTime.UtcNow,
+                Hash = "0",
+            };
+
+            operations.Context.EntitieOwner.Add(entitieOwnerTransfer);
+            operations.Context.SaveChanges();
+
+            result.Result = EnumRequestResult.Success;
+            result.ShortDescription = "Operation Success";
+            result.LongDescription = "Operation Success";
+
+            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+        }
 
 
 
@@ -100,7 +159,9 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
 
 
-            result.Object = operations.GetEntitieViewModelByEntitieDBGuid(Guid); // Serileştirilir
+            var returnedobj = operations.GetEntitieViewModelByEntitieDBGuid(Guid); // Serileştirilir
+            returnedobj.Transfers.AddRange(operations.GetEntitieTransferList(Guid));
+            result.Object = returnedobj;
             return YGate.Json.Operations.JsonSerialize.Serialize(result);// Cavabunga.
         }
 

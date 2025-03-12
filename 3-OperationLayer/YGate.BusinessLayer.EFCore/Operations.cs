@@ -19,6 +19,7 @@ using YGate.Entities.ViewModels;
 using YGate.Mapping;
 using Azure;
 using YGate.Entities.ResultModel;
+using System.Configuration;
 
 namespace YGate.BusinessLayer.EFCore
 {
@@ -417,11 +418,14 @@ namespace YGate.BusinessLayer.EFCore
         /// <param name="list"></param>
         public void _EntitieViewModelGetInfo(ref List<EntitieViewModel> list)
         {
+            var dbguids = list.ToList().Select(ent => ent.DBGuid);
             List<string> ListDbGuids = list.Select(l => l.DBGuid).ToList();
             List<string> ListCategoryDBGuids = list.Select(l => l.CategoryDBGuid).ToList();
-            List<string> ownerGuids = list.Select(l => l.CreatorGuid).ToList();
-
-
+            List<string> ownerGuids = Context.EntitieOwner
+                .Where(xd => dbguids.Contains(xd.EntitieGuid))
+                .OrderByDescending(xd => xd.DateTimeUTC)
+                .Select(xd => xd.NewOwnerGuid)
+                .ToList();
 
             List<Category> categories = Context.Categories
                 .Where(category => ListCategoryDBGuids.Contains(category.DBGuid))
@@ -431,7 +435,8 @@ namespace YGate.BusinessLayer.EFCore
                 .Where(template => ListCategoryDBGuids.Contains(template.CategoryGuid))
                 .ToList();
 
-            Dictionary<string, string> accountDictionary = Context.Accounts
+            Dictionary<string, string> accountDictionary =
+            Context.Accounts
                 .Where(xd => ownerGuids.Contains(xd.DBGuid))
                 .ToDictionary(xd => xd.DBGuid, xd => xd.Username);
 
@@ -457,7 +462,6 @@ namespace YGate.BusinessLayer.EFCore
             foreach (var parentModel in ParentModels)
             {
                 _SetChildEntities(ref list, parentModel);
-
             }
         }
 
@@ -605,6 +609,37 @@ namespace YGate.BusinessLayer.EFCore
             returned.Add(administratorRole);
 
             return returned;
+        }
+
+        public bool ObjectOwnedByTheUser(object objectguid, object ownerguid)
+        {
+            if (Context.EntitieOwner.Where(xd => xd.EntitieGuid == objectguid && xd.NewOwnerGuid == ownerguid).FirstOrDefault() == null)
+                return false;
+            else
+                return true;
+        }
+
+        public bool IsThereSuchAUser(string UserID)
+        {
+            if (Context.Accounts.Where(xd => xd.DBGuid == UserID).Count() > 0)
+                return true;
+            else
+                return false;
+        }
+
+        public bool UserPasswordIsCorrect(string ownerGuid,string ownerPassword)
+        {
+            string pass = YGate.String.Operations.Hash.SaltAndSHA512(ownerPassword);
+            var users = Context.Accounts.Where(xd => xd.DBGuid == ownerGuid && xd.Password == pass);
+            if (users.Count() > 0)
+                return true;
+            else
+                return false;
+        }
+
+        public List<EntitieOwnerTransfer> GetEntitieTransferList(string guid)
+        {
+            return Context.EntitieOwner.Where(xd=> xd.EntitieGuid == guid).ToList();
         }
         #endregion
 

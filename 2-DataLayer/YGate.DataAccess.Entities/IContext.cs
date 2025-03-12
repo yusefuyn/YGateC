@@ -22,6 +22,7 @@ namespace YGate.DataAccess.Entities
 
         DbSet<Entitie> Entities { get; set; }
         DbSet<EntitiePropertyValue> EntitiePropertyValues { get; set; }
+        DbSet<EntitieOwnerTransfer> EntitieOwner { get; set; }
 
         DbSet<CategoryHtmlTemplate> CategoryHtmlTemplates { get; set; }
         DatabaseFacade Database { get; set; }

@@ -11,6 +11,7 @@ namespace YGate.Entities.ViewModels
     {
         public string ReferanceName { get; set; } = "";
         public string Username { get; set; } = "";
+        public string Guid { get; set; } = "";
         public List<Role> PublicRoles { get; set; }
         public List<AccountProperties> PublicProperties { get; set; }
         public List<EntitieViewModel> PublicEntities { get; set; }

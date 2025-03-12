@@ -57,5 +57,9 @@ namespace YGate.Client.Services.Entitie
             return res;
         }
 
+        public async Task<RequestResult> Transfer(string VictimGuid, string ObjectGuid, string YourPassword)
+        {
+            return await httpClientService.GetPostAsync<RequestResult>(new { VictimGuid = VictimGuid, ObjectGuid = ObjectGuid, Password = YourPassword }, "api/Entitie/Transfer");
+        }
     }
 }

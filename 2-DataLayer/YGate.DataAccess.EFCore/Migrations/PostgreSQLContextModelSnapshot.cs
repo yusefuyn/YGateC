@@ -30,6 +30,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -40,10 +44,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -75,16 +75,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -103,16 +103,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("PropertiesName")
                         .IsRequired()
@@ -138,6 +138,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -151,10 +155,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("RoleGuid")
                         .IsRequired()
@@ -180,6 +180,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -195,10 +199,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -225,16 +225,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Template")
                         .IsRequired()
@@ -257,16 +257,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("RoleGuid")
                         .IsRequired()
@@ -288,6 +288,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -296,10 +300,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -332,16 +332,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .HasColumnType("text");
@@ -366,16 +366,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("ParentEntitieDBGuid")
                         .HasColumnType("text");
@@ -386,6 +386,38 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Entities");
+                });
+
+            modelBuilder.Entity("YGate.Entities.BasedModel.EntitieOwnerTransfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateTimeUTC")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EntitieGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NewOwnerGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldOwnerGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EntitieOwner");
                 });
 
             modelBuilder.Entity("YGate.Entities.BasedModel.EntitiePropertyValue", b =>
@@ -400,6 +432,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -410,10 +446,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("PropertyDBGuid")
                         .HasColumnType("text");
@@ -439,6 +471,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -450,10 +486,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -473,6 +505,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -485,10 +521,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -509,6 +541,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -517,10 +553,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -537,16 +569,16 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("PropertyGroupGuid")
                         .IsRequired()
@@ -569,6 +601,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("text");
@@ -580,10 +616,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("text");
 

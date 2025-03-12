@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YGate.DataAccess.Mssql.EFCore;
 
@@ -11,9 +12,11 @@ using YGate.DataAccess.Mssql.EFCore;
 namespace YGate.DataAccess.Mssql.EFCore.Migrations
 {
     [DbContext(typeof(MsSQLContext))]
-    partial class MsSQLContextModelSnapshot : ModelSnapshot
+    [Migration("20250225161947_init27")]
+    partial class init27
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -386,38 +389,6 @@ namespace YGate.DataAccess.Mssql.EFCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Entities");
-                });
-
-            modelBuilder.Entity("YGate.Entities.BasedModel.EntitieOwnerTransfer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTimeUTC")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EntitieGuid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Hash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NewOwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OldOwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EntitieOwner");
                 });
 
             modelBuilder.Entity("YGate.Entities.BasedModel.EntitiePropertyValue", b =>

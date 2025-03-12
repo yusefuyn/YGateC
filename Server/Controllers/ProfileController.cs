@@ -63,6 +63,7 @@ namespace YGate.Server.Controllers
             {
                 Username = user.Username,
                 Status = user.Status.ToString(),
+                Guid = user.DBGuid.ToString(),
                 ReferanceName = userReferance.Username.ToString(),
                 PublicProperties = operations.Context.AccountProperties.Where(xd => xd.CreatorGuid == user.DBGuid).ToList(),
                 PublicRoles = new(),

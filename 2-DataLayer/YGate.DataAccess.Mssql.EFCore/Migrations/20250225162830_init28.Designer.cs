@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YGate.DataAccess.Mssql.EFCore;
 
@@ -11,9 +12,11 @@ using YGate.DataAccess.Mssql.EFCore;
 namespace YGate.DataAccess.Mssql.EFCore.Migrations
 {
     [DbContext(typeof(MsSQLContext))]
-    partial class MsSQLContextModelSnapshot : ModelSnapshot
+    [Migration("20250225162830_init28")]
+    partial class init28
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -390,11 +393,11 @@ namespace YGate.DataAccess.Mssql.EFCore.Migrations
 
             modelBuilder.Entity("YGate.Entities.BasedModel.EntitieOwnerTransfer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<DateTime>("DateTimeUTC")
                         .HasColumnType("datetime2");
@@ -415,7 +418,7 @@ namespace YGate.DataAccess.Mssql.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("EntitieOwner");
                 });

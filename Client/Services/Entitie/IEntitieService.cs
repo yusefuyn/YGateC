@@ -18,5 +18,7 @@ namespace YGate.Client.Services.Entitie
         public Task<RequestResult> DeleteEntity(string guid);
 
         public Task<RequestResult> GetAllEntitieButCategoryId(string Id);
+
+        public Task<RequestResult> Transfer(string VictimGuid, string ObjectGuid, string YourPassword);
     }
 }

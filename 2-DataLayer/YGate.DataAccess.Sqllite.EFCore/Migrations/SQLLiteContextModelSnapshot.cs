@@ -23,6 +23,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -33,10 +37,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -66,16 +66,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -92,16 +92,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("PropertiesName")
                         .IsRequired()
@@ -125,6 +125,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -137,10 +141,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("IssueDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RoleGuid")
@@ -165,6 +165,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -180,10 +184,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -208,16 +208,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Template")
                         .IsRequired()
@@ -238,16 +238,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("RoleGuid")
                         .IsRequired()
@@ -267,6 +267,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -275,10 +279,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -309,16 +309,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
                         .HasColumnType("TEXT");
@@ -341,16 +341,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("ParentEntitieDBGuid")
                         .HasColumnType("TEXT");
@@ -363,6 +363,36 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                     b.ToTable("Entities");
                 });
 
+            modelBuilder.Entity("YGate.Entities.BasedModel.EntitieOwnerTransfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateTimeUTC")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EntitieGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NewOwnerGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OldOwnerGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EntitieOwner");
+                });
+
             modelBuilder.Entity("YGate.Entities.BasedModel.EntitiePropertyValue", b =>
                 {
                     b.Property<int>("Id")
@@ -370,6 +400,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CategoryTemplateGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatorGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -383,10 +417,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("PropertyDBGuid")
                         .HasColumnType("TEXT");
@@ -410,6 +440,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -421,10 +455,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -442,6 +472,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -454,10 +488,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -476,6 +506,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -484,10 +518,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -502,16 +532,16 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("OwnerGuid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("PropertyGroupGuid")
                         .IsRequired()
@@ -532,6 +562,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DBGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -543,10 +577,6 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

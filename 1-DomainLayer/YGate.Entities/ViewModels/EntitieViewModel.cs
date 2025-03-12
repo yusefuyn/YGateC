@@ -14,6 +14,7 @@ namespace YGate.Entities.ViewModels
         public EntitieViewModel()
         {
             Values = new();
+            Transfers = new();
         }
 
         [NotMapped]
@@ -30,5 +31,8 @@ namespace YGate.Entities.ViewModels
 
         [NotMapped]
         public List<EntitieViewModel> ChildEntitie { get; set; }
+
+        [NotMapped]
+        public List<EntitieOwnerTransfer> Transfers { get; set; }
     }
 }

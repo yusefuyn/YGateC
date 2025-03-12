@@ -11,12 +11,28 @@
 </style>
 <div class="container">
     @view
+    <br />
+    @if (entitieviewModel.Transfers != null && entitieviewModel.Transfers.Count() > 0)
+    {
+
+        <div class="container">
+
+            <div class="container-header">
+                <h3>Object Transfer History</h3>
+            </div>
+            @foreach (var trans in entitieviewModel.Transfers)
+            {
+                <p>@trans.OldOwnerGuid.ToString() -> @trans.NewOwnerGuid - @trans.DateTimeUTC.ToString()</p>
+            }
+        </div>
+    }
 </div>
+
 @code {
     [Parameter]
     public string Guid { get; set; }
 
-    private YGate.Entities.ViewModels.EntitieViewModel entitieviewModel { get; set; }
+    private YGate.Entities.ViewModels.EntitieViewModel entitieviewModel { get; set; } = new();
 
     private string CssStyle { get; set; } = "";
 
@@ -27,10 +43,9 @@
         if (res1.Result == YGate.Entities.EnumRequestResult.Success)
             entitieviewModel = res1.ConvertRequestObject<YGate.Entities.ViewModels.EntitieViewModel>();
 
-            view = entitieViewService.GetDataView(entitieviewModel);
+        view = entitieViewService.GetDataView(entitieviewModel);
 
         StateHasChanged();
-
         await jsRuntime.InvokeVoidAsync("ycustomimagelistComponentLoad");
     }
 
