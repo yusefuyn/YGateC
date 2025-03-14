@@ -1,0 +1,24 @@
+﻿@page "/Show/{pagename}/{pageparameter}"
+@page "/Show/{pagename}"
+@using YGate.Client.Services.Page
+@using YGate.Entities.BasedModel
+@inject IPageService pageService
+
+@PageView
+
+@code {
+    [Parameter] public string pagename { get; set; }
+    [Parameter] public string pageparameter { get; set; }
+    private MarkupString PageView { get; set; } = new("<p>Şu anda sayfa getiriliyor.</p>");
+
+    protected override async Task OnInitializedAsync()
+    {
+        DynamicPageDynamicParameter dynamicPage = new(pagename);
+        List<string> Parameters = pageparameter.Split('&').ToList();
+        Parameters.ForEach(xd => dynamicPage.Parameters.Add(new() { Name = xd.Split('=')[0], Value = xd.Split('=')[1], ParameterType = "String" }));
+        var res = await pageService.GetAsync(dynamicPage);
+        string pa = res.Object.ToString();
+        PageView = new(pa);
+        StateHasChanged();
+    } 
+}

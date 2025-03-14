@@ -354,6 +354,38 @@ namespace YGate.DataAccess.Mssql.EFCore.Migrations
                     b.ToTable("CategoryTemplateValues");
                 });
 
+            modelBuilder.Entity("YGate.Entities.BasedModel.DynamicPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DBGuid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Index")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DynamicPages");
+                });
+
             modelBuilder.Entity("YGate.Entities.BasedModel.Entitie", b =>
                 {
                     b.Property<int>("Id")

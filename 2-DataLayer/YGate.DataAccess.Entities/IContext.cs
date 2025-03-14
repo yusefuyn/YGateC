@@ -31,6 +31,7 @@ namespace YGate.DataAccess.Entities
         DbSet<AccountRole> AccountRoles { get; set; }
 
         DbSet<CategoryRoles> CategoryRoles { get; set; }
+        DbSet<DynamicPage> DynamicPages { get; set; }
 
     }
 }

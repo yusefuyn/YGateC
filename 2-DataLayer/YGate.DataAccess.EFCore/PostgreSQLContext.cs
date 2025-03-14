@@ -35,6 +35,7 @@ namespace YGate.DataAccess.Postgresql.EFCore
         public DbSet<CategoryRoles> CategoryRoles { get; set; }
         public DbSet<CategoryTemplate> CategoryTemplates { get; set; }
         public DbSet<CategoryTemplateValue> CategoryTemplateValues { get; set; }
+        public DbSet<DynamicPage> DynamicPages { get; set; }
         public DbSet<MeasurementCategory> MeasurementCategories { get; set; }
         public DbSet<MeasurementUnit> MeasurementUnits { get; set; }
         public DbSet<PropertyGroup> PropertyGroups { get; set; }

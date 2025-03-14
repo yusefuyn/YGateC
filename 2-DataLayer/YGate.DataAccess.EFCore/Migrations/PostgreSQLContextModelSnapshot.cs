@@ -354,6 +354,38 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.ToTable("CategoryTemplateValues");
                 });
 
+            modelBuilder.Entity("YGate.Entities.BasedModel.DynamicPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatorGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DBGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Index")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DynamicPages");
+                });
+
             modelBuilder.Entity("YGate.Entities.BasedModel.Entitie", b =>
                 {
                     b.Property<int>("Id")

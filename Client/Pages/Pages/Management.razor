@@ -1,0 +1,68 @@
+﻿@page "/Management/Pages"
+@using YGate.Client.Services.Page
+@using YGate.Entities.BasedModel
+@inject IPageService pageService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jSRuntime
+<div class="container">
+    <div class="container-header">
+        <h3>Management</h3>
+        <YGate.Client.Shared.Components.SpecialButton Style="width:200px;" Text="Add New Page" OnClick='()=> navigationManager.NavigateTo("/Management/Pages/Add")'></YGate.Client.Shared.Components.SpecialButton>
+    </div>
+
+    @if (pageList != null && pageList.Count() > 0)
+    {
+
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">IsActive</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Update</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in pageList)
+                {
+
+                    <tr class="table-row">
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.Name</td>
+                        <td>@temp.IsActive.ToString()</td>
+                        <td>@temp.CreatorGuid</td>
+                        <td>
+                            <a class="special-button" href="">Update</a>
+                        </td>
+                        <td>
+                            <YGate.Client.Shared.Components.SpecialButton Text="Delete" Class="btn-danger" OnClick="async ()=> await DeletePage(temp.DBGuid)"></YGate.Client.Shared.Components.SpecialButton>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    List<DynamicPage> pageList { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await pageService.GetAll();
+        pageList = res.ConvertRequestObject<List<DynamicPage>>();
+        StateHasChanged();
+    }
+
+    public async Task DeletePage(string PageDbGuid)
+    {
+        var ques = await jSRuntime.InvokeAsync<bool>("window.custom_confirm", "Bu sayfayı silmek istediğinizden emin misiniz?");
+        if (!ques) return;
+
+        var res = await pageService.Delete(PageDbGuid);
+        pageList = res.ConvertRequestObject<List<DynamicPage>>();
+        StateHasChanged();
+    }
+}

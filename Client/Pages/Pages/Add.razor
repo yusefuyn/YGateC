@@ -1,0 +1,27 @@
+﻿@page "/Management/Pages/Add"
+@using YGate.Client.Services.Page
+@using YGate.Entities.BasedModel
+@inject IPageService pageService
+@inject IJSRuntime jSRuntime
+@inject NavigationManager navigationManager
+<div class="container">
+    <div class="container-header">
+        <h3>Add</h3>
+    </div>
+    <YGate.Client.Shared.Components.Entry Placeholder="Name" @bind-Value="page.Name"></YGate.Client.Shared.Components.Entry>
+    <YGate.Client.Shared.Components.Entry Placeholder="Body" @bind-Value="page.Index"></YGate.Client.Shared.Components.Entry>
+    <YGate.Client.Shared.Components.SpecialButton Text="Ok" OnClick="async()=> await AddPage()"></YGate.Client.Shared.Components.SpecialButton>
+</div>
+
+@code {
+    DynamicPage page { get; set; } = new();
+
+    public async Task AddPage()
+    {
+        var res = await pageService.Add(page);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            navigationManager.NavigateTo("/Management/Pages");
+        await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
+
+    }
+}

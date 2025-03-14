@@ -30,6 +30,7 @@ namespace YGate.DataAccess.Sqllite.EFCore
         public int SaveChanges => base.SaveChanges();
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountPasswords> AccountsPasswords { get; set; }
+        public DbSet<DynamicPage> DynamicPages { get; set; }
         public DbSet<AccountProperties> AccountProperties { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<AccountRole> AccountRoles { get; set; }

@@ -48,6 +48,7 @@ namespace YGate.DataAccess.Mssql.EFCore
         public DatabaseFacade Database { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<AccountRole> AccountRoles { get; set; }
+        public DbSet<DynamicPage> DynamicPages { get; set; }
 
 
     }
