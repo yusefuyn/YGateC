@@ -34,7 +34,7 @@
                         <td>@temp.IsActive.ToString()</td>
                         <td>@temp.CreatorGuid</td>
                         <td>
-                            <a class="special-button" href="">Update</a>
+                            <a class="special-button" href='/Management/Pages/Update/@temp.DBGuid.ToString()'>Update</a>
                         </td>
                         <td>
                             <YGate.Client.Shared.Components.SpecialButton Text="Delete" Class="btn-danger" OnClick="async ()=> await DeletePage(temp.DBGuid)"></YGate.Client.Shared.Components.SpecialButton>

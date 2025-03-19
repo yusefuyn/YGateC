@@ -112,7 +112,7 @@ namespace YGate.Server.Controllers
                 return YGate.Json.Operations.JsonSerialize.Serialize(result);
             }
 
-            if (!operations.UserPasswordIsCorrect(OwnerID,OwnerPassword))
+            if (!operations.UserPasswordIsCorrect(OwnerID, OwnerPassword))
             {
                 result.Result = EnumRequestResult.Error;
                 result.ShortDescription = "Your password is incorrect.";
@@ -120,7 +120,8 @@ namespace YGate.Server.Controllers
                 return YGate.Json.Operations.JsonSerialize.Serialize(result);
             }
 
-            EntitieOwnerTransfer entitieOwnerTransfer = new() {
+            EntitieOwnerTransfer entitieOwnerTransfer = new()
+            {
                 EntitieGuid = EntitieGuid,
                 NewOwnerGuid = TransferVictimGuid,
                 OldOwnerGuid = OwnerID,
@@ -192,20 +193,35 @@ namespace YGate.Server.Controllers
         /// <param name="ownerGuid"></param>
         /// <returns></returns>
         [HttpPost]
+        [GetAuthorizeToken]
         public string GetAllMyEntitieViewModel([FromBody] RequestParameter parameter)
         {
 
-            string ownerGuid = parameter.Parameters.ToString();
+            string ownerGuid = parameter.Token.ToString();
+            RequestResult result = new("Get Entities");
+            result.Result = EnumRequestResult.Success;
+
+
+            if (string.IsNullOrEmpty(ownerGuid))
+            {
+                result.Result = EnumRequestResult.Error;
+                result.ShortDescription = "There is no valid token or you are not logged in.";
+                result.LongDescription = "There is no valid token or you are not logged in.";
+                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            }
+
             // TODO : Authorize attribute'sini server tarafında yaptıktan sonra gönderilen ownerGuid ve attribute ile alınan cookie değerindeki userıd'in bir bağlantısı
             // var mı yok mu ona bakacağız ona göre geri döndüreceğiz.
             // Paylaşımlı varlık yapısı için.
 
-            RequestResult result = new("Get Entities");
-            result.Result = EnumRequestResult.Success;
-
-            List<EntitieViewModel> list = YGate.Mapping.Operations.ConvertToList<EntitieViewModel>(
-                operations.Context.Entities.Where(xd => xd.CreatorGuid == ownerGuid).ToList()
-                );
+            List<string> EntitieGuidList = operations.Context.EntitieOwner
+                .Where(xd => xd.NewOwnerGuid == ownerGuid)
+                .Select(xd => xd.EntitieGuid)
+                .ToList();
+            List<Entitie> EntitieList = operations.Context.Entities
+                .Where(xd => EntitieGuidList.Contains(xd.DBGuid))
+                .ToList();
+            List<EntitieViewModel> list = YGate.Mapping.Operations.ConvertToList<EntitieViewModel>(EntitieList);
 
 
             operations._EntitieViewModelGetInfo(ref list);

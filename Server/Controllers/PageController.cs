@@ -36,6 +36,59 @@ namespace YGate.Server.Controllers
         }
 
         [HttpPost]
+        [GetAuthorizeToken]
+        public async Task<string> GetPageObject([FromBody] RequestParameter parameter)
+        {
+            RequestResult requestResult = new("Get Page Object");
+            requestResult.Result = EnumRequestResult.Success;
+            string pageguid = parameter.Parameters.ToString();
+            DynamicPage obj = operations.Context.DynamicPages.FirstOrDefault(xd => xd.DBGuid == pageguid);
+            requestResult.Object = obj;
+
+            if (string.IsNullOrEmpty(parameter.Token.ToString()) && obj.CreatorGuid != parameter.Token.ToString())
+            {
+                requestResult.Result = EnumRequestResult.Error;
+                requestResult.LongDescription = "The object does not belong to you or you are not logged in.";
+                requestResult.ShortDescription = "The object does not belong to you or you are not logged in.";
+                requestResult.Object = null;
+            }
+
+            return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
+        }
+
+        [HttpPost]
+        [GetAuthorizeToken]
+        public async Task<string> UpdatePageObject([FromBody] RequestParameter parameter)
+        {
+            RequestResult requestResult = new("Update Page");
+
+
+            DynamicPage page = parameter.ConvertParameters<DynamicPage>();
+            DynamicPage updatePage = operations.Context.DynamicPages.FirstOrDefault(xd=> xd.DBGuid == page.DBGuid);
+
+            if (updatePage.CreatorGuid != parameter.Token.ToString())
+            {
+                requestResult.Result = EnumRequestResult.Error;
+                requestResult.LongDescription = "The object does not belong to you or you are not logged in.";
+                requestResult.ShortDescription = "The object does not belong to you or you are not logged in.";
+                requestResult.Object = null;
+            }
+            else
+            {
+                requestResult.Result = EnumRequestResult.Success;
+                updatePage.Index = page.Index;
+                updatePage.Name = page.Name;
+                operations.Context.DynamicPages.Update(updatePage);
+                operations.Context.SaveChanges();
+                requestResult.LongDescription = "Operations success";
+                requestResult.ShortDescription = "Operations success";
+
+            }
+            return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
+
+        }
+
+        [HttpPost]
         public async Task<string> GetPageButParameterPool([FromBody] RequestParameter parameter)
         {   // Burada şöyle olacak yine bir dynamicpageparameter objesine benzer bir obje olacak
             // sadece parametre havuzunu içinde barındırmayacak sadece parametre havuzunun id'sini içinde barındıracak

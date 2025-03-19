@@ -1,0 +1,37 @@
+﻿@page "/Management/Pages/Update/{pageguid}"
+@using YGate.Client.Services.Page
+@using YGate.Entities.BasedModel
+@using YGate.Client.Shared.Components
+@inject IPageService pageService
+@inject IJSRuntime jSRuntime
+<h3>Update</h3>
+<div class="container">
+    <div class="container-header">
+        <h3>Add</h3>
+    </div>
+    <Entry Placeholder="Name" @bind-Value="page.Name"></Entry>
+    <Entry Placeholder="Body" @bind-Value="page.Index"></Entry>
+    <SpecialButton Text="Ok" OnClick="async()=> await UpdatePage()"></SpecialButton>
+</div>
+
+
+@code {
+    [Parameter] public string pageguid { get; set; }
+    DynamicPage page { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await pageService.GetPageObject(pageguid);
+        page = res.ConvertRequestObject<DynamicPage>();
+        StateHasChanged();
+    }
+
+    public async Task UpdatePage()
+    {
+        var res = await pageService.PageObjectUpdate(page);
+        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+            navigationManager.NavigateTo("/Management/Pages");
+
+        await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
+    }
+}

@@ -36,5 +36,23 @@ namespace YGate.Client.Services.Page
             var obj = await httpClientService.GetPostAsync<RequestResult>(page, "api/Page/GetPage");
             return obj;
         }
+
+        public async Task<RequestResult> GetPageObject(string guid)
+        {
+            var obj = await httpClientService.GetPostAsync<RequestResult>(guid, "api/Page/GetPageObject");
+            return obj;
+        }
+
+        public async Task<RequestResult> GetPageButPPAsync(DynamicPageParameter page)
+        {
+            var obj = await httpClientService.GetPostAsync<RequestResult>(page, "api/Page/GetPageButParameterPool");
+            return obj;
+        }
+
+        public async Task<RequestResult> PageObjectUpdate(DynamicPage page) {
+            var obj = await httpClientService.GetPostAsync<RequestResult>(page, "api/Page/UpdatePageObject");
+            return obj;
+        }
+
     }
 }
