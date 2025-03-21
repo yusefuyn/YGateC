@@ -10,10 +10,33 @@
 @import 'app-customimagelistcomponent.css';
 @import 'app-specialbutton.css';
 
+.main-app {
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    display: flex;
+    padding: 10px;
+    background-image: url(/glow-page-dark.png);
+    position: relative; /* Main container'ýn konumunu referans almak için */
+}
+
 .modal {
     height:auto;
 }
 
+h1, h2, h3, h4, h5,p {
+    color:var(--font-color);
+}
+
+#themeButton {
+    width:55px;
+    height:55px;
+    display:flex;
+    background-color:transparent;
+    border:none;
+    justify-content:center;
+    align-items:center;
+}
 
 body {
     background-color: var(--background-color);
@@ -61,7 +84,6 @@ a {
 
     .main-content > div {
         flex: 1; /* Alt divin kalan alaný kaplamasýný saðlar */
-        background-color: white; /* Arka plan rengi */
         overflow: auto; /* Taþan içeriði kaydýrma çubuðu ile göster */
     }
 
@@ -138,14 +160,14 @@ input {
 
 
 .special-div {
-    border-radius: 7px; /* Kenar yuvarlama */
-    border: 1px solid var(--button-border-color); /* Kenarlýk yok */
-    background-color: var(--button-color);
+    border-radius: 12px; /* Kenar yuvarlama */
+    border: 1px solid var(--circle-color); /* Kenarlýk yok */
+    background-color: #AAAAAA08;
     align-items: center; /* Dikeyde ortalama */
-    margin:5px;
+    margin: 5px;
+    padding:10px;
     overflow: hidden; /* Taþmayý engelle */
     justify-content: center; /* Yatayda ortalama */
-    box-shadow: var(--box-shadow);
 }
 
 

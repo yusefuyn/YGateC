@@ -7,12 +7,26 @@
     <div class="main-content">
         <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
 
-            <button class="header-button" id="toggleButton">
-                <svg id="moonSun" width="100" height="100" viewBox="0 0 100 100" fill="currentColor">
+            <button id="themeButton">
+                <svg id="moon" width="100" height="100" viewBox="0 0 100 100" fill="currentColor" style="opacity: 0;">
                     <circle cx="50" cy="50" r="50" fill="#ffffff06" />
                     <circle cx="60" cy="50" r="40" fill="white" />
                     <circle cx="40" cy="50" r="40" fill="#ffffff06" />
                 </svg>
+
+                <!-- Sun SVG (Başlangıçta gizli) -->
+                <svg id="sun" width="100" height="100" viewBox="0 0 100 100" fill="currentColor" style="opacity: 1;">
+                    <circle cx="50" cy="50" r="20" fill="#FFDD33" />
+                    <line x1="50" y1="5" x2="50" y2="25" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="50" y1="95" x2="50" y2="75" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="5" y1="50" x2="25" y2="50" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="95" y1="50" x2="75" y2="50" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="15" y1="15" x2="30" y2="30" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="85" y1="15" x2="70" y2="30" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="15" y1="85" x2="30" y2="70" stroke="#FFDD33" stroke-width="3" />
+                    <line x1="85" y1="85" x2="70" y2="70" stroke="#FFDD33" stroke-width="3" />
+                </svg>
+
             </button>
         </header>
         <div class="main-app">

@@ -61,5 +61,6 @@
 
 .special-button:hover {
     box-shadow: 0 0 10px #C8C8C825;
+    background-color:var(--button-hover-color);
     /*0 0 10px rgba(200, 200, 200, 0.6);*/ /* Daha geniş bir yansıma */
 }

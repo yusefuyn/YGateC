@@ -17,6 +17,7 @@
 .sidebar {
     width: var(--sidebar-width);
     width: 350px;
+    
     height: 100%;
     border-right: 1px solid #1a1d21;
     display: flex;
@@ -28,7 +29,7 @@
     font-family: 'Garamond', serif; /* Garamond fontu */
     letter-spacing: 2px;
     font-size: 24px; /* Başlık boyutu */
-    color: white; /* Başlık rengi */
+    color: var(--font-color);
     margin: 0; /* Kenar boşluklarını sıfırla */
 }
 
@@ -74,6 +75,9 @@
         width: 40px;
     }
 
+.IconNavLinkSpanEllement {
+    color: var(--font-color);
+}
 
 .sidebar header button {
     display: none;
@@ -87,6 +91,7 @@
 .IconNavLinkAEllement {
     margin: 5px;
     width: 90%;
+    background-color:var(--button-);
     height: 45px;
     justify-content: start;
 }
@@ -98,6 +103,7 @@
     align-items: center;
     display: flex;
     text-align:center;
+    color:var(--font-color);
 }
 
 

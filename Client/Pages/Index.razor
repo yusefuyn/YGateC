@@ -2,7 +2,7 @@
 @using YGate.Client.Services.Statistics
 @using YGate.Entities.ViewModels
 @inject IStatisticsService statisticsService
-
+@inject IJSRuntime jSRuntime
 <PageTitle>Home</PageTitle>
 
 <style>
@@ -25,7 +25,7 @@
 }
 else
 {
-   <div class="container">
+    <div class="container">
         <div class="mainpage-row">
             @foreach (var temp in model.GetType().GetProperties())
             {
@@ -38,7 +38,7 @@ else
             }
         </div>
         <br />
-   </div>
+    </div>
 }
 @code {
     private StatisticsViewModel model { get; set; } = null;
@@ -48,6 +48,7 @@ else
         var res = await statisticsService.GetStatistics();
         model = res.ConvertRequestObject<StatisticsViewModel>();
         StateHasChanged();
+        await jSRuntime.InvokeVoidAsync("setThemeJSCode", "");
     }
 
 }

@@ -1,4 +1,7 @@
-﻿function enableButton(buttonId) {
+﻿
+
+
+function enableButton(buttonId) {
     var button = document.getElementById(buttonId);
     if (button) {
         button.disabled = false;
@@ -232,3 +235,59 @@ window.changeSummernoteFontColor = function (htmlName, color) {
 //        veriable = contents;
 //    });
 //};
+
+function setThemeJSCode() {
+    const themeButton = document.getElementById('themeButton');
+    const moon = document.getElementById("moon");
+    const sun = document.getElementById("sun");
+    const mainApp = document.querySelector('.main-app');
+
+    // background-image'i değiştirme
+
+    themeButton.addEventListener("click", function () {
+        // Tema renklerini değiştir
+        const root = document.documentElement;
+        let backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
+
+        if (backgroundColor === '#040512') {
+            // Açık tema
+            root.style.setProperty('--background-color', '#FBF9ED'); // Zıt renk
+            root.style.setProperty('--main-background-color', '#F6F4E6'); // Zıt renk
+            root.style.setProperty('--font-color', '#1F1F1F'); // Zıt renk
+            root.style.setProperty('--panel-background', '#E1E1E1'); // Zıt renk
+            root.style.setProperty('--panel-border', '#CCC'); // Zıt renk
+            root.style.setProperty('--button-color', '#11111123'); // Zıt renk
+            root.style.setProperty('--button-border-color', '#E5E2DE'); // Zıt renk
+            root.style.setProperty('--button-hover-color', '#649A49'); // Zıt renk
+            root.style.setProperty('--circle-color', '#649A4965'); // Zıt renk
+            root.style.setProperty('--panel-complete', '#C474C4'); // Zıt renk
+            root.style.setProperty('--panel-inprogress', '#F3290F'); // Zıt renk
+            root.style.setProperty('--panel-planned', '#C5C5BF'); // Zıt renk
+            root.style.setProperty('--box-shadow', '3px 3px 10px rgba(255, 255, 255, 0.4), -1px -1px 6px rgba(0, 0, 0, 1)'); // Zıt renk
+            moon.style.opacity = "1";
+            sun.style.opacity = "0";
+            mainApp.style.backgroundImage = "url('/glow-page-light.png')";
+
+        } else {
+            // Koyu tema (orijinal tema)
+            root.style.setProperty('--background-color', '#040512');
+            root.style.setProperty('--main-background-color', '#090B19');
+            root.style.setProperty('--font-color', '#e0e0e0');
+            root.style.setProperty('--panel-background', '#1e1e1e');
+            root.style.setProperty('--panel-border', '#333');
+            root.style.setProperty('--button-color', '#ffffff06');
+            root.style.setProperty('--button-border-color', '#1a1d21');
+            root.style.setProperty('--button-hover-color', '#649A49');
+            root.style.setProperty('--circle-color', '#649A4965');
+            root.style.setProperty('--panel-complete', '#3b8b3b');
+            root.style.setProperty('--panel-inprogress', '#0dcaf0');
+            root.style.setProperty('--panel-planned', '#343a40');
+            root.style.setProperty('--box-shadow', '3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4)');
+            moon.style.opacity = "0";
+            sun.style.opacity = "1";
+            mainApp.style.backgroundImage = "url('/glow-page-dark.png')";
+
+        }
+    });
+}
+
