@@ -23,14 +23,15 @@ namespace YGate.Server.Controllers
             RequestResult returned = new($"Get Page {page.PageName}");
             returned.Result = EnumRequestResult.Success;
             DynamicPage dynamicPage = operations.Context.DynamicPages.FirstOrDefault(xd => xd.Name == page.PageName);
+            string index = dynamicPage.Index;
             if (dynamicPage == null)
             {
                 returned.Object = $"<div class='container'><h3><h5 style='color:red'>{page.PageName}</h5> adında bir sayfa yok boşuna bekleme.</h3></div>";
             }
             else
             {
-                page.Parameters.ForEach(xd => dynamicPage.Index = dynamicPage.Index.Replace(xd.ToString(), xd.Value.ToString()));
-                returned.Object = dynamicPage.Index.ToString();
+                page.Parameters.ForEach(xd => index = index.Replace(xd.ToString(), xd.Value.ToString()));
+                returned.Object = index.ToString();
             }
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
         }
