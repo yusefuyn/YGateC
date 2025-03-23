@@ -244,6 +244,15 @@
 
     private async void Kaydet()
     {
+        foreach (var item in Templates)
+        {
+            if (item.ValueType == 0 || string.IsNullOrEmpty(item.Name))
+            {
+                await jsRuntime.InvokeVoidAsync("showNotification", "Bir özelliğin tipi seçilmemiş yada isim girilmemiş. \n Lütfen boş bırakmayınız.");
+                return;
+            }
+        }
+
         RequestResult result = await categoryService.AddTemplates(Templates.Where(xd => xd.Added == false).ToList());
         if (result == null)
         {
