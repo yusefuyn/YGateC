@@ -4,7 +4,7 @@
     font-size: 16px;
     border: 1px solid var(--button-border-color); /* Kenarlık yok */
     background-color: var(--button-color);
-    color: white;
+    color: var(--font-color);
     border-radius: 7px;
     cursor: pointer;
     display: inline-flex;

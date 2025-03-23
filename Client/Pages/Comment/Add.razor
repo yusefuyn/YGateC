@@ -1,0 +1,24 @@
+﻿@using YGate.Client.Services.Comment
+@inject ICommentService commentService
+@inject IJSRuntime jSRuntime
+
+<div class="container special-div">
+    <br />
+    <YGate.Client.Shared.Components.Entry Placeholder="Yorum Ekle" @bind-Value="comment.Value"></YGate.Client.Shared.Components.Entry>
+    <br />
+    <YGate.Client.Shared.Components.SpecialButton Text="Ekle" OnClick="async()=> await AddComment()"></YGate.Client.Shared.Components.SpecialButton>
+    <br />
+
+</div>
+
+@code {
+    [Parameter] public string Key { get; set; }
+    YGate.Entities.BasedModel.Comment comment = new();
+    public async Task AddComment()
+    {
+        comment.ObjectGuid = Key.ToString();
+        var res = await commentService.Add(comment);
+        await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
+        comment.Value = "";
+    }
+}

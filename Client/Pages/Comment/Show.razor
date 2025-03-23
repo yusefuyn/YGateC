@@ -1,0 +1,38 @@
+﻿@using YGate.Client.Services.Comment
+@inject ICommentService commentService
+<div class="special-div container">
+
+    @if (comments == null)
+    {
+
+        <h3 style="color:red;">Yorumlar gelmedi ;(</h3>
+
+    }
+    else
+    {
+        @foreach (var item in comments)
+        {
+            <div class="container special-div">
+                <div class="container-header">
+                    <h4>@item.UserName</h4>
+                    <p style="font-size:12px">@item.CreateDate.ToString()</p>
+                </div>
+                <p>@item.Value.ToString()</p>
+            </div>
+        }
+    }
+</div>
+
+
+@code {
+    [Parameter] public string Key { get; set; }
+    List<YGate.Entities.BasedModel.Comment> comments = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await commentService.Gets(Key);
+        comments = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Comment>>();
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,59 @@
+﻿@page "/Management/Comments"
+@using YGate.Client.Services.Comment
+@inject ICommentService commentService
+
+<div class="container special-div">
+    <div class="container-header">
+        <h3>Comments</h3>
+    </div>
+
+    @if (Source != null)
+    {
+
+        <table class="table table-dark table-striped-columns">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">UserDBGuid</th>
+                    <th scope="col">IsActive</th>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var temp in Source)
+                {
+
+                    <tr class="table-row">
+                        <th scope="row">@temp.Id</th>
+                        <td>@temp.UserName</td>
+                        <td>@temp.CreatorGuid</td>
+                        <td>@temp.IsActive</td>
+                        <td>@temp.Value</td>
+                        <YGate.Client.Shared.Components.SpecialButton Text="Sil" OnClick="async()=> await DeleteComment(temp.DBGuid)" class="special-button"></YGate.Client.Shared.Components.SpecialButton>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+
+</div>
+@code {
+    List<YGate.Entities.BasedModel.Comment> Source = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await commentService.GetAll();
+        Source = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Comment>>();
+        StateHasChanged();
+    }
+
+    public async Task DeleteComment(string CommentGuid)
+    {
+        var res = await commentService.Delete(CommentGuid);
+        Source = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Comment>>();
+        StateHasChanged();
+    }
+}

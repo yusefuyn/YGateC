@@ -14,6 +14,7 @@ namespace YGate.DataAccess.Entities
         DbSet<Category> Categories { get; set; }
         DbSet<CategoryTemplate> CategoryTemplates { get; set; }
         DbSet<CategoryTemplateValue> CategoryTemplateValues { get; set; }
+        DbSet<Comment> Comments { get; set; }
 
         DbSet<MeasurementCategory> MeasurementCategories { get; set; }
         DbSet<MeasurementUnit> MeasurementUnits { get; set; }

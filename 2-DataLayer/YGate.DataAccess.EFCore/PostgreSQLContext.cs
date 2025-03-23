@@ -31,6 +31,7 @@ namespace YGate.DataAccess.Postgresql.EFCore
         public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<AccountProperties> AccountProperties { get; set; }
         public DatabaseFacade Database { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryRoles> CategoryRoles { get; set; }
         public DbSet<CategoryTemplate> CategoryTemplates { get; set; }

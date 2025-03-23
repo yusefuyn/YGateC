@@ -28,6 +28,7 @@ namespace YGate.Server.Controllers
         [HttpPost]
         public IActionResult UpdateDatabase([FromBody] RequestParameter test = null)
         {
+            Console.WriteLine("Veri tabanı güncellendi.");
             var request = HttpContext.Request;
             operations.DBUpdate();
             return Ok();

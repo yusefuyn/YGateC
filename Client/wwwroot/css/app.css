@@ -9,6 +9,7 @@
 @import 'app-combobox.css';
 @import 'app-customimagelistcomponent.css';
 @import 'app-specialbutton.css';
+@import 'app-button.css';
 
 .main-app {
     height: 100%;
@@ -18,6 +19,11 @@
     padding: 10px;
     background-image: url(/glow-page-dark.png);
     position: relative; /* Main container'ýn konumunu referans almak için */
+}
+
+.label {
+    color:var(--font-color);
+    background-color:transparent;
 }
 
 .modal {
@@ -40,7 +46,7 @@ h1, h2, h3, h4, h5,p {
 
 body {
     background-color: var(--background-color);
-    color: #fff;
+    color: var(--font-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -134,12 +140,6 @@ header {
         max-height: 100%; /* SVG'nin maksimum yüksekliði buton yüksekliðine göre ayarlandý */
     }
 
-input {
-    background-color: transparent;
-    box-shadow: var(--box-shadow);
-    color: var(--font-color);
-    width: 100%;
-}
     input[type=radio] {
         box-shadow:none;
         width:auto;
@@ -157,7 +157,9 @@ input {
 }
 
 
-
+.span {
+    color:var(--font-color);
+}
 
 .special-div {
     border-radius: 12px; /* Kenar yuvarlama */

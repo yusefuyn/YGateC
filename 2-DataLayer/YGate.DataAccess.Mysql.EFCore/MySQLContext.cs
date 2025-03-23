@@ -31,6 +31,7 @@ namespace YGate.DataAccess.Mysql.EFCore
         public DbSet<AccountPasswords> AccountsPasswords { get; set; }
         public DbSet<CategoryRoles> CategoryRoles { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<AccountProperties> AccountProperties { get; set; }
         public DbSet<Category> Categories { get; set; }

@@ -10,22 +10,33 @@
     @CssStyle
 </style>
 <div class="container">
-    @view
-    <br />
-    @if (entitieviewModel.Transfers != null && entitieviewModel.Transfers.Count() > 0)
+
+    @if (entitieviewModel != null)
     {
-
-        <div class="container special-div">
-            <div class="container-header">
-                <h3>Object Transfer History</h3>
-            </div>
-            @foreach (var trans in entitieviewModel.Transfers)
-            {
-                <p>@trans.OldOwnerGuid.ToString() -> @trans.NewOwnerGuid - @trans.DateTimeUTC.ToString()</p>
-            }
-        </div>
+        @view
         <br />
+        @if (entitieviewModel.Transfers != null && entitieviewModel.Transfers.Count() > 0)
+        {
 
+            <div class="container special-div">
+                <div class="container-header">
+                    <h3>Object Transfer History</h3>
+                </div>
+                @foreach (var trans in entitieviewModel.Transfers)
+                {
+                    <p>@trans.OldOwnerGuid.ToString() -> @trans.NewOwnerGuid - @trans.DateTimeUTC.ToString()</p>
+                }
+            </div>
+            <br />
+
+        }
+        <div class="container special-div">
+            <br />
+            <YGate.Client.Pages.Comment.Add Key="@entitieviewModel.DBGuid.ToString()"></YGate.Client.Pages.Comment.Add>
+            <br />
+            <YGate.Client.Pages.Comment.Show Key="@entitieviewModel.DBGuid.ToString()"></YGate.Client.Pages.Comment.Show>
+            <br />
+        </div>
     }
 </div>
 
@@ -33,7 +44,7 @@
     [Parameter]
     public string Guid { get; set; }
 
-    private YGate.Entities.ViewModels.EntitieViewModel entitieviewModel { get; set; } = new();
+    private YGate.Entities.ViewModels.EntitieViewModel entitieviewModel { get; set; } = null;
 
     private string CssStyle { get; set; } = "";
 
