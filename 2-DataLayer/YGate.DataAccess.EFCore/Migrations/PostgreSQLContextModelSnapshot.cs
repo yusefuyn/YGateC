@@ -312,6 +312,9 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.Property<string>("ValidateRegex")
                         .HasColumnType("text");
 
+                    b.Property<string>("ValueGroupGuid")
+                        .HasColumnType("text");
+
                     b.Property<int>("ValueType")
                         .HasColumnType("integer");
 
@@ -342,6 +345,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("SelectedValueGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .HasColumnType("text");
@@ -518,7 +525,10 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("PropertyDBGuid")
+                    b.Property<string>("PropertyGroupGuid")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PropertyGuid")
                         .HasColumnType("text");
 
                     b.Property<string>("PropertyName")

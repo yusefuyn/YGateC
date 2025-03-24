@@ -26,6 +26,7 @@ namespace YGate.Entities.BasedModel
         public string CreatorGuid { get; set; }
         public string DBGuid { get; set; }
         public bool IsActive { get; set; }
+        public string? ValueGroupGuid { get; set; }
         public bool Seo { get; set; } = false;
         public bool ValueValidation(object value)
         {

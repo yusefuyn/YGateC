@@ -44,8 +44,8 @@
                 <div class="container-header">
                     <h3>@AddedSubCategoryViewModel[i].Name</h3>
                     <SpecialButton Text="Objeyi Sil"
-                                   Style="width:100px;"
-                                   OnClick="async ()=> await SubCategoryRemove(AddedSubCategoryViewModel[i])"></SpecialButton>
+                    Style="width:100px;"
+                    OnClick="async ()=> await SubCategoryRemove(AddedSubCategoryViewModel[i])"></SpecialButton>
                 </div>
 
                 @GetCategoryTemplate(AddedSubCategoryViewModel[i])
@@ -64,11 +64,11 @@
                 <h3>Alt öğe ekle</h3>
             </div>
             <ComboBox Source="subCategoryList"
-                      Ttemp="Category"
-                      ValueBinding="xd=> xd.Name"
-                      Empty="false "
-                      DataBinding="xd=> xd.DBGuid"
-                      SelectedValueChanged="(e)=> SelectedSubCategoryGuid = e.Value.ToString()"></ComboBox>
+            Ttemp="Category"
+            ValueBinding="xd=> xd.Name"
+            Empty="false "
+            DataBinding="xd=> xd.DBGuid"
+            SelectedValueChanged="(e)=> SelectedSubCategoryGuid = e.Value.ToString()"></ComboBox>
             <SpecialButton Text="+" OnClick="async ()=> await AddSubCategory(SelectedSubCategoryGuid)"></SpecialButton>
             <br />
         </div>
@@ -176,13 +176,16 @@
             {
                 string prdbgd = "";
                 if (!string.IsNullOrEmpty(templateValue.ValueGroupGuid)) prdbgd = templateValue.ValueGroupGuid.ToString();
-                EntitiePropertyValue entitiePropertyValue = new();
-                entitiePropertyValue.CategoryTemplateGuid = template.DBGuid;
-                entitiePropertyValue.PropertyName = template.Name;
-                entitiePropertyValue.PropertyValue = templateValue.Value.ToString();
-                entitiePropertyValue.PropertyDBGuid = prdbgd;
-                entitiePropertyValue.EntitieDbGuid = mainEntitie.DBGuid.ToString();
-                entitiePropertyValue.CreatorGuid = OwnerGuid;
+                EntitiePropertyValue entitiePropertyValue = new()
+                {
+                    CategoryTemplateGuid = template.DBGuid,
+                    PropertyName = template.Name,
+                    PropertyGroupGuid = prdbgd,
+                    EntitieDbGuid = mainEntitie.DBGuid.ToString(),
+                    CreatorGuid = OwnerGuid,
+                    PropertyValue = templateValue.Value.ToString(),
+                    PropertyGuid = templateValue.SelectedValueGuid.ToString()
+                };
                 mainEntitie.Values.Add(entitiePropertyValue);
             }
         }
@@ -214,13 +217,17 @@
                 {
                     string prdbgd = "";
                     if (!string.IsNullOrEmpty(cattempval.ValueGroupGuid)) prdbgd = cattempval.ValueGroupGuid.ToString();
-                    EntitiePropertyValue entitiePropertyValue = new();
-                    entitiePropertyValue.CategoryTemplateGuid = temp.DBGuid;
-                    entitiePropertyValue.PropertyName = temp.Name;
-                    entitiePropertyValue.PropertyValue = cattempval.Value.ToString();
-                    entitiePropertyValue.PropertyDBGuid = prdbgd;
-                    entitiePropertyValue.EntitieDbGuid = entityViewModel.DBGuid.ToString();
-                    entitiePropertyValue.CreatorGuid = OwnerGuid;
+                    EntitiePropertyValue entitiePropertyValue = new()
+                    {
+                            CategoryTemplateGuid = temp.DBGuid,
+                            PropertyName = temp.Name,
+                            PropertyGroupGuid = prdbgd,
+                            EntitieDbGuid = entityViewModel.DBGuid.ToString(),
+                            CreatorGuid = OwnerGuid,
+                            PropertyValue = cattempval.Value.ToString(),
+                            PropertyGuid = cattempval.SelectedValueGuid.ToString()
+
+                    };
                     entityViewModel.Values.Add(entitiePropertyValue);
                 }
             }
@@ -365,22 +372,20 @@
 
     public RenderFragment CreateValueTypeCombosObject(CategoryTemplateViewModel categoryTemplateViewModel)
     {
-        //             List<PropertyGroupValue> listCombos = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(categoryTemplateViewModel.Values.ToString());
-        //             return@<div>
-        //     <label>@categoryTemplateViewModel.Name</label>
-        //     @foreach (var combo in listCombos)
-        // {
-        //     <div class="special-div">
+        List<PropertyGroupValue> listCombos = YGate.Json.Operations.JsonDeserialize<List<PropertyGroupValue>>.Deserialize(categoryTemplateViewModel.Values.ToString());
+        return@<div>
+        <label>@categoryTemplateViewModel.Name</label>
+        @foreach (var combo in listCombos)
+    {
+        <div class="special-div">
 
-        //         <CheckBox Text="@combo.Value"
-        //                   CheckedChange="(e)=> ChangeCombosValue(e,categoryTemplateViewModel,combo)"></CheckBox>
-        //     </div>
+            <CheckBox Text="@combo.Value"
+                      CheckedChange="(e)=> ChangeCombosValue(e,categoryTemplateViewModel,combo)"></CheckBox>
+        </div>
 
-        // }
-        // </div>
-        // ;
-
-        return@<p>Combos'ta bir sorun var onu oturtamadık tekrar dön bak .</p>;
+    }
+    </div>
+        ;
     }
 
     public RenderFragment CreateValueTypeRichTextObject(CategoryTemplateViewModel categoryTemplateViewModel) =>
@@ -468,15 +473,16 @@
             CategoryTemplateValue categoryTemplateValue = new()
                 {
                     CreatorGuid = model.CreatorGuid,
-                    Value = addedGuid,
+                    Value = val.Value.ToString(),
                     CategoryTemplateGuid = model.DBGuid,
+                    SelectedValueGuid = val.DBGuid,
                     ValueGroupGuid = val.PropertyGroupGuid
                 };
             model.categoryTemplateValues.Add(categoryTemplateValue);
         }
         else
         {
-            var obj = model.categoryTemplateValues.FirstOrDefault(xd => xd.Value == addedGuid);
+            var obj = model.categoryTemplateValues.FirstOrDefault(xd => xd.ValueGroupGuid == val.PropertyGroupGuid && xd.SelectedValueGuid == val.DBGuid);
 
             if (obj == null)
                 return;

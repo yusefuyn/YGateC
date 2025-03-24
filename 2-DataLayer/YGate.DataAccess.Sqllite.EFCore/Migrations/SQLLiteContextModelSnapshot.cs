@@ -291,6 +291,9 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                     b.Property<string>("ValidateRegex")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ValueGroupGuid")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ValueType")
                         .HasColumnType("INTEGER");
 
@@ -319,6 +322,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("SelectedValueGuid")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
                         .HasColumnType("TEXT");
@@ -485,7 +492,10 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PropertyDBGuid")
+                    b.Property<string>("PropertyGroupGuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PropertyGuid")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PropertyName")

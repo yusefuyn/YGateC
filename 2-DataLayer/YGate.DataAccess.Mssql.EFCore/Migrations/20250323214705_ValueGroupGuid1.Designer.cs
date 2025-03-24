@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YGate.DataAccess.Mssql.EFCore;
 
@@ -11,9 +12,11 @@ using YGate.DataAccess.Mssql.EFCore;
 namespace YGate.DataAccess.Mssql.EFCore.Migrations
 {
     [DbContext(typeof(MsSQLContext))]
-    partial class MsSQLContextModelSnapshot : ModelSnapshot
+    [Migration("20250323214705_ValueGroupGuid1")]
+    partial class ValueGroupGuid1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -525,7 +528,7 @@ namespace YGate.DataAccess.Mssql.EFCore.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PropertyGroupGuid")
+                    b.Property<string>("PropertyDBGuid")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PropertyGuid")

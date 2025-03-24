@@ -44,10 +44,24 @@ namespace YGate.Client.Services.Entitie
                                 continue;
                             }
                             replace = $"<listcomponent>{replace}</listcomponent>{Markup}";
+                            Template = Template.Replace(Markup, replace);
                             if (!MarkupToBeDeletedAfterTheReplaceOperation)
                                 MarkupToBeDeletedAfterTheReplaceOperation = true;
                         }
-                        Template = Template.Replace(Markup, replace);
+                        if (entitieProperty.Type == PropertyValueType.Combos)
+                        {
+                            if (!Grouped)
+                            {
+                                Template = Template.Replace(Markup, $"<customlistcomponent><combocomponent>{replace}</combocomponent>{Markup}</customlistcomponent>");
+                                Grouped = true;
+                                continue;
+                            }
+                            replace = $"<combocomponent>{replace}</combocomponent>{Markup}";
+                            Template = Template.Replace(Markup, replace);
+                            if (!MarkupToBeDeletedAfterTheReplaceOperation)
+                                MarkupToBeDeletedAfterTheReplaceOperation = true;
+                        }
+
                     }
 
 
@@ -169,6 +183,19 @@ namespace YGate.Client.Services.Entitie
 
         public MarkupString GetListView(EntitieViewModel entitieViewModel)
         {
+            if (entitieViewModel.HtmlTemplate == null)
+                entitieViewModel.HtmlTemplate = new()
+                {
+                    DBGuid = "",
+                    Category = new CategoryViewModel() { },
+                    CategoryGuid = "",
+                    CreatorGuid = "",
+                    Template = $"<DataView><p style='color:red;'>Bu objenin {entitieViewModel.DBGuid.ToString()} görseli oluşturulmamış. !</p></DataView>" +
+                    $"<ListView><p style='color:red;'>Bu objenin {entitieViewModel.DBGuid.ToString()} görseli oluşturulmamış. !</p></ListView>" +
+                    $"<ChildView><p style='color:red;'>Bu objenin {entitieViewModel.DBGuid.ToString()} görseli oluşturulmamış. !</p></ChildView>" +
+                    $"<ChatView><p style='color:red;'>Bu objenin {entitieViewModel.DBGuid.ToString()} görseli oluşturulmamış. !</p></ChatView>"
+
+                };
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ListingView);
         }
 

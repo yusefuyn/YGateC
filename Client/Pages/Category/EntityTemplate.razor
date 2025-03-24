@@ -27,15 +27,15 @@
             <div style="border:1px solid var(--button-border-color); border-radius:10px;">
                 <div style="margin:20px;">
                     <Entry Placeholder="Name"
-                           @bind-Value="templateViewModel.Name"></Entry>
+                    @bind-Value="templateViewModel.Name"></Entry>
 
 
                     <ComboBox Ttemp="PropertyValueType"
-                              Source="Enum.GetValues(typeof(PropertyValueType)).Cast<PropertyValueType>().ToList()"
-                              ValueBinding="temp => temp.ToString()"
-                              Empty="false"
-                              SelectedValueChanged="(e)=>  OnValueTypeStatusChanged(e,templateViewModel)"
-                              DataBinding="temp=> temp.ToString()" />
+                    Source="Enum.GetValues(typeof(PropertyValueType)).Cast<PropertyValueType>().ToList()"
+                    ValueBinding="temp => temp.ToString()"
+                    Empty="false"
+                    SelectedValueChanged="(e)=>  OnValueTypeStatusChanged(e,templateViewModel)"
+                    DataBinding="temp=> temp.ToString()" />
                     <br />
 
                     @if (templateViewModel.ValueType == PropertyValueType.String)
@@ -49,37 +49,37 @@
                     else if (templateViewModel.ValueType == PropertyValueType.CustomValidationRegex)
                     {
                         <Entry Placeholder="Value Controll Regex"
-                               value="@templateViewModel.ValidateRegex"></Entry>
+                        value="@templateViewModel.ValidateRegex"></Entry>
                     }
                     else if (templateViewModel.ValueType == PropertyValueType.ItemGroup)
                     {
                         <div style="margin:5px;">
                             <ComboBox Source="Groups"
-                                      Ttemp="PropertyGroupViewModel"
-                                      DataBinding="xd=> xd.DBGuid"
-                                      ValueBinding="xd=> xd.Name"
-                                      Empty="false"
-                                      SelectedValueChanged="(e)=> ChangeGroup(e,templateViewModel)"></ComboBox>
+                            Ttemp="PropertyGroupViewModel"
+                            DataBinding="xd=> xd.DBGuid"
+                            ValueBinding="xd=> xd.Name"
+                            Empty="false"
+                            SelectedValueChanged="(e)=> ChangeGroup(e,templateViewModel)"></ComboBox>
                         </div>
                     }
                     else if (templateViewModel.ValueType == PropertyValueType.Unit)
                     {
                         <ComboBox Source="measurementCategories"
-                                  DataBinding="xd=> xd.DBGuid"
-                                  Ttemp="MeasurementCategory"
-                                  Empty="false"
-                                  ValueBinding="xd=> xd.Name"
-                                  SelectedValueChanged="async (e)=> await ChangeUnit(e,templateViewModel)"></ComboBox>
+                        DataBinding="xd=> xd.DBGuid"
+                        Ttemp="MeasurementCategory"
+                        Empty="false"
+                        ValueBinding="xd=> xd.Name"
+                        SelectedValueChanged="async (e)=> await ChangeUnit(e,templateViewModel)"></ComboBox>
                     }
                     else if (templateViewModel.ValueType == PropertyValueType.Combos)
                     {
                         <div style="margin:5px;">
                             <ComboBox Source="Groups"
-                                      Ttemp="PropertyGroupViewModel"
-                                      DataBinding="xd=> xd.DBGuid"
-                                      ValueBinding="xd=> xd.Name"
-                                      Empty="false"
-                                      SelectedValueChanged="(e)=> ChangeGroup(e,templateViewModel)"></ComboBox>
+                            Ttemp="PropertyGroupViewModel"
+                            DataBinding="xd=> xd.DBGuid"
+                            ValueBinding="xd=> xd.Name"
+                            Empty="false"
+                            SelectedValueChanged="(e)=> ChangeGroup(e,templateViewModel)"></ComboBox>
                         </div>
                     }
                     else if (templateViewModel.ValueType == PropertyValueType.ValueList)
@@ -92,17 +92,17 @@
                         <label>Özelliğin Zorunlu Olup Olmadığını Belirleyin:</label><br>
                         <div class="custom-control custom-radio custom-control-inline col-6">
                             <RadioButton Id="zorunluEvet"
-                                         Name="@templateViewModel.DBGuid"
-                                         Text="Evet, zorunlu."
-                                         Checked="(templateViewModel.Require)"
-                                         OnChange="(e) => OnCompulsoryTypeStatusChanged(true,e,templateViewModel)"></RadioButton>
+                            Name="@templateViewModel.DBGuid"
+                            Text="Evet, zorunlu."
+                            Checked="(templateViewModel.Require)"
+                            OnChange="(e) => OnCompulsoryTypeStatusChanged(true,e,templateViewModel)"></RadioButton>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline col-6">
                             <RadioButton Id="zorunluHayir"
-                                         Name="@templateViewModel.DBGuid"
-                                         Text="Hayır, zorunlu değil."
-                                         Checked="(!templateViewModel.Require)"
-                                         OnChange="(e) => OnCompulsoryTypeStatusChanged(false,e,templateViewModel)"></RadioButton>
+                            Name="@templateViewModel.DBGuid"
+                            Text="Hayır, zorunlu değil."
+                            Checked="(!templateViewModel.Require)"
+                            OnChange="(e) => OnCompulsoryTypeStatusChanged(false,e,templateViewModel)"></RadioButton>
                         </div>
                     </div>
                     <SpecialButton OnClick="()=>YeniOzelligiSil(templateViewModel)" Class="btn-danger" Text="Sil"></SpecialButton>
@@ -111,12 +111,12 @@
             <br />
         }
         <SpecialButton OnClick="async()=> await YeniOzellikEkle(new())"
-                       Class="btn-success"
-                       Text="Ekle"></SpecialButton>
+        Class="btn-success"
+        Text="Ekle"></SpecialButton>
         <br />
         <SpecialButton Text="Kaydet"
-                       Class="btn-success"
-                       OnClick="Kaydet"></SpecialButton>
+        Class="btn-success"
+        OnClick="Kaydet"></SpecialButton>
     </div>
 }
 
@@ -169,6 +169,7 @@
 
     private async Task ChangeGroup(ChangeEventArgs eventArgs, CategoryTemplateViewModel model)
     {
+        model.ValueGroupGuid = eventArgs.Value.ToString();
         CategoryTemplateValue res = new CategoryTemplateValue()
             {
                 CreatorGuid = await profileService.GetPropertiesValue("Guid"),

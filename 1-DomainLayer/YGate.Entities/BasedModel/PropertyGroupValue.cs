@@ -20,7 +20,13 @@ namespace YGate.Entities.BasedModel
         public string CreatorGuid { get; set; }
         public string DBGuid { get; set; }
         public bool IsActive { get; set; }
+        /// <summary>
+        /// Değer
+        /// </summary>
         public string Value { get; set; }
+        /// <summary>
+        /// Değerin bulunduğu grup Guid'i
+        /// </summary>
         public string PropertyGroupGuid { get; set; }
     }
 }

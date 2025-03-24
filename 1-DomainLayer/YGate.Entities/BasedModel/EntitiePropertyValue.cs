@@ -31,9 +31,13 @@ namespace YGate.Entities.BasedModel
         /// </summary>
         public string PropertyValue { get; set; }
         /// <summary>
+        /// Seçilen değerin guid'i
+        /// </summary>
+        public string? PropertyGuid { get; set; }
+        /// <summary>
         /// ItemGroup'ın dbguid'i gelecek
         /// </summary>
-        public string? PropertyDBGuid { get; set; }
+        public string? PropertyGroupGuid { get; set; }
         /// <summary>
         /// Kategorinin Template Guid'i gelecek
         /// </summary>

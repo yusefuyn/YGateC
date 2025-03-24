@@ -272,6 +272,8 @@ namespace YGate.BusinessLayer.EFCore
                 if (temp.ValueType != PropertyValueType.Combos) // Tipi combos değilse hepsinin categorytemplatevalues'ine ilk elemanı ekle
                     temp.categoryTemplateValues.Add(new());
 
+                if (temp.ValueType == PropertyValueType.Combos)
+                    temp.Values = YGate.Json.Operations.JsonSerialize.Serialize(Context.PropertyGroupValues.Where(xd => xd.PropertyGroupGuid == temp.ValueGroupGuid).ToList());
 
                 if (temp.ValueType == PropertyValueType.Unit)
                 {

@@ -85,7 +85,7 @@ function buyukResimGuncelle(resimUrl) {
     buyukResim.style.backgroundImage = 'url(' + resimUrl + ')';
 }
 
-function ycustomimagelistComponentLoad() {
+function ycustomPictureListComponentLoad() {
     const customListComponent = document.querySelector('ycustomimagelist customlistcomponent');
     let currentResimIndex = 0;
 
@@ -120,7 +120,7 @@ function ycustomimagelistComponentLoad() {
     const solTus = document.createElement('button');
     solTus.id = 'solTus';
     solTus.classList.add('navigasyon-tusu');
-    solTus.innerHTML = '&lt;'; 
+    solTus.innerHTML = '&lt;';
 
     const sagTus = document.createElement('button');
     sagTus.id = 'sagTus';
@@ -131,7 +131,7 @@ function ycustomimagelistComponentLoad() {
         if (currentResimIndex > 0) {
             currentResimIndex--;
         } else {
-            currentResimIndex = resimUrls.length - 1; 
+            currentResimIndex = resimUrls.length - 1;
         }
         buyukResimGuncelle(resimUrls[currentResimIndex]);
     };
@@ -140,7 +140,7 @@ function ycustomimagelistComponentLoad() {
         if (currentResimIndex < resimUrls.length - 1) {
             currentResimIndex++;
         } else {
-            currentResimIndex = 0; 
+            currentResimIndex = 0;
         }
         buyukResimGuncelle(resimUrls[currentResimIndex]);
 
@@ -178,6 +178,63 @@ function ycustomimagelistComponentLoad() {
     });
 
     customListComponent.appendChild(resimContainer);
+}
+
+function ycustomComboListComponentLoad() {
+    const customListComponent = document.querySelector('customlistcomponent');
+    let currentResimIndex = 0;
+
+    if (!customListComponent) {
+        return;
+    }
+
+    const listComponents = customListComponent.parentElement.querySelectorAll('combocomponent');
+
+    if (listComponents.length === 0) {
+        return;
+    }
+
+    customListComponent.classList.add("container");
+    customListComponent.style.borderRadius = '7px';
+    customListComponent.style.margin = '5px';
+
+    // İlk olarak tüm mevcut içeriği temizliyoruz, böylece eski içerik kalmaz
+    customListComponent.innerHTML = '';
+
+    // Her bir listComponent için bir checkbox ekliyoruz
+    listComponents.forEach(listComponent => {
+        const deger = listComponent.textContent.trim();
+
+        if (!deger) {
+            return; // Eğer değer boşsa, bu iteration'ı atlıyoruz
+        }
+
+        // Checkbox öğesi oluşturuluyor
+        const checkboxContainer = document.createElement('div');
+        checkboxContainer.classList.add('form-check');
+
+        // Checkbox elemanını oluşturuyoruz
+        const checkboxElement = document.createElement('input');
+        checkboxElement.type = 'checkbox';
+        checkboxElement.classList.add('form-check-input');
+        checkboxElement.checked = true;
+        checkboxElement.disabled = true; 
+        // Checkbox'ın label'ını oluşturuyoruz
+        const labelElement = document.createElement('label');
+        labelElement.textContent = deger;
+        labelElement.classList.add('form-check-label');
+        // Checkbox ve label'ı container'a ekliyoruz
+        checkboxContainer.appendChild(checkboxElement);
+        checkboxContainer.appendChild(labelElement);
+
+        // checkboxContainer'ı customListComponent'e ekliyoruz
+        customListComponent.appendChild(checkboxContainer);
+    });
+}
+
+function ycustomlistComponentLoad() {
+    ycustomPictureListComponentLoad();
+    ycustomComboListComponentLoad();
 }
 
 
