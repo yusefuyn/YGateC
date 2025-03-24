@@ -48,7 +48,7 @@ namespace YGate.Client.Services.Entitie
                             if (!MarkupToBeDeletedAfterTheReplaceOperation)
                                 MarkupToBeDeletedAfterTheReplaceOperation = true;
                         }
-                        if (entitieProperty.Type == PropertyValueType.Combos)
+                        else if (entitieProperty.Type == PropertyValueType.Combos)
                         {
                             if (!Grouped)
                             {
@@ -61,7 +61,8 @@ namespace YGate.Client.Services.Entitie
                             if (!MarkupToBeDeletedAfterTheReplaceOperation)
                                 MarkupToBeDeletedAfterTheReplaceOperation = true;
                         }
-
+                        else
+                            Template = Template.Replace(Markup, replace);
                     }
 
 
