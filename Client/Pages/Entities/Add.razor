@@ -44,8 +44,8 @@
                 <div class="container-header">
                     <h3>@AddedSubCategoryViewModel[i].Name</h3>
                     <SpecialButton Text="Objeyi Sil"
-                    Style="width:100px;"
-                    OnClick="async ()=> await SubCategoryRemove(AddedSubCategoryViewModel[i])"></SpecialButton>
+                                   Style="width:100px;"
+                                   OnClick="async ()=> await SubCategoryRemove(AddedSubCategoryViewModel[i])"></SpecialButton>
                 </div>
 
                 @GetCategoryTemplate(AddedSubCategoryViewModel[i])
@@ -64,11 +64,11 @@
                 <h3>Alt öğe ekle</h3>
             </div>
             <ComboBox Source="subCategoryList"
-            Ttemp="Category"
-            ValueBinding="xd=> xd.Name"
-            Empty="false "
-            DataBinding="xd=> xd.DBGuid"
-            SelectedValueChanged="(e)=> SelectedSubCategoryGuid = e.Value.ToString()"></ComboBox>
+                      Ttemp="Category"
+                      ValueBinding="xd=> xd.Name"
+                      Empty="false "
+                      DataBinding="xd=> xd.DBGuid"
+                      SelectedValueChanged="(e)=> SelectedSubCategoryGuid = e.Value.ToString()"></ComboBox>
             <SpecialButton Text="+" OnClick="async ()=> await AddSubCategory(SelectedSubCategoryGuid)"></SpecialButton>
             <br />
         </div>
@@ -176,16 +176,16 @@
             {
                 string prdbgd = "";
                 if (!string.IsNullOrEmpty(templateValue.ValueGroupGuid)) prdbgd = templateValue.ValueGroupGuid.ToString();
-                EntitiePropertyValue entitiePropertyValue = new()
-                {
-                    CategoryTemplateGuid = template.DBGuid,
-                    PropertyName = template.Name,
-                    PropertyGroupGuid = prdbgd,
-                    EntitieDbGuid = mainEntitie.DBGuid.ToString(),
-                    CreatorGuid = OwnerGuid,
-                    PropertyValue = templateValue.Value.ToString(),
-                    PropertyGuid = templateValue.SelectedValueGuid.ToString()
-                };
+                EntitiePropertyValue entitiePropertyValue = new();
+
+                entitiePropertyValue.CategoryTemplateGuid = template.DBGuid;
+                entitiePropertyValue.PropertyName = template.Name;
+                entitiePropertyValue.PropertyGroupGuid = prdbgd;
+                entitiePropertyValue.EntitieDbGuid = mainEntitie.DBGuid;
+                entitiePropertyValue.CreatorGuid = OwnerGuid;
+                entitiePropertyValue.PropertyValue = templateValue.Value;
+                entitiePropertyValue.PropertyGuid = templateValue.SelectedValueGuid;
+
                 mainEntitie.Values.Add(entitiePropertyValue);
             }
         }
@@ -211,24 +211,28 @@
                     Values = new List<EntitiePropertyValue>(),
                 };
 
-            foreach (var temp in subCatViewModel.Template)
+            foreach (var template in subCatViewModel.Template)
             {
-                foreach (var cattempval in temp.categoryTemplateValues)
+                if (template.categoryTemplateValues == null || !template.categoryTemplateValues.Any())
+                {
+                    Console.WriteLine($"Template {template.Name} için categoryTemplateValues boş.");
+                    continue;
+                }
+
+
+                foreach (var templateValue in template.categoryTemplateValues)
                 {
                     string prdbgd = "";
-                    if (!string.IsNullOrEmpty(cattempval.ValueGroupGuid)) prdbgd = cattempval.ValueGroupGuid.ToString();
-                    EntitiePropertyValue entitiePropertyValue = new()
-                    {
-                            CategoryTemplateGuid = temp.DBGuid,
-                            PropertyName = temp.Name,
-                            PropertyGroupGuid = prdbgd,
-                            EntitieDbGuid = entityViewModel.DBGuid.ToString(),
-                            CreatorGuid = OwnerGuid,
-                            PropertyValue = cattempval.Value.ToString(),
-                            PropertyGuid = cattempval.SelectedValueGuid.ToString()
-
-                    };
-                    entityViewModel.Values.Add(entitiePropertyValue);
+                    if (!string.IsNullOrEmpty(templateValue.ValueGroupGuid)) prdbgd = templateValue.ValueGroupGuid.ToString();
+                    EntitiePropertyValue entitiePropertyValue = new();
+                     entitiePropertyValue.CategoryTemplateGuid = template.DBGuid;
+                    entitiePropertyValue.PropertyName = template.Name;
+                    entitiePropertyValue.PropertyGroupGuid = prdbgd;
+                    entitiePropertyValue.EntitieDbGuid = mainEntitie.DBGuid;
+                    entitiePropertyValue.CreatorGuid = OwnerGuid;
+                    entitiePropertyValue.PropertyValue = templateValue.Value;
+                    entitiePropertyValue.PropertyGuid = templateValue.SelectedValueGuid;
+                    mainEntitie.Values.Add(entitiePropertyValue);
                 }
             }
 

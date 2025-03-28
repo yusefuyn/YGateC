@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YGate.DataAccess.Sqllite.EFCore;
 
@@ -10,9 +11,11 @@ using YGate.DataAccess.Sqllite.EFCore;
 namespace YGate.DataAccess.Sqllite.EFCore.Migrations
 {
     [DbContext(typeof(SQLLiteContext))]
-    partial class SQLLiteContextModelSnapshot : ModelSnapshot
+    [Migration("20250328142956_pageparameter2")]
+    partial class pageparameter2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -324,6 +327,7 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SelectedValueGuid")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -586,6 +590,7 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatorGuid")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DBGuid")

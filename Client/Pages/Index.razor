@@ -1,54 +1,22 @@
 ﻿@page "/"
+@using YGate.Client.Services.Entitie
+@using YGate.Client.Services.Page
 @using YGate.Client.Services.Statistics
+@using YGate.Entities.BasedModel
 @using YGate.Entities.ViewModels
-@inject IStatisticsService statisticsService
 @inject IJSRuntime jSRuntime
+@inject IPageService pageService
+@inject IEntitieViewService viewService
 <PageTitle>Home</PageTitle>
-
-<style>
-    .mainpage-row {
-        display: ruby;
-        flex-wrap: wrap;
-        justify-content: flex-start; /* Kartları sola hizalar */
-        margin: 5px;
-    }
-
-    .card {
-        margin-bottom: 15px;
-        margin-right: 10px; /* Kartlar arasındaki sağ boşluğu kontrol edebilirsiniz */
-    }
-</style>
-
-@if (model == null)
-{
-    <p>@localizer["NoDataCurrentlyAvailable."]</p>
-}
-else
-{
-    <div class="container">
-        <div class="mainpage-row">
-            @foreach (var temp in model.GetType().GetProperties())
-            {
-                <div class="card bg-dark border-info col-12 col-sm-4 col-md-2  m-3" style="opacity:50%; max-width:  18rem;text-align:center; width:18rem; max-height:125px;">
-                    <div class="card-header">@localizer[@temp.Name.ToString()]</div>
-                    <div class="card-body">
-                        <h1 class="card-title" style="font-size:35px;">@temp.GetValue(model).ToString()</h1>
-                    </div>
-                </div>
-            }
-        </div>
-        <br />
-    </div>
-}
+@Source
 @code {
-    private StatisticsViewModel model { get; set; } = null;
+    MarkupString Source = new("<p>Ana sayfa yükleniyor.</p>");
 
     protected override async Task OnInitializedAsync()
     {
-        var res = await statisticsService.GetStatistics();
-        model = res.ConvertRequestObject<StatisticsViewModel>();
-        StateHasChanged();
-        await jSRuntime.InvokeVoidAsync("setThemeJSCode", "");
+        var res = await pageService.GetPageForName("MainPage");
+        DynamicPage dynamicPage = res.ConvertRequestObject<DynamicPage>();
+        Source = viewService.GetView(dynamicPage.Index);
     }
 
 }

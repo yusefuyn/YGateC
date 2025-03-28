@@ -347,7 +347,6 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("SelectedValueGuid")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Value")
@@ -612,6 +611,48 @@ namespace YGate.DataAccess.Postgresql.EFCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MeasurementUnits");
+                });
+
+            modelBuilder.Entity("YGate.Entities.BasedModel.PageParameter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorGuid")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DBGuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PageName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ParameterType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PageParameters");
                 });
 
             modelBuilder.Entity("YGate.Entities.BasedModel.PropertyGroup", b =>

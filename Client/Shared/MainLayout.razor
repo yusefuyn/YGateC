@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigationManager
 @inherits LayoutComponentBase
 @attribute [Authorize]
 
@@ -28,6 +29,10 @@
                 </svg>
 
             </button>
+            <button id="cart-button" @onclick='()=> navigationManager.NavigateTo("/Show/Gates")'>
+                <i class="fa fa-card-shopping"></i>
+            </button>
+
         </header>
         <div class="main-app">
             @Body

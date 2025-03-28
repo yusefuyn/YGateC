@@ -136,10 +136,7 @@ namespace YGate.Server.Controllers
                         ToGuid = "Administrator",
                         RoleGuid = AdministratorRoleDbGuid
                     };
-
                     operations.Context.AccountRoles.Add(AdministratorAccountRole);
-
-
                     operations.Context.AccountsPasswords.Add(new()
                     {
                         CreateDate = DateTime.Now,
@@ -182,7 +179,6 @@ namespace YGate.Server.Controllers
                     };
                     operations.Context.MeasurementCategories.Add(ParaBirimi);
 
-
                     var AlanBirimi = new MeasurementCategory()
                     {
                         IsActive = true,
@@ -190,9 +186,7 @@ namespace YGate.Server.Controllers
                         CreatorGuid = AdministratorUserDBGuid
                     };
                     operations.Context.MeasurementCategories.Add(AlanBirimi);
-
                     operations.Context.SaveChanges();
-
 
                     operations.Context.MeasurementUnits.Add(new()
                     {
@@ -298,8 +292,18 @@ namespace YGate.Server.Controllers
                         Symbol = "€",
                         CreatorGuid = AdministratorUserDBGuid
                     });
-
                     operations.Context.SaveChanges();
+
+                    DynamicPage dynamicPage = new() { 
+                        CreatorGuid = AdministratorUserDBGuid, 
+                        DBGuid = YGate.String.Operations.GuidGen.Generate("DynamicPage"), 
+                        IsActive = true,
+                        Name ="MainPage", 
+                        Index = "<div class='container'><h3>YGate otomatik ana sayfası. Panelden düzenleyebilirsiniz !</h3></div>" 
+                    };
+                    operations.Context.DynamicPages.Add(dynamicPage);
+                    operations.Context.SaveChanges();
+
 
                     await trans.CommitAsync();
                 }

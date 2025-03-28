@@ -246,7 +246,16 @@ namespace YGate.Server.Controllers
 
             operations.Context.CategoryTemplates.AddRange(Templates);
             operations.Context.CategoryTemplateValues.AddRange(Values);
-            operations.Context.SaveChanges();
+            try
+            {
+                operations.Context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
         }
 

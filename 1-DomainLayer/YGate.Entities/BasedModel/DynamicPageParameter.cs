@@ -7,7 +7,9 @@ using YGate.Interfaces.Shared.Based;
 
 namespace YGate.Entities.BasedModel
 {
-
+    /// <summary>
+    /// Bu objeyi sayfalarda geçiş için kullanıyoruz.
+    /// </summary>
     public class DynamicPageParameter
     {
         public string PageName { get; set; }

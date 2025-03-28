@@ -1,5 +1,8 @@
 ﻿
-
+async function callSaveParameterFromJS(parameters) {
+    const result = await DotNet.invokeMethodAsync('YGate.Client', 'SaveParameter', parameters);
+    console.log(result);  // Sonuç ile ilgili işlem yapabilirsiniz.
+}
 
 function enableButton(buttonId) {
     var button = document.getElementById(buttonId);

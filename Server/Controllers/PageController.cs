@@ -36,9 +36,45 @@ namespace YGate.Server.Controllers
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
         }
 
+
+
+
         [HttpPost]
         [GetAuthorizeToken]
-        public async Task<string> GetPageObject([FromBody] RequestParameter parameter)
+        public async Task<string> MyParametersPages([FromBody] RequestParameter parameter)
+        {
+            RequestResult returned = new("Your parameters uri");
+            returned.Result = EnumRequestResult.Success;
+            if (string.IsNullOrEmpty(parameter.Token))
+                returned.Object = new List<string>();
+            else
+                returned.Object = operations.Context.PageParameters.Where(xd => xd.CreatorGuid == parameter.Token && xd.CreateDate > DateTime.UtcNow.AddMinutes(-10)).Select(xd => $"Show/p/Gates/{xd.PageName}").Distinct().ToList();
+            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+        }
+
+
+        [HttpPost]
+        [GetAuthorizeToken]
+        public async Task<string> SavePageParameters([FromBody] RequestParameter parameter)
+        {
+            List<PageParameter> pageParameters = parameter.ConvertParameters<List<PageParameter>>();
+            string pageGuid = YGate.String.Operations.GuidGen.Generate("TempParametersGroup");
+            string Token = "";
+            if (!string.IsNullOrEmpty(parameter.Token))
+                Token = parameter.Token;
+            pageParameters.ForEach(xd => { xd.CreatorGuid = Token; xd.PageName = pageGuid; xd.Id = 0; xd.CreateDate = DateTime.UtcNow; });
+            operations.Context.PageParameters.RemoveRange(operations.Context.PageParameters.Where(xd => xd.CreateDate < DateTime.UtcNow.AddMinutes(-10))); // 10dk geçenleri sil
+            operations.Context.PageParameters.AddRange(pageParameters);
+            operations.Context.SaveChanges();
+            return pageGuid;
+        }
+
+
+
+
+        [HttpPost]
+        [GetAuthorizeToken]
+        public async Task<string> GetPageForGuid([FromBody] RequestParameter parameter)
         {
             RequestResult requestResult = new("Get Page Object");
             requestResult.Result = EnumRequestResult.Success;
@@ -57,6 +93,20 @@ namespace YGate.Server.Controllers
             return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
         }
 
+
+        [HttpPost]
+        public async Task<string> GetPageForName([FromBody] RequestParameter parameter)
+        {
+            RequestResult requestResult = new("Get Page Object");
+            requestResult.Result = EnumRequestResult.Success;
+            string pageName = parameter.Parameters.ToString();
+            DynamicPage obj = operations.Context.DynamicPages.FirstOrDefault(xd => xd.Name == pageName);
+            if (obj == null)
+                obj = new() { Index = $"<div class='container'><h3>{pageName} adında bir sayfa yok yada bulunamadı.</h3></div>" };
+            requestResult.Object = obj;
+            return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
+        }
+
         [HttpPost]
         [GetAuthorizeToken]
         public async Task<string> UpdatePageObject([FromBody] RequestParameter parameter)
@@ -65,7 +115,7 @@ namespace YGate.Server.Controllers
 
 
             DynamicPage page = parameter.ConvertParameters<DynamicPage>();
-            DynamicPage updatePage = operations.Context.DynamicPages.FirstOrDefault(xd=> xd.DBGuid == page.DBGuid);
+            DynamicPage updatePage = operations.Context.DynamicPages.FirstOrDefault(xd => xd.DBGuid == page.DBGuid);
 
             if (updatePage.CreatorGuid != parameter.Token.ToString())
             {
@@ -91,12 +141,28 @@ namespace YGate.Server.Controllers
 
         [HttpPost]
         public async Task<string> GetPageButParameterPool([FromBody] RequestParameter parameter)
-        {   // Burada şöyle olacak yine bir dynamicpageparameter objesine benzer bir obje olacak
-            // sadece parametre havuzunu içinde barındırmayacak sadece parametre havuzunun id'sini içinde barındıracak
-            // parametre havuzu veritabanından gelecek ve gelen havuz dataları sayfaya yerleştirilecek böylece
-            // url oynanıp değiştirildiğinde sorun yaratacak sayfalar buradan alınacak misal ödeme sayfası
+        {
             DynamicPageParameter page = parameter.ConvertParameters<DynamicPageParameter>();
             RequestResult returned = new($"Get Page {page.PageName}");
+            returned.Result = EnumRequestResult.Success;
+            DynamicPageDynamicParameter returnedObj = new(page.PageName.ToString());
+
+            var pageO = operations.Context.DynamicPages.FirstOrDefault(xd => xd.Name == page.PageName.ToString());
+
+            if (pageO == null)
+            {
+                returned.Result = EnumRequestResult.Error;
+                returned.ShortDescription = "Sayfa yok 404 :O";
+                returned.LongDescription = "Sayfa yok 404 :O";
+                return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            }
+
+            returnedObj.PageSource = pageO.Index.ToString();
+            returnedObj.PageName = pageO.Name.ToString();
+            returnedObj.Parameters = operations.Context.PageParameters.Where(xd => xd.PageName == page.ParameterPoolName.ToString()).ToList();
+            // Belki daha sonra indexlenmiş halini direk gönderirirz.
+            // belli olmaz.
+            returned.Object = returnedObj;
             return YGate.Json.Operations.JsonSerialize.Serialize(returned);
         }
 

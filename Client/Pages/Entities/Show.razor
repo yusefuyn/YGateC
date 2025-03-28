@@ -3,7 +3,6 @@
 @using YGate.Client.Services.Entitie
 @inject IEntitieService entitieService
 @inject IEntitieViewService entitieViewService
-
 @inject ICategoryService categoryService
 @inject IJSRuntime jsRuntime
 <style>
@@ -60,5 +59,4 @@
         StateHasChanged();
         await jsRuntime.InvokeVoidAsync("ycustomlistComponentLoad");
     }
-
 }

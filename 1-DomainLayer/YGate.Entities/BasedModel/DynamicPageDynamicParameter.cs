@@ -18,6 +18,7 @@ namespace YGate.Entities.BasedModel
             Parameters = new();
         }
         public string PageName { get; set; }
+        public string PageSource { get; set; }
         public List<PageParameter> Parameters { get; set; }
     }
 }

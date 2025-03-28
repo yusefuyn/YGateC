@@ -1,0 +1,24 @@
+﻿@page "/Show/Gates"
+@using YGate.Client.Services.Page
+@using YGate.Entities
+@inject NavigationManager navigationManager
+@inject IPageService pageService
+<div class="container">
+    <div class="container-header">
+        <h3>Gates</h3>
+    </div>
+
+    @foreach (var item in Gatess)
+    {
+        <YGate.Client.Shared.Components.SpecialButton Text="Tıkla git" OnClick='()=> navigationManager.NavigateTo(item.ToString())'></YGate.Client.Shared.Components.SpecialButton>
+    }
+</div>
+@code {
+    public List<string> Gatess = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        RequestResult res = await pageService.GetMyParametersPageUris();
+        Gatess = res.ConvertRequestObject<List<string>>();
+    }
+}

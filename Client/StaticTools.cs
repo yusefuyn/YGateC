@@ -1,9 +1,31 @@
-﻿using YGate.Entities;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using System.Net.Http;
+using YGate.Client.Services;
+using YGate.Entities;
+using YGate.Entities.BasedModel;
 
 namespace YGate.Client
 {
     public static class StaticTools
     {
+        public static HttpClient httpClient;
+
+        /// <summary>
+        /// Dışarıdan js ile tetiklenebilir.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [JSInvokable]
+        public static async Task<string> SaveParameter(List<PageParameter> parameters)
+        {
+            RequestParameter parameter = new() { DateTimeUTC = DateTime.UtcNow, Address = "/api/Page/SavePageParameters" };
+            parameter.Parameters = parameters;
+            StringContent stringContent = new(YGate.Json.Operations.JsonSerialize.Serialize(parameter), System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage res = await httpClient.PostAsync("/api/Page/SavePageParameters", stringContent);
+            string Returned = await res.Content.ReadAsStringAsync();
+            return Returned;
+        }
 
         /// <summary>
         /// Burası Result durumunu kontrol ediyor.

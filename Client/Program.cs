@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 using YGate.Client;
 using YGate.Client.Services;
 using YGate.Client.Services.Administrator;
@@ -29,15 +31,14 @@ RulesAndRoles.Rules = new() {
     new RuleAndRoles(2,"SidebarEntityButton","Administrator,Admin,MarketMod,MarketUser,User")
 };
 
-
 builder.Services.AddScoped<CookieService>();
-
-
-builder.Services.AddScoped(sp => new HttpClient { 
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
+builder.Services.AddScoped(sp => {
+    HttpClient returned = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+    StaticTools.httpClient = returned;
+    return returned;
 });
-
 builder.Services.AddScoped<HttpClientService>();
+
 builder.Services.AddScoped<ILoginAndRegisterService, LoginAndRegisterService>();
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();

@@ -47,6 +47,6 @@ namespace YGate.DataAccess.Mysql.EFCore
         public DbSet<EntitieOwnerTransfer> EntitieOwner { get; set; }
         public DbSet<EntitiePropertyValue> EntitiePropertyValues { get; set; }
         public DbSet<CategoryHtmlTemplate> CategoryHtmlTemplates { get; set; }
-
+        public DbSet<PageParameter> PageParameters { get ; set ; }
     }
 }

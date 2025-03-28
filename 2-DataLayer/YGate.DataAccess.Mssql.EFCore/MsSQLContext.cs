@@ -34,6 +34,7 @@ namespace YGate.DataAccess.Mssql.EFCore
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryTemplate> CategoryTemplates { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<PageParameter> PageParameters { get; set; }
 
         public DbSet<CategoryRoles> CategoryRoles { get; set; }
         public DbSet<CategoryTemplateValue> CategoryTemplateValues { get; set; }
@@ -50,7 +51,5 @@ namespace YGate.DataAccess.Mssql.EFCore
         public DbSet<Role> Roles { get; set; }
         public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<DynamicPage> DynamicPages { get; set; }
-
-
     }
 }

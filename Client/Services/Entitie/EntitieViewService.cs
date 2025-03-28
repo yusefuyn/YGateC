@@ -170,18 +170,15 @@ namespace YGate.Client.Services.Entitie
             ListingPage, // Verinin liste template'ini içine alan görünüm.
             ChildView, // Veri başka bir verinin alt öğesi ise gösterilecek template'i
         }
-
         public MarkupString GetChildView(EntitieViewModel entitieViewModel)
         {
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ChildView);
         }
-
         public MarkupString GetDataView(EntitieViewModel entitieViewModel)
         {
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.DataView);
 
         }
-
         public MarkupString GetListView(EntitieViewModel entitieViewModel)
         {
             if (entitieViewModel.HtmlTemplate == null)
@@ -199,14 +196,11 @@ namespace YGate.Client.Services.Entitie
                 };
             return CategoryHtmlTemplateAddValues(entitieViewModel, TemplateEnum.ListingView);
         }
-
         public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel)
         {
             var page = new YGate.Client.Pages.Entities.Add();
             return RenderFragmentToMarkupString(page.GetCategoryTemplate(categoryTemplateViewModel));
         }
-
-
         private MarkupString RenderFragmentToMarkupString(RenderFragment fragment)
         {
             // RenderTreeBuilder kullanarak RenderFragment içeriğini HTML olarak render etme
@@ -223,7 +217,6 @@ namespace YGate.Client.Services.Entitie
             // Sonuç olarak string'i MarkupString'e dönüştürme
             return new MarkupString(sb.ToString());
         }
-
         public MarkupString GetListPage(EntitieViewModel PageViewModel, List<EntitieViewModel> ListEntitieViewModel)
         {
             MarkupString ListView = new("");
@@ -235,6 +228,17 @@ namespace YGate.Client.Services.Entitie
             MarkupString ListPage = CategoryHtmlTemplateAddValues(PageViewModel, TemplateEnum.ListingPage);
             ListPage = new(ListPage.Value.Replace("<IListView></IListView>", ListView.Value.ToString()));
             return ListPage;
+        }
+        public MarkupString GetView(DynamicPageDynamicParameter dynamicPageDynamicParameter)
+        {
+            string Index = "";
+            Index = dynamicPageDynamicParameter.PageSource.ToString();
+            dynamicPageDynamicParameter.Parameters.ForEach(xd => Index = Index.Replace(xd.ToString(), xd.Value));
+            return new MarkupString(Index);
+        }
+        public MarkupString GetView(string source)
+        {
+            return new(source);
         }
     }
 }

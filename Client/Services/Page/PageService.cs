@@ -1,4 +1,5 @@
-﻿using YGate.Entities;
+﻿using System;
+using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
 
@@ -37,9 +38,9 @@ namespace YGate.Client.Services.Page
             return obj;
         }
 
-        public async Task<RequestResult> GetPageObject(string guid)
+        public async Task<RequestResult> GetPageForGuid(string guid)
         {
-            var obj = await httpClientService.GetPostAsync<RequestResult>(guid, "api/Page/GetPageObject");
+            var obj = await httpClientService.GetPostAsync<RequestResult>(guid, "api/Page/GetPageForGuid");
             return obj;
         }
 
@@ -54,5 +55,16 @@ namespace YGate.Client.Services.Page
             return obj;
         }
 
+        public async Task<RequestResult> GetMyParametersPageUris()
+        {
+            var obj = await httpClientService.GetPostAsync<RequestResult>("", "api/Page/MyParametersPages");
+            return obj;
+        }
+
+        public async Task<RequestResult> GetPageForName(string name)
+        {
+            var obj = await httpClientService.GetPostAsync<RequestResult>(name, "api/Page/GetPageForName");
+            return obj;
+        }
     }
 }

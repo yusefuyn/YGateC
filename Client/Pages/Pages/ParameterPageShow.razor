@@ -1,0 +1,34 @@
+﻿@page "/Show/p/{pagename}/{pageparameter}"
+@using YGate.Client.Services.Entitie
+@using YGate.Client.Services.Page
+@using YGate.Entities.BasedModel
+@inject IPageService pageService
+@inject IEntitieViewService entitieViewService
+
+@PageView
+
+@code {
+    /// <summary>
+    /// Bu sayfayı kullanmadan önce gelecek parametreleri db'ye  kayıt etmemiz lazım.
+    /// 
+    /// </summary>
+
+
+    [Parameter] public string pagename { get; set; }
+    [Parameter] public string pageparameter { get; set; }
+    private MarkupString PageView { get; set; } = new("<p>Şu anda sayfa getiriliyor.</p>");
+    DynamicPageDynamicParameter pa = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        DynamicPageParameter dynamicPageParameter = new();
+        dynamicPageParameter.ParameterPoolName = pageparameter.ToString();
+        dynamicPageParameter.PageName = pagename.ToString();
+
+        var res = await pageService.GetPageButPPAsync(dynamicPageParameter);
+        pa = res.ConvertRequestObject<DynamicPageDynamicParameter>();
+        PageView = entitieViewService.GetView(pa);
+        StateHasChanged();
+    }
+
+}

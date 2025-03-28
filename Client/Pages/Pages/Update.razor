@@ -21,7 +21,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var res = await pageService.GetPageObject(pageguid);
+        var res = await pageService.GetPageForGuid(pageguid);
         page = res.ConvertRequestObject<DynamicPage>();
         StateHasChanged();
     }

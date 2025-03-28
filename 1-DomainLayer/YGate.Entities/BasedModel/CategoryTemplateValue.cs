@@ -24,7 +24,7 @@ namespace YGate.Entities.BasedModel
         /// <summary>
         /// Değerin Guid'i
         /// </summary>
-        public string SelectedValueGuid { get; set; }
+        public string? SelectedValueGuid { get; set; }
         /// <summary>
         /// Değer
         /// </summary>

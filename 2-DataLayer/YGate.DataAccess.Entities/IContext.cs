@@ -20,7 +20,7 @@ namespace YGate.DataAccess.Entities
         DbSet<MeasurementUnit> MeasurementUnits { get; set; }
         DbSet<PropertyGroup> PropertyGroups { get; set; }
         DbSet<PropertyGroupValue> PropertyGroupValues { get; set; }
-
+        DbSet<PageParameter> PageParameters { get; set; }
         DbSet<Entitie> Entities { get; set; }
         DbSet<EntitiePropertyValue> EntitiePropertyValues { get; set; }
         DbSet<EntitieOwnerTransfer> EntitieOwner { get; set; }
