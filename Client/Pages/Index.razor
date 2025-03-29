@@ -16,7 +16,8 @@
     {
         var res = await pageService.GetPageForName("MainPage");
         DynamicPage dynamicPage = res.ConvertRequestObject<DynamicPage>();
-        Source = viewService.GetView(dynamicPage.Index);
+        if (dynamicPage != null)
+            Source = viewService.GetView(dynamicPage.Index);
     }
 
 }
