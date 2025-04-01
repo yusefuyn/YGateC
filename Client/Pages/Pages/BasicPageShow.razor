@@ -14,11 +14,13 @@
     protected override async Task OnInitializedAsync()
     {
         DynamicPageDynamicParameter dynamicPage = new(pagename);
-        List<string> Parameters = pageparameter.Split('&').ToList();
+        List<string> Parameters = new();
+        if (!string.IsNullOrEmpty(pageparameter))
+            Parameters.AddRange(pageparameter.Split('&').ToList());
         Parameters.ForEach(xd => dynamicPage.Parameters.Add(new() { Name = xd.Split('=')[0], Value = xd.Split('=')[1], ParameterType = "String" }));
         var res = await pageService.GetAsync(dynamicPage);
         string pa = res.Object.ToString();
         PageView = new(pa);
         StateHasChanged();
-    } 
+    }
 }

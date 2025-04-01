@@ -165,6 +165,9 @@ namespace YGate.DataAccess.Sqllite.EFCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("CreatorGuid")
                         .IsRequired()
                         .HasColumnType("TEXT");

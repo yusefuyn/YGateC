@@ -365,7 +365,7 @@ namespace YGate.Server.Controllers
                 CategoryGuid = cv.DBGuid,
                 CategoryName = cv.Name,
                 //CategoryViewLink = $"/GetEntitiesButCategoryGuid/{cv.DBGuid}", // Seoya uygun değildi.
-                CategoryViewLink = $"/GetCategoryEntities/{cv.Name}-{cv.Id.ToString().PadLeft(8, '0')}", // Seoya uygun yapıldı.
+                CategoryViewLink = string.IsNullOrEmpty(cv.Address) == true ? $"/GetCategoryEntities/{cv.Name}-{cv.Id.ToString().PadLeft(8, '0')}" : cv.Address, // Seoya uygun yapıldı.
                 CategorySymbol = string.IsNullOrEmpty(cv.Icon) == true ? "fa fa-square" : cv.Icon,
                 SubCategories = ConvertToSidebarViewModel(cv.ChildCategories)
             }).Select(cvm =>

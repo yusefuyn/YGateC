@@ -20,6 +20,7 @@ namespace YGate.Entities.BasedModel
         public string CreatorGuid { get; set; }
         public string DBGuid { get; set; }
         public bool IsActive { get; set; }
+        public string? Address { get; set; }
         public int? ParentCategoryId { get; set; }
         public Category()
         {

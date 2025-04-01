@@ -19,6 +19,9 @@
     <Entry Placeholder="Icon(fa fa-map)"
            @bind-Value="AddedCategory.Icon"></Entry>
 
+    <Entry Placeholder="Address"
+           @bind-Value="AddedCategory.Address"></Entry>
+
     <ComboBox Ttemp="YGate.Entities.BasedModel.Category"
               Source="source"
               SelectedValueChanged="OnValueChange"

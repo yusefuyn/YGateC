@@ -200,6 +200,7 @@ namespace YGate.BusinessLayer.EFCore
                     Name = c.Name,
                     IsActive = c.IsActive,
                     LongDescription = c.LongDescription,
+                    Address = c.Address,
                     Icon = c.Icon,
                     CreatorGuid = c.CreatorGuid,
                     ShortDescription = c.ShortDescription,
