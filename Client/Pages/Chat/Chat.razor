@@ -134,7 +134,7 @@
                     string Active = "chat-room ";
                     if (RoomName == item)
                         Active += "active";
-                    <SpecialButton Class="@Active.ToString()" Text="@item" OnClick="async()=>{ RoomName = item.ToString(); Messages = new(); await JoinGroup(); }"></SpecialButton>
+                    <SpecialButton Class="@Active.ToString()" Text="@item" OnClick="async()=>{ await LeaveGroup();RoomName = item.ToString(); Messages = new(); await JoinGroup(); }"></SpecialButton>
                 }
             </div>
 
