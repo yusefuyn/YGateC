@@ -1,8 +1,10 @@
 ﻿@page "/Show/b/{pagename}/{pageparameter}"
 @page "/Show/b/{pagename}"
+@using YGate.Client.Services.Entitie
 @using YGate.Client.Services.Page
 @using YGate.Entities.BasedModel
 @inject IPageService pageService
+@inject IEntitieViewService entitieViewService
 
 @PageView
 
@@ -19,8 +21,7 @@
             Parameters.AddRange(pageparameter.Split('&').ToList());
         Parameters.ForEach(xd => dynamicPage.Parameters.Add(new() { Name = xd.Split('=')[0], Value = xd.Split('=')[1], ParameterType = "String" }));
         var res = await pageService.GetAsync(dynamicPage);
-        string pa = res.Object.ToString();
-        PageView = new(pa);
+        PageView = entitieViewService.GetView(res.ConvertRequestObject<DynamicPageDynamicParameter>());
         StateHasChanged();
     }
 }

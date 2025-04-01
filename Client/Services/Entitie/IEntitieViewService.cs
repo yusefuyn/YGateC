@@ -11,7 +11,7 @@ namespace YGate.Client.Services.Entitie
         public MarkupString GetListPage(EntitieViewModel PageViewModel, List<EntitieViewModel> ListEntitieViewModel);
         public MarkupString GetDataView(EntitieViewModel entitieViewModel);
         public MarkupString GetChildView(EntitieViewModel entitieViewModel);
-        public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel); 
+        public MarkupString GetCreateView(CategoryViewModel categoryTemplateViewModel);
         public MarkupString GetView(DynamicPageDynamicParameter dynamicPageDynamicParameter); 
         public MarkupString GetView(string source); 
     }
