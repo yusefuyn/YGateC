@@ -19,28 +19,23 @@ namespace YGate.Server
         }
 
         public static List<RequestLogObject> IpAndDate = new();
-        public static List<string> BlockedIp =new();
+        public static List<string> BlockedIp = new();
         public static List<string> WhiteList = new();
-        public static void AddRequest(string Ip) {
-            RequestLogObject obj = IpAndDate.FirstOrDefault(xd => xd.Ip == Ip);
+        public static void AddRequest(string Ip, string Path, string Data)
+        {
+            RequestLogObject obj = IpAndDate.LastOrDefault(xd => xd.Ip == Ip);
 
             if (WhiteList.Contains(Ip))
                 return;
 
+            IpAndDate.Add(new(Ip, Path, Data));
             if (obj == null)
-            {
-                IpAndDate.Add(new(Ip));
                 return;
-            }
 
-            DateTime sonIstekZamanı = obj.RequestTime.LastOrDefault();
-
-
-            int requestsInLastTeenSeconds = obj.RequestTime.Count(rt => (sonIstekZamanı - rt).TotalSeconds <= StaticTools.AllowedRequestCountTimeout);
+            int requestsInLastTeenSeconds = IpAndDate.Where(xd => xd.Ip == Ip && xd.RequestTime > DateTime.UtcNow.AddSeconds((StaticTools.AllowedRequestCountTimeout * -1))).Count();
 
             if (requestsInLastTeenSeconds >= StaticTools.NumberOfAllowedRequests)
                 BlockedIp.Add(Ip);
-            obj.AddRequest();
         }
     }
 }

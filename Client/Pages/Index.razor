@@ -14,10 +14,21 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+
         var res = await pageService.GetPageForName("MainPage");
         DynamicPage dynamicPage = res.ConvertRequestObject<DynamicPage>();
         if (dynamicPage != null)
             Source = viewService.GetView(dynamicPage.Index);
+        else
+        {
+            Thread.Sleep(250);
+            await RefreshData();
+        }
     }
 
 }

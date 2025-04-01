@@ -1,4 +1,5 @@
 ﻿@page "/Chat/{RoomName}"
+@page "/Chat"
 @implements IDisposable
 @using Microsoft.AspNetCore.SignalR.Client
 @using YGate.Client.Services.Profile
@@ -8,9 +9,8 @@
     /* Ana container */
     .chat-app-container {
         display: flex;
-        height: 100vh;
+        height: calc(100vh - 105px);
         max-width: 100%;
-        background-color: #121212;
         color: #ffffff;
     }
 
@@ -63,7 +63,6 @@
         overflow-y: auto;
         border-bottom: 1px solid #333;
         height: 400px;
-        background-color: #181818;
     }
 
     /* Mesaj balonları */
@@ -100,7 +99,7 @@
     .chat-input {
         display: flex;
         padding: 10px;
-        background-color: #1e1e1e;
+        align-items:center;
         border-top: 1px solid #333;
     }
 
@@ -108,9 +107,7 @@
             flex-grow: 1;
             border: none;
             padding: 10px;
-            border-radius: 20px;
             margin-right: 10px;
-            background-color: #333;
             color: #ffffff;
         }
 
@@ -118,7 +115,6 @@
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 50%;
             padding: 10px;
             font-size: 18px;
         }
@@ -129,12 +125,18 @@
     <div class="container-fluid" style="max-height:calc(100vh - 75px);">
         <div class="chat-app-container">
             <!-- Sol Panel (Chat Odaları) -->
-@*             <div class="chat-rooms">
-                <h4>Chat Odaları</h4>
-                <div class="chat-room active" data-room="room1">@RoomName</div>
-                <div class="chat-room" data-room="room2">Oda 2</div>
-                <div class="chat-room" data-room="room3">Oda 3</div>
-            </div> *@
+            <div class="col-2 col-md-2">
+
+                <h4>Odalar</h4>
+
+                @foreach (var item in RoomList)
+                {
+                    string Active = "chat-room ";
+                    if (RoomName == item)
+                        Active += "active";
+                    <SpecialButton Class="@Active.ToString()" Text="@item" OnClick="async()=>{ RoomName = item.ToString(); Messages = new(); await JoinGroup(); }"></SpecialButton>
+                }
+            </div>
 
             <!-- Sağ Panel (Mesajlar ve Sohbet) -->
             <div class="chat-container">
@@ -186,6 +188,9 @@ else
 
 @code {
     private HubConnection? hubConnection;
+
+    private List<string> RoomList = new() { "General", "Operations" };
+
     [Parameter]
     public string RoomName { get; set; }
     private string MessageValue = string.Empty;
@@ -211,8 +216,8 @@ else
         {
             Username = $"Bozok-{new Random().Next(100, 999).ToString()}";
         }
-
-
+        if (string.IsNullOrEmpty(RoomName))
+            RoomName = "General";
         await hubConnection.StartAsync();
         await JoinGroup();
     }

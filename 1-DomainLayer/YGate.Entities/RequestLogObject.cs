@@ -9,14 +9,11 @@ namespace YGate.Entities
     public class RequestLogObject
     {
         public string Ip { get; set; }
-        public List<DateTime> RequestTime { get; set; }
-        public RequestLogObject(string Ip)
+        public DateTime RequestTime { get; set; }
+        public RequestLogObject(string Ip,string Path,string Data)
         {
-            RequestTime = new List<DateTime>();
+            RequestTime = DateTime.UtcNow;
             this.Ip = Ip;
-            AddRequest();
         }
-
-        public void AddRequest() { RequestTime.Add(DateTime.UtcNow); }
     }
 }

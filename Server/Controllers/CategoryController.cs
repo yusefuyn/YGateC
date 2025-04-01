@@ -19,7 +19,7 @@ namespace YGate.Server.Controllers
     {
         Operations operations;
         IHubContext<MyHub> hub;
-        public CategoryController(IHubContext<MyHub> hub,Operations operations)
+        public CategoryController(IHubContext<MyHub> hub, Operations operations)
         {
             this.operations = operations;
             this.hub = hub;
@@ -374,6 +374,9 @@ namespace YGate.Server.Controllers
                 return cvm;
             })
             .ToList();
+
+            returnedList.Add(new CategorySidebarViewModel() { CategoryName = "Chat", CategorySymbol = "fa-message", CategoryRole = new() { "All" }, CategoryViewLink = "Chat" });
+
             return returnedList;
         }
     }

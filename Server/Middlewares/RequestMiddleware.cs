@@ -107,7 +107,7 @@ dX.    9Xb      .dXb    __                         __    dXb.     dXP     .Xb
             // bu nedenle kayıt işlemini, istek tipi post ise yapmakta makul olur.
             if (context.Request.Method == "POST")
             {
-                StaticTools.AddRequest(IpAddress);
+                StaticTools.AddRequest(IpAddress,context.Request.Path, context.Request.Body.ToString());
             }
 
 
