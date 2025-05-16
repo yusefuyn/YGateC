@@ -3,6 +3,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Server.Attributes;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -11,9 +12,11 @@ namespace YGate.Server.Controllers
     public class PageController : Controller
     {
         Operations operations;
-        public PageController(Operations operations)
+        IBaseFacades baseFacades;
+        public PageController(Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
+            this.baseFacades = baseFacades;
         }
 
         [HttpPost]
@@ -31,7 +34,7 @@ namespace YGate.Server.Controllers
                 page.PageSource = dynamicPage.Index.ToString();
             }
             returned.Object = page;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -47,7 +50,7 @@ namespace YGate.Server.Controllers
                 returned.Object = new List<string>();
             else
                 returned.Object = operations.Context.PageParameters.Where(xd => xd.CreatorGuid == parameter.Token && xd.CreateDate > DateTime.UtcNow.AddMinutes(-10)).Select(xd => $"Show/p/Gates/{xd.PageName}").Distinct().ToList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -88,7 +91,7 @@ namespace YGate.Server.Controllers
                 requestResult.Object = null;
             }
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
+            return baseFacades.JsonSerializer.Serialize(requestResult);
         }
 
 
@@ -98,11 +101,19 @@ namespace YGate.Server.Controllers
             RequestResult requestResult = new("Get Page Object");
             requestResult.Result = EnumRequestResult.Success;
             string pageName = parameter.Parameters.ToString();
-            DynamicPage obj = operations.Context.DynamicPages.FirstOrDefault(xd => xd.Name == pageName);
-            if (obj == null)
-                obj = new() { Index = $"<div class='container'><h3>{pageName} adında bir sayfa yok yada bulunamadı.</h3></div>" };
-            requestResult.Object = obj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
+            try
+            {
+                DynamicPage obj = operations.Context.DynamicPages.FirstOrDefault(xd => xd.Name == pageName);
+                if (obj == null)
+                    obj = new() { Index = $"<div class='container'><h3>{pageName} adında bir sayfa yok yada bulunamadı.</h3></div>" };
+                requestResult.Object = obj;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return baseFacades.JsonSerializer.Serialize(requestResult);
         }
 
         [HttpPost]
@@ -133,7 +144,7 @@ namespace YGate.Server.Controllers
                 requestResult.ShortDescription = "Operations success";
 
             }
-            return YGate.Json.Operations.JsonSerialize.Serialize(requestResult);
+            return baseFacades.JsonSerializer.Serialize(requestResult);
 
         }
 
@@ -152,7 +163,7 @@ namespace YGate.Server.Controllers
                 returned.Result = EnumRequestResult.Error;
                 returned.ShortDescription = "Sayfa yok 404 :O";
                 returned.LongDescription = "Sayfa yok 404 :O";
-                return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+                return baseFacades.JsonSerializer.Serialize(returned);
             }
 
             returnedObj.PageSource = pageO.Index.ToString();
@@ -161,7 +172,7 @@ namespace YGate.Server.Controllers
             // Belki daha sonra indexlenmiş halini direk gönderirirz.
             // belli olmaz.
             returned.Object = returnedObj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -175,7 +186,7 @@ namespace YGate.Server.Controllers
                 returned.Result = EnumRequestResult.Error;
                 returned.ShortDescription = "Opss!";
                 returned.LongDescription = "Opss!";
-                return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+                return baseFacades.JsonSerializer.Serialize(returned);
             }
 
 
@@ -186,7 +197,7 @@ namespace YGate.Server.Controllers
             operations.Context.DynamicPages.Add(page);
             operations.Context.SaveChanges();
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -196,7 +207,7 @@ namespace YGate.Server.Controllers
             RequestResult returned = new($"Get All Page");
             returned.Result = EnumRequestResult.Success;
             returned.Object = operations.Context.DynamicPages.ToList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -210,14 +221,14 @@ namespace YGate.Server.Controllers
             if (page == null)
             {
                 returned.Result = EnumRequestResult.Error;
-                return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+                return baseFacades.JsonSerializer.Serialize(returned);
             }
 
             operations.Context.DynamicPages.Remove(page);
             operations.Context.SaveChanges();
 
             returned.Object = operations.Context.DynamicPages.ToList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
     }
 }

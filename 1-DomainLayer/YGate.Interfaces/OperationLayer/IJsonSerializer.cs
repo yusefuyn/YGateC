@@ -8,7 +8,7 @@ namespace YGate.Interfaces.OperationLayer
 {
     public interface IJsonSerializer
     {
-        string Serialize(object obj);
-        T Deserialize<T>(string json);
+        public string Serialize(object obj);
+        public T Deserialize<T>(string json);
     }
 }

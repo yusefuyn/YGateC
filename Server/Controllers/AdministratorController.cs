@@ -9,6 +9,7 @@ using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
 using YGate.Server.Attributes;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -19,10 +20,12 @@ namespace YGate.Server.Controllers
     {
         Operations operations;
         IHubContext<MyHub> hub;
-        public AdministratorController(IHubContext<MyHub> hub,Operations operations)
+        IBaseFacades baseFacades;
+        public AdministratorController(IHubContext<MyHub> hub,Operations operations,IBaseFacades baseFacades)
         {
             this.operations = operations;
             this.hub = hub;
+            this.baseFacades = baseFacades;
         }
 
         [HttpPost]
@@ -45,7 +48,7 @@ namespace YGate.Server.Controllers
             {
                 result.Result = EnumRequestResult.Stop;
                 result.LongDescription = "Setup zaten yapılmış.";
-                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+                return baseFacades.JsonSerializer.Serialize(result);
             }
 
 
@@ -314,7 +317,7 @@ namespace YGate.Server.Controllers
             }
 
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -328,7 +331,7 @@ namespace YGate.Server.Controllers
 
             await hub.Clients.Groups("SideBar").SendAsync("RefreshSiteName");
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -340,7 +343,7 @@ namespace YGate.Server.Controllers
             var Accounts = operations.Context.Accounts.ToList();
             // TODO : Daha sonra rollerini çek listeleyelim.
             result.Object = Accounts;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -350,7 +353,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
 
             result.Object = operations.GetAdministratorUserItem(parameter.Parameters.ToString());
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -363,7 +366,7 @@ namespace YGate.Server.Controllers
             var removedIp = StaticTools.BlockedIp.FirstOrDefault(xd => xd == parameter.Parameters.ToString());
             StaticTools.BlockedIp.Remove(removedIp);
             result.Object = GetBlockedIpAddress();
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -375,7 +378,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
             result.To = EnumTo.Server;
             result.Object = GetBlockedIpAddress();
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -387,7 +390,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
             result.To = EnumTo.Server;
             result.Object = GetConnectIpList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         private List<string> GetConnectIpList() => StaticTools.IpAndDate.Select(xd => xd.Ip).Distinct().ToList();
@@ -401,7 +404,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
             result.To = EnumTo.Server;
             result.Object = GetWhiteIpList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
 
         }
 
@@ -415,7 +418,7 @@ namespace YGate.Server.Controllers
             result.To = EnumTo.Server;
             StaticTools.BlockedIp.Add(parameter.Parameters.ToString());
             result.Object = GetBlockedIpAddress();
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -428,7 +431,7 @@ namespace YGate.Server.Controllers
             result.To = EnumTo.Server;
             StaticTools.WhiteList.Add(parameter.Parameters.ToString());
             result.Object = GetWhiteIpList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         
@@ -454,7 +457,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
 
             result.Object = user;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -469,7 +472,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
 
             result.Object = user;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -503,7 +506,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
 
             result.Object = operations.GetAccount(user.DBGuid);
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -518,7 +521,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
 
             result.Object = user;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -533,7 +536,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
 
             result.Object = user;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -552,7 +555,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
 
             result.Object = operations.GetAccount(AccountGuid);
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
     }
 }

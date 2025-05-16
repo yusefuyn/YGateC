@@ -4,6 +4,7 @@ using System.Net.Http;
 using YGate.Client.Services;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
+using YGate.Json;
 
 namespace YGate.Client
 {
@@ -21,7 +22,7 @@ namespace YGate.Client
         {
             RequestParameter parameter = new() { DateTimeUTC = DateTime.UtcNow, Address = "/api/Page/SavePageParameters" };
             parameter.Parameters = parameters;
-            StringContent stringContent = new(YGate.Json.Operations.JsonSerialize.Serialize(parameter), System.Text.Encoding.UTF8, "application/json");
+            StringContent stringContent = new(new JsonOperations().Serialize(parameter), System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage res = await httpClient.PostAsync("/api/Page/SavePageParameters", stringContent);
             string Returned = await res.Content.ReadAsStringAsync();
             return Returned;
@@ -37,7 +38,7 @@ namespace YGate.Client
         public static T ConvertRequestObject<T>(this RequestResult result)
         {
             if (result != null && result.Result == EnumRequestResult.Success)
-                return YGate.Json.Operations.JsonDeserialize<T>.Deserialize(result.Object.ToString());
+                return new JsonOperations().Deserialize<T>(result.Object.ToString());
             else
                 return default(T);
         }

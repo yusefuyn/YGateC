@@ -18,13 +18,14 @@ namespace YGate.DataAccess.Sqllite.EFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(_connectionString);
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlite(_connectionString);
         }
         public void MigrateDb()
         {
             base.Database.Migrate();
         }
-      
+
 
         public string DatabaseConnectionStringName { get; set; } = "SqLiteConnectionString";
         public int SaveChanges => base.SaveChanges();

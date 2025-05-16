@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using YGate.Entities;
+using YGate.Interfaces.OperationLayer;
+using YGate.Json;
 
 namespace YGate.Server.Attributes
 {
@@ -13,6 +15,7 @@ namespace YGate.Server.Attributes
     public class AuthorizedAttribute : ActionFilterAttribute
     {
         private string[] Roles;
+        JsonOperations JsonOperations = new();
         public AuthorizedAttribute(string Roles)
         {
             this.Roles = Roles.Split(',');
@@ -33,7 +36,7 @@ namespace YGate.Server.Attributes
             RequestResult result = new("You Not Authorize");
             result.Result = EnumRequestResult.Stop;
             result.To = EnumTo.Server;
-            YGate.Json.Operations.JsonSerialize.Serialize(result);
+            JsonOperations.Serialize(result);
 
             if (string.IsNullOrEmpty(requestToken))
             {

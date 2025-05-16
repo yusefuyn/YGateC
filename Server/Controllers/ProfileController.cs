@@ -3,6 +3,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -10,9 +11,11 @@ namespace YGate.Server.Controllers
     public class ProfileController : Controller
     {
         Operations operations;
-        public ProfileController(Operations operations)
+        IBaseFacades baseFacades;
+        public ProfileController(Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
+            this.baseFacades = baseFacades;
         }
 
         [HttpPost]
@@ -23,7 +26,7 @@ namespace YGate.Server.Controllers
             var objs = operations.Context.AccountProperties.Where(xd => xd.CreatorGuid == UserID);
             result.Object = objs;
             result.Result = EnumRequestResult.Success;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -34,7 +37,7 @@ namespace YGate.Server.Controllers
             operations.Context.AccountProperties.Add(accountProperties);
             operations.Context.SaveChanges();
             result.Result = EnumRequestResult.Success;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -77,7 +80,7 @@ namespace YGate.Server.Controllers
 
             returned.Object = model;
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
     }
 }

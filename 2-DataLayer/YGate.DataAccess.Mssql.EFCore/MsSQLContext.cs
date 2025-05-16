@@ -19,7 +19,8 @@ namespace YGate.DataAccess.Mssql.EFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString);
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer(_connectionString);
         }
         public void MigrateDb()
         {

@@ -7,22 +7,22 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Client;
 using YGate.Client.Services;
 using YGate.Entities;
+using YGate.Interfaces.OperationLayer;
+using YGate.Json;
 using YGate.Json.Operations;
 using YGate.Mail.Operations;
 using YGate.Server;
 using YGate.Server.Controllers;
+using YGate.Server.Facades;
 using YGate.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
-
+#region SonraDuzenle
 List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbSettings").Get<List<ConnectionString>>();
 
-builder.Services.AddSingleton<Operations>(xd =>
-{ // DbAyarlarý
-    Operations returnedOperations = new();
-    returnedOperations.AddDbSettings(dbSettingsSection);
-    return returnedOperations;
-});
+builder.Services.AddSingleton<IJsonSerializer, JsonOperations>();
+builder.Services.AddSingleton<IBaseFacades, BaseFacades>();
+
 
 YGate.Server.StaticTools.SiteName = builder.Configuration.GetSection("SiteSettings").GetValue<string>("Title");
 YGate.Server.StaticTools.AllowedRequestCountTimeout = builder.Configuration.GetSection("SiteSettings").GetValue<int>("AllowedRequestCountTimeout");
@@ -36,6 +36,17 @@ builder.Services.AddScoped<MailServices>(xd =>
     return res;
 });
 
+
+builder.Services.AddScoped<Operations>(xd =>
+{ // DbAyarlarý
+
+    var jsonService = xd.GetService<IJsonSerializer>();
+    Operations returnedOperations = new(jsonService);
+    returnedOperations.AddDbSettings(dbSettingsSection);
+    return returnedOperations;
+});
+
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -47,34 +58,25 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 string TokenPasswordConf = builder.Configuration["TokenConfiguration:TokenPassword"]; // Json Token Ayarlarý
 int ValidityTimeConf = Convert.ToInt32(builder.Configuration["TokenConfiguration:ValidityTime"].ToString());
 
-YGate.Server.StaticTools.tokenService =
-    new() { __secretkey = YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf), ValidityTime = ValidityTimeConf };
+YGate.Server.StaticTools.tokenService = new(new JsonOperations(), ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
 
 //  auth
 builder.Services.AddScoped<CookieService>();
-
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+#endregion
 builder.Services.AddAuthorizationCore();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor();
-//  auth
 builder.Services.AddSignalR();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 var app = builder.Build();
-//app.UseCors("AllowAllOrigins");
-//  auth
-//app.UseStaticFiles();
-//app.UseAntiforgery();
-app.UseRouting();  // Bu çaðrý burada olmalý
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-// auth
-
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -98,6 +100,6 @@ app.UseMiddleware<RequestMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 #endregion
 
-app.MapHub<MyHub>("/MyHub"); // SignalR Burada.
+app.MapHub<MyHub>("/MyHub");
 app.MapFallbackToFile("index.html");
 app.Run();

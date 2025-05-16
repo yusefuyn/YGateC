@@ -20,14 +20,21 @@ using YGate.Mapping;
 using Azure;
 using YGate.Entities.ResultModel;
 using System.Configuration;
+using YGate.Interfaces.OperationLayer;
 
 namespace YGate.BusinessLayer.EFCore
 {
     public class Operations
     {
         public IContext Context;
-        public List<ConnectionString> DbSettings { get; set; } = new();
+        IJsonSerializer jsonSerializer;
 
+        public Operations(IJsonSerializer jsonSerializer)
+        {
+            this.jsonSerializer = jsonSerializer;
+        }
+
+        public List<ConnectionString> DbSettings { get; set; } = new();
         public void AddDbSettings(List<ConnectionString> addedDbSettings)
         {
             DbSettings.AddRange(addedDbSettings);
@@ -267,21 +274,21 @@ namespace YGate.BusinessLayer.EFCore
                 { // Tipi itemGroup'ise grubu al values'e yerleştir.
                     var objs = Context.CategoryTemplateValues.Where(tempval => tempval.CategoryTemplateGuid == temp.DBGuid).ToList();
                     var objss = Context.PropertyGroupValues.Where(pgv => pgv.PropertyGroupGuid == objs[0].ValueGroupGuid);
-                    temp.Values = YGate.Json.Operations.JsonSerialize.Serialize(objss);
+                    temp.Values = jsonSerializer.Serialize(objss);
                 }
 
                 if (temp.ValueType != PropertyValueType.Combos) // Tipi combos değilse hepsinin categorytemplatevalues'ine ilk elemanı ekle
                     temp.categoryTemplateValues.Add(new());
 
                 if (temp.ValueType == PropertyValueType.Combos)
-                    temp.Values = YGate.Json.Operations.JsonSerialize.Serialize(Context.PropertyGroupValues.Where(xd => xd.PropertyGroupGuid == temp.ValueGroupGuid).ToList());
+                    temp.Values = jsonSerializer.Serialize(Context.PropertyGroupValues.Where(xd => xd.PropertyGroupGuid == temp.ValueGroupGuid).ToList());
 
                 if (temp.ValueType == PropertyValueType.Unit)
                 {
                     string categoryTemplateValueGuid = Context.CategoryTemplateValues.SingleOrDefault(xd => xd.CategoryTemplateGuid == temp.DBGuid).ValueGroupGuid;
                     string MeasurementCategory = Context.MeasurementCategories.SingleOrDefault(xd => xd.DBGuid == categoryTemplateValueGuid).DBGuid;
                     List<MeasurementUnit> MeasurementUnitsList = Context.MeasurementUnits.Where(measurementUnit => measurementUnit.MeasurementCategoryGuid == MeasurementCategory).ToList();
-                    temp.Values = YGate.Json.Operations.JsonSerialize.Serialize(MeasurementUnitsList);
+                    temp.Values = jsonSerializer.Serialize(MeasurementUnitsList);
                 }
             }
 
@@ -540,7 +547,7 @@ namespace YGate.BusinessLayer.EFCore
                 {
                     if (xd.Type == PropertyValueType.Unit)
                     {
-                        dynamic obj = YGate.Json.Operations.JsonDeserialize<dynamic>.Deserialize(xd.PropertyValue);
+                        dynamic obj = jsonSerializer.Deserialize<dynamic>(xd.PropertyValue);
                         float Integer = obj.IntegerVal;
                         string UnitGuid = obj.UnitGuid;
                         var Unit = Context.MeasurementUnits.FirstOrDefault(xd => xd.DBGuid == UnitGuid);

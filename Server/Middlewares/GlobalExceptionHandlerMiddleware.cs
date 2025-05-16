@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Server.Middlewares
 {
@@ -6,10 +7,13 @@ namespace YGate.Server.Middlewares
     {
 
         private readonly RequestDelegate _next;
+        IJsonSerializer jsonSerializer;
 
-        public GlobalExceptionHandlerMiddleware(RequestDelegate next)
+
+        public GlobalExceptionHandlerMiddleware(RequestDelegate next, IJsonSerializer jsonSerializer)
         {
             _next = next;
+            this.jsonSerializer = jsonSerializer;
         }
 
         public async Task Invoke(HttpContext context)
@@ -25,7 +29,7 @@ namespace YGate.Server.Middlewares
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var result = JsonSerializer.Serialize(new
+                var result = jsonSerializer.Serialize(new
                 {
                     success = false,
                     message = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.",

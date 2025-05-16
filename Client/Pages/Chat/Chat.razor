@@ -1,9 +1,14 @@
 ﻿@page "/Chat/{RoomName}"
 @page "/Chat"
 @implements IDisposable
+
+@inject IJsonSerializer jsonSerializer
+
+
 @using Microsoft.AspNetCore.SignalR.Client
 @using YGate.Client.Services.Profile
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.OperationLayer
 <PageTitle>@localizer["Chat"]</PageTitle>
 <style>
     /* Ana container */
@@ -203,7 +208,7 @@ else
              .Build();
         hubConnection.On<string>("ReceiveMessage", (message) =>
         {
-            (string Key, string Value) mm = YGate.Json.Operations.JsonDeserialize<(string Key, string Value)>.Deserialize(message);
+            (string Key, string Value) mm = jsonSerializer.Deserialize<(string Key, string Value)>(message);
             Messages.Add(mm);
             StateHasChanged();
         });
@@ -258,7 +263,7 @@ else
         (string Key, string Value) message = new();
         message.Key = Username;
         message.Value = MessageValue;
-        await hubConnection.SendAsync("SendMessageToGroup", RoomName, YGate.Json.Operations.JsonSerialize.Serialize(message));
+        await hubConnection.SendAsync("SendMessageToGroup", RoomName, jsonSerializer.Serialize(message));
         MessageValue = "";
     }
 

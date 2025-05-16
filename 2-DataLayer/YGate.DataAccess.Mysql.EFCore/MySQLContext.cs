@@ -18,7 +18,8 @@ namespace YGate.DataAccess.Mysql.EFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(_connectionString);
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseMySQL(_connectionString);
         }
         public void MigrateDb()
         {

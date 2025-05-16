@@ -9,6 +9,7 @@ using YGate.Entities.ViewModels;
 using YGate.Interfaces.Application.Advanced;
 using YGate.Json.Operations;
 using YGate.Server.Attributes;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -16,9 +17,11 @@ namespace YGate.Server.Controllers
     public class EntitieController : Controller
     {
         Operations operations;
-        public EntitieController(Operations operations)
+        IBaseFacades baseFacades;
+        public EntitieController(Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
+            this.baseFacades = baseFacades;
         }
 
         #region public
@@ -58,7 +61,7 @@ namespace YGate.Server.Controllers
                 return subModel;
             }).ToList();
             #endregion
-            string json = YGate.Json.Operations.JsonSerialize.Serialize(RequestModel);
+            string json = baseFacades.JsonSerializer.Serialize(RequestModel);
             #region DBKayıt
             operations.Context.Entities.Add(RequestModel.MainModel);
             operations.Context.EntitiePropertyValues.AddRange(RequestModel.MainModel.Values);
@@ -81,7 +84,7 @@ namespace YGate.Server.Controllers
             #endregion
             operations.Context.SaveChanges();
             result.Object = RequestModel;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -101,7 +104,7 @@ namespace YGate.Server.Controllers
                 result.Result = EnumRequestResult.Error;
                 result.ShortDescription = "The object is not yours.";
                 result.LongDescription = "The object is not yours.";
-                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+                return baseFacades.JsonSerializer.Serialize(result);
             }
 
             if (!operations.IsThereSuchAUser(TransferVictimGuid))
@@ -109,7 +112,7 @@ namespace YGate.Server.Controllers
                 result.Result = EnumRequestResult.Error;
                 result.ShortDescription = "There is no such user.";
                 result.LongDescription = "There is no such user.";
-                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+                return baseFacades.JsonSerializer.Serialize(result);
             }
 
             if (!operations.UserPasswordIsCorrect(OwnerID, OwnerPassword))
@@ -117,7 +120,7 @@ namespace YGate.Server.Controllers
                 result.Result = EnumRequestResult.Error;
                 result.ShortDescription = "Your password is incorrect.";
                 result.LongDescription = "Your password is incorrect.";
-                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+                return baseFacades.JsonSerializer.Serialize(result);
             }
 
             EntitieOwnerTransfer entitieOwnerTransfer = new()
@@ -136,7 +139,7 @@ namespace YGate.Server.Controllers
             result.ShortDescription = "Operation Success";
             result.LongDescription = "Operation Success";
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -163,7 +166,7 @@ namespace YGate.Server.Controllers
             var returnedobj = operations.GetEntitieViewModelByEntitieDBGuid(Guid); // Serileştirilir
             returnedobj.Transfers.AddRange(operations.GetEntitieTransferList(Guid));
             result.Object = returnedobj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);// Cavabunga.
+            return baseFacades.JsonSerializer.Serialize(result);// Cavabunga.
         }
 
 
@@ -183,7 +186,7 @@ namespace YGate.Server.Controllers
 
 
             result.Object = list;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -207,7 +210,7 @@ namespace YGate.Server.Controllers
                 result.Result = EnumRequestResult.Error;
                 result.ShortDescription = "There is no valid token or you are not logged in.";
                 result.LongDescription = "There is no valid token or you are not logged in.";
-                return YGate.Json.Operations.JsonSerialize.Serialize(result);
+                return baseFacades.JsonSerializer.Serialize(result);
             }
 
             // TODO : Authorize attribute'sini server tarafında yaptıktan sonra gönderilen ownerGuid ve attribute ile alınan cookie değerindeki userıd'in bir bağlantısı
@@ -227,7 +230,7 @@ namespace YGate.Server.Controllers
             operations._EntitieViewModelGetInfo(ref list);
 
             result.Object = list;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -245,7 +248,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
             result.To = EnumTo.Server;
             result.Object = operations.GetEntitiesFromCategoryGuid(categoryGuid);
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -293,7 +296,7 @@ namespace YGate.Server.Controllers
             // bu kullanıcı birşeyin peşinde.
             // İleride loglanması gerekebilir.
             if (cat == null)
-                return YGate.Json.Operations.JsonSerialize.Serialize(new RequestResult("") { To = EnumTo.Server, Object = null, LongDescription = "Verilen kategori ID'sine ait kategori bulunamadı.", Result = EnumRequestResult.Stop, ShortDescription = "Kategori bulunamadı" });
+                return baseFacades.JsonSerializer.Serialize(new RequestResult("") { To = EnumTo.Server, Object = null, LongDescription = "Verilen kategori ID'sine ait kategori bulunamadı.", Result = EnumRequestResult.Stop, ShortDescription = "Kategori bulunamadı" });
 
             List<Role> categoryRoles = operations.GetCategoryRoleFromCategoryGuid(cat.DBGuid);
 
@@ -305,7 +308,7 @@ namespace YGate.Server.Controllers
             else
             {
                 if (string.IsNullOrEmpty(parameter.Token))
-                    return YGate.Json.Operations.JsonSerialize.Serialize(new RequestResult("") { To = EnumTo.Server, Object = null, LongDescription = "Sayfayı görüntüleme için giriş yapmanız gerekmektedir.", Result = EnumRequestResult.Stop, ShortDescription = "Sayfayı görüntüleme için giriş yapmanız gerekmektedir." });
+                    return baseFacades.JsonSerializer.Serialize(new RequestResult("") { To = EnumTo.Server, Object = null, LongDescription = "Sayfayı görüntüleme için giriş yapmanız gerekmektedir.", Result = EnumRequestResult.Stop, ShortDescription = "Sayfayı görüntüleme için giriş yapmanız gerekmektedir." });
 
                 List<Role> userRoles = operations.GetUserRolesFromUserGuid(parameter.Token);
 
@@ -324,7 +327,7 @@ namespace YGate.Server.Controllers
                     result.Object = null;
                 }
             }
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -343,7 +346,7 @@ namespace YGate.Server.Controllers
             result.Result = EnumRequestResult.Success;
             var obj = operations.Context.Entities.FirstOrDefault(xd => xd.DBGuid == EntitieGuid);
             result.Object = obj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
@@ -373,7 +376,7 @@ namespace YGate.Server.Controllers
                     throw;
                 }
             }
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         #endregion

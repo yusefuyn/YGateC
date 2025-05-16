@@ -12,6 +12,7 @@ using YGate.Entities.BasedModel;
 using YGate.Entities.ResultModel;
 using YGate.Entities.ViewModels;
 using YGate.Entities.ViewModels.Chat;
+using YGate.Server.Facades;
 namespace YGate.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -19,10 +20,12 @@ namespace YGate.Server.Controllers
     {
         Operations operations;
         IHubContext<MyHub> hub;
-        public CategoryController(IHubContext<MyHub> hub, Operations operations)
+        IBaseFacades baseFacades;
+        public CategoryController(IHubContext<MyHub> hub, Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
             this.hub = hub;
+            this.baseFacades = baseFacades;
         }
         [HttpPost]
         public async Task<string> AddNewCategory([FromBody] RequestParameter parameter)
@@ -43,7 +46,7 @@ namespace YGate.Server.Controllers
 
             returned.Result = EnumRequestResult.Success;
             returned.Object = category;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -52,7 +55,7 @@ namespace YGate.Server.Controllers
             RequestResult returned = new("GetAllCategory");
             returned.Result = EnumRequestResult.Success;
             returned.Object = operations.Context.Categories.ToList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -71,7 +74,7 @@ namespace YGate.Server.Controllers
 
             await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -81,7 +84,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             var res = operations.Context.Categories.Where(xd => xd.IsActive == true && xd.ParentCategoryId == null).ToList();
             returned.Object = res;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -102,7 +105,7 @@ namespace YGate.Server.Controllers
             await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
 
             returned.Object = operations.GetCategoryRole(ob.CategoryGuid);
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
 
         }
 
@@ -113,7 +116,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             var resobj = await operations.GetCategoryTreeAsync();
             returned.Object = resobj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -123,11 +126,8 @@ namespace YGate.Server.Controllers
             returned.To = EnumTo.Server;
             returned.Result = EnumRequestResult.Success;
             returned.Object = operations.GetCategoryRole(parameter.Parameters.ToString());
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
-
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
-
-
 
         [HttpPost]
         public async Task<string> DeleteCategory([FromBody] RequestParameter parameter)
@@ -139,7 +139,7 @@ namespace YGate.Server.Controllers
             if (resobj == null)
             {
                 returned.Result = EnumRequestResult.Error;
-                return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+                return baseFacades.JsonSerializer.Serialize(returned);
             }
             using (var transaction = operations.Context.Database.BeginTransaction())
             {
@@ -198,7 +198,7 @@ namespace YGate.Server.Controllers
 
             await hub.Clients.Group("SideBar").SendAsync("RefreshSideBar");
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -208,7 +208,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             CategoryViewModel resobj = operations.GetCategoryButViewModel(xd => xd.Id == parameter.ConvertParameters<int>());
             returned.Object = resobj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -225,7 +225,7 @@ namespace YGate.Server.Controllers
             RequestResult returned = new($"GetCategory {parameter.Parameters.ToString()}");
             returned.Result = EnumRequestResult.Success;
             returned.Object = GetCategoryViewModel(parameter.Parameters.ToString());
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -256,7 +256,7 @@ namespace YGate.Server.Controllers
 
             }
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -268,7 +268,7 @@ namespace YGate.Server.Controllers
             RequestResult returned = new($"DeleteTemplate {viewModel.DBGuid}");
             returned.Result = EnumRequestResult.Success;
             operations.DeleteCategoryTemplate(viewModel);
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
         [HttpPost]
         public async Task<string> GetAllSubCategoryToParentCategoryGuid([FromBody] RequestParameter parameter)
@@ -278,7 +278,7 @@ namespace YGate.Server.Controllers
             CategoryViewModel category = operations.GetCategoryButViewModel(xd => xd.DBGuid == parameter.Parameters.ToString());
             operations.LoadFirstChildCategories(category);
             returned.Object = category.ChildCategories;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -290,7 +290,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             operations.Context.CategoryHtmlTemplates.Add(viewModel);
             operations.Context.SaveChanges();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -302,7 +302,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             Category category = operations.Context.Categories.FirstOrDefault(xd => xd.Id == Id);
             returned.Object = GetHtmlTemplateBCDBGp(category.DBGuid);
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -330,7 +330,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
 
             returned.Object = GetHtmlTemplateBCDBGp(dbguid);
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -342,7 +342,7 @@ namespace YGate.Server.Controllers
             var obj = operations.Context.CategoryHtmlTemplates.FirstOrDefault(xd => xd.DBGuid == template.DBGuid);
             obj.Template = template.Template;
             operations.Context.SaveChanges();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -354,7 +354,7 @@ namespace YGate.Server.Controllers
             List<CategoryViewModel> obs = await operations.GetCategoryTreeAsync();
             returned.Object = ConvertToSidebarViewModel(obs);
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         private List<CategorySidebarViewModel> ConvertToSidebarViewModel(List<CategoryViewModel> categoryViewModels)

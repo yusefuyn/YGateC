@@ -6,6 +6,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Server.Attributes;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -15,10 +16,12 @@ namespace YGate.Server.Controllers
     {
         private readonly Operations operations;
         IHubContext<MyHub> hub;
-        public CommentController(IHubContext<MyHub> hub, Operations operations)
+        IBaseFacades baseFacades;
+        public CommentController(IHubContext<MyHub> hub, Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
             this.hub = hub;
+            this.baseFacades = baseFacades;
         }
 
         [HttpPost]
@@ -42,7 +45,7 @@ namespace YGate.Server.Controllers
             }
             request.Object = comments;
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(request);
+            return baseFacades.JsonSerializer.Serialize(request);
         }
 
 
@@ -53,7 +56,7 @@ namespace YGate.Server.Controllers
             RequestResult request = new("Get All Comments");
             request.Result = EnumRequestResult.Success;
             request.Object = operations.Context.Comments.ToList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(request);
+            return baseFacades.JsonSerializer.Serialize(request);
         }
 
         [HttpPost]
@@ -68,7 +71,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
             request.Result = EnumRequestResult.Success;
             request.Object = operations.Context.Comments.ToList();
-            return YGate.Json.Operations.JsonSerialize.Serialize(request);
+            return baseFacades.JsonSerializer.Serialize(request);
         }
 
         [HttpPost]
@@ -91,7 +94,7 @@ namespace YGate.Server.Controllers
             operations.Context.Comments.Add(com);
             operations.Context.SaveChanges();
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
     }
 }

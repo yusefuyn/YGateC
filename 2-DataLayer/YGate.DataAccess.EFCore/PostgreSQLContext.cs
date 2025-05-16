@@ -17,7 +17,8 @@ namespace YGate.DataAccess.Postgresql.EFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_connectionString);
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseNpgsql(_connectionString);
         }
         public void MigrateDb()
         {

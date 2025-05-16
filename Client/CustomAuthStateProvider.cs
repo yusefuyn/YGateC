@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 using YGate.Client.Services;
+using YGate.Interfaces.OperationLayer;
 using YGate.String.Operations;
 using static System.Net.WebRequestMethods;
 
@@ -22,10 +23,12 @@ namespace YGate.Client
     {
         private readonly HttpClient http;
         private CookieService cookieService;
-        public CustomAuthStateProvider(CookieService cookieService, HttpClient http)
+        IJsonSerializer jsonSerializer;
+        public CustomAuthStateProvider(CookieService cookieService, HttpClient http, IJsonSerializer jsonSerializer)
         {
             this.http = http;
             this.cookieService = cookieService;
+            this.jsonSerializer = jsonSerializer;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -70,7 +73,7 @@ namespace YGate.Client
             // Rol claims'si ["",""] şeklinde geliyor burada rol claimsini bulup silip değerleri parçalayım yeniden her birini bir claims olarak eliyoruz.
             var roleClaim = claims.SingleOrDefault(xd=> xd.Type == ClaimTypes.Role ||  xd.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
             claims.Remove(roleClaim);
-            List<string> Roles = YGate.Json.Operations.JsonDeserialize<List<string>>.Deserialize(roleClaim.Value.ToString());
+            List<string> Roles = jsonSerializer.Deserialize<List<string>>(roleClaim.Value.ToString());
             claims.AddRange(Roles.Select(xd => new Claim(ClaimTypes.Role,xd.ToString())));
             // Bu olmaz ise birden fazla rol sahibi olanlarda authorizeview'lar çalışmıyor. Şu anda bulduğum çözümüm bir tek bu.
             // Bu işe loginController'de ayrı claims olarak yaptım ama jwt onu birleştiriyor.
@@ -126,7 +129,7 @@ namespace YGate.Client
     //            claims.Add(new Claim(ClaimTypes.Name, name));
 
     //        if (roles.Count > 0)
-    //            claims.Add(new Claim(ClaimTypes.Role, YGate.Json.Operations.JsonSerialize.Serialize(roles)));
+    //            claims.Add(new Claim(ClaimTypes.Role, baseFacades.JsonSerializer.Serialize(roles)));
 
     //        if (!string.IsNullOrEmpty(jwti))
     //            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, jwti));

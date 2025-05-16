@@ -16,6 +16,8 @@ using YGate.Client.Services.Profile;
 using YGate.Client.Services.Property;
 using YGate.Client.Services.Role;
 using YGate.Client.Services.Statistics;
+using YGate.Interfaces.OperationLayer;
+using YGate.Json;
 using YGate.Json.Operations;
 using YGate.Shared;
 
@@ -51,6 +53,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IEntitieViewService, EntitieViewService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPageService, PageService>();
+builder.Services.AddScoped<IJsonSerializer, JsonOperations>();
 builder.Services.AddLocalization();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();

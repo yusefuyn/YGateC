@@ -4,6 +4,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -11,9 +12,11 @@ namespace YGate.Server.Controllers
     public class MeasurementController : Controller
     {
         Operations operations;
-        public MeasurementController(Operations operations)
+        IBaseFacades baseFacades;
+        public MeasurementController(Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
+            this.baseFacades = baseFacades;
         }
 
 
@@ -27,7 +30,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
             returned.Result = EnumRequestResult.Success;
             returned.Object = measurementCategory;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -36,7 +39,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             List<MeasurementCategory> res = operations.Context.MeasurementCategories.Where(xd=> xd.IsActive == true).ToList();
             returned.Object = res;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -48,7 +51,7 @@ namespace YGate.Server.Controllers
             MeasurementCategory res = operations.Context.MeasurementCategories.FirstOrDefault(xd => xd.DBGuid == guid);
             operations.Context.MeasurementCategories.Remove(res);
             operations.Context.SaveChanges();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
 
@@ -59,7 +62,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             List<MeasurementUnit> resobj = operations.Context.MeasurementUnits.Where(xd=> xd.IsActive == true).ToList();
             returned.Object = resobj;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -71,7 +74,7 @@ namespace YGate.Server.Controllers
             MeasurementUnit res = operations.Context.MeasurementUnits.FirstOrDefault(xd => xd.DBGuid == guid);
             operations.Context.MeasurementUnits.Remove(res);
             operations.Context.SaveChanges();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -84,7 +87,7 @@ namespace YGate.Server.Controllers
             operations.Context.SaveChanges();
             returned.Result = EnumRequestResult.Success;
             returned.Object = model;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
     }
 }

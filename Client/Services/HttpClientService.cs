@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http;
 using YGate.Entities;
+using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Client.Services
 {
@@ -10,14 +11,20 @@ namespace YGate.Client.Services
         public HttpClient httpClient;
         NavigationManager navigationManager;
         CookieService cookieService;
+        IJsonSerializer jsonSerializer;
 
 
 
-        public HttpClientService(HttpClient httpClient, NavigationManager navigationManager, CookieService cookieService)
+        public HttpClientService(
+            HttpClient httpClient,
+            NavigationManager navigationManager,
+            CookieService cookieService,
+            IJsonSerializer jsonSerializer)
         {
             this.httpClient = httpClient;
             this.navigationManager = navigationManager;
             this.cookieService = cookieService;
+            this.jsonSerializer = jsonSerializer;
         }
 
         public async Task<RequestResult> GetPostAsync<T>(RequestParameter requestParameter)
@@ -59,14 +66,14 @@ namespace YGate.Client.Services
             }
 
             requestParameter.ParameterHash = "";
-            requestParameter.ParameterHash = YGate.String.Operations.Hash.ComputeSHA512(YGate.Json.Operations.JsonSerialize.Serialize(requestParameter));
+            requestParameter.ParameterHash = YGate.String.Operations.Hash.ComputeSHA512(jsonSerializer.Serialize(requestParameter));
 
             string Uri = navigationManager.BaseUri + requestParameter.Address;
-            StringContent stringContent = new(YGate.Json.Operations.JsonSerialize.Serialize(requestParameter), System.Text.Encoding.UTF8, "application/json");
+            StringContent stringContent = new(jsonSerializer.Serialize(requestParameter), System.Text.Encoding.UTF8, "application/json");
             var res = await httpClient.PostAsync(Uri, stringContent);
             string Returned = await res.Content.ReadAsStringAsync();
             StaticTools.MyRequestLog.Add(DateTime.Now);
-            RequestResult returnedObject = YGate.Json.Operations.JsonDeserialize<RequestResult>.Deserialize(Returned);
+            RequestResult returnedObject = jsonSerializer.Deserialize<RequestResult>(Returned);
             return returnedObject;
         }
 

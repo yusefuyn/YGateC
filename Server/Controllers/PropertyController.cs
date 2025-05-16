@@ -4,6 +4,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -11,9 +12,11 @@ namespace YGate.Server.Controllers
     public class PropertyController: Controller
     {
         Operations operations;
-        public PropertyController(Operations operations)
+        IBaseFacades baseFacades;
+        public PropertyController(Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
+            this.baseFacades = baseFacades;
         }
 
         [HttpPost]
@@ -25,7 +28,7 @@ namespace YGate.Server.Controllers
             List<PropertyGroupViewModel> returnedList = YGate.Mapping.Operations.ConvertToList<PropertyGroupViewModel>(objs);
             returnedList.ForEach(o => o.Values = operations.Context.PropertyGroupValues.Where(xd => xd.PropertyGroupGuid == o.DBGuid).ToList());
             returned.Object = returnedList;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         
@@ -39,7 +42,7 @@ namespace YGate.Server.Controllers
             model.DBGuid = YGate.String.Operations.GuidGen.Generate("PropertyGroup");
             operations.Context.PropertyGroups.Add(model);
             operations.Context.SaveChanges();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -50,7 +53,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             var res = operations.Context.PropertyGroups.FirstOrDefault(xd => xd.DBGuid == guid);
             returned.Object = res;
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
 
         [HttpPost]
@@ -61,7 +64,7 @@ namespace YGate.Server.Controllers
             returned.Result = EnumRequestResult.Success;
             operations.Context.PropertyGroupValues.AddRange(values);
             operations.Context.SaveChanges();
-            return YGate.Json.Operations.JsonSerialize.Serialize(returned);
+            return baseFacades.JsonSerializer.Serialize(returned);
         }
     }
 }

@@ -4,6 +4,7 @@ using YGate.DataAccess.Entities;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Server.Attributes;
+using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
 {
@@ -12,9 +13,11 @@ namespace YGate.Server.Controllers
     public class RoleController : Controller
     {
         Operations operations;
-        public RoleController(Operations operations)
+        IBaseFacades baseFacades;
+        public RoleController(Operations operations, IBaseFacades baseFacades)
         {
             this.operations = operations;
+            this.baseFacades = baseFacades;
         }
 
         [HttpPost]
@@ -26,7 +29,7 @@ namespace YGate.Server.Controllers
             result.To = EnumTo.Server;
             var objs = operations.Context.Roles.ToList();
             result.Object = objs;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
         [HttpPost]
@@ -43,7 +46,7 @@ namespace YGate.Server.Controllers
             operations.Context.Roles.Add(role);
             operations.Context.SaveChanges();
             result.Object = role;
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
         [HttpPost]
         [Authorized("Administrator")]
@@ -73,7 +76,7 @@ namespace YGate.Server.Controllers
                 }
             }
 
-            return YGate.Json.Operations.JsonSerialize.Serialize(result);
+            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 

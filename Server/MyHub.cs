@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using YGate.Server.Facades;
 
 namespace YGate.Server
 {
     public class MyHub : Hub
     {
-        public MyHub()
+        IBaseFacades baseFacades;
+        public MyHub(IBaseFacades baseFacades)
         {
+            this.baseFacades = baseFacades;
         }
-
-
 
         public async Task JoinGroup(string groupName)
         {
@@ -21,7 +22,7 @@ namespace YGate.Server
             };
             obj.ForEach(async xd =>
             {
-                await SendMessageToGroup(groupName, YGate.Json.Operations.JsonSerialize.Serialize(xd));
+                await SendMessageToGroup(groupName, baseFacades.JsonSerializer.Serialize(xd));
             });
         }
 
@@ -29,7 +30,7 @@ namespace YGate.Server
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
             (string Key, string Value) obj = new("System", "Odadan birisi ayrıldı.");
-            await SendMessageToGroup(groupName, YGate.Json.Operations.JsonSerialize.Serialize(obj));
+            await SendMessageToGroup(groupName, baseFacades.JsonSerializer.Serialize(obj));
         }
 
         public async Task SendMessageToGroup(string groupName, string message)

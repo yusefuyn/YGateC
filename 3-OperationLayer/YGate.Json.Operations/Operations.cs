@@ -11,13 +11,11 @@ namespace YGate.Json
     {
         public string Serialize(object obj)
         {
-            var returned = JsonConvert.SerializeObject(obj);
-            return returned;
+            return JsonConvert.SerializeObject(obj);
         }
         public T Deserialize<T>(string json)
         {
-            var returned = JsonConvert.DeserializeObject<T>(json);
-            return returned;
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using YGate.Entities;
+using YGate.Json;
 using YGate.Json.Operations;
 
 namespace YGate.Server
@@ -15,12 +16,13 @@ namespace YGate.Server
 
         public static T ConvertParameters<T>(this RequestParameter parameter)
         {
-            return YGate.Json.Operations.JsonDeserialize<T>.Deserialize(parameter.Parameters.ToString());
+            return new JsonOperations().Deserialize<T>(parameter.Parameters.ToString());
         }
 
         public static List<RequestLogObject> IpAndDate = new();
         public static List<string> BlockedIp = new();
         public static List<string> WhiteList = new();
+
         public static void AddRequest(string Ip, string Path, string Data)
         {
             RequestLogObject obj = IpAndDate.LastOrDefault(xd => xd.Ip == Ip);

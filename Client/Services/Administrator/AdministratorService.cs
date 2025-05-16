@@ -1,20 +1,24 @@
 ﻿using Microsoft.AspNetCore.Components;
 using YGate.Entities.ViewModels;
 using YGate.Entities;
+using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Client.Services.Administrator
 {
     public class AdministratorService : IAdministratorService
     {
         HttpClientService httpClientService;
-        public AdministratorService(HttpClientService httpClientService)
+        IJsonSerializer jsonSerializer;
+
+        public AdministratorService(HttpClientService httpClientService,IJsonSerializer jsonSerializer)
         {
             this.httpClientService = httpClientService;
+            this.jsonSerializer = jsonSerializer;
         }
 
         public async Task<RequestResult> ChangeRole(string UserGuid, string toGuid, string Role)
         {
-            string para = YGate.Json.Operations.JsonSerialize.Serialize(new { UserId = UserGuid, ToGuid = toGuid, Rol = Role });
+            string para = jsonSerializer.Serialize(new { UserId = UserGuid, ToGuid = toGuid, Rol = Role });
             var res = await httpClientService.GetPostAsync<RequestResult>(para, "api/Administrator/ChangeRole");
             return res;
         }
