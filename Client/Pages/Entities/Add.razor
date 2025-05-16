@@ -6,6 +6,7 @@
 @using YGate.Entities.BasedModel
 @using YGate.Entities.ViewModels
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 @using YGate.Interfaces.OperationLayer
 
 @inject ICategoryService categoryService
@@ -245,7 +246,7 @@
 
 
 		var res = await entitieService.AddEntitie(mainEntitie, SubEntitie);
-		if (res.Result == YGate.Entities.EnumRequestResult.Success)
+		if (res.Result == EnumRequestResult.Success)
 		{
 			await jsRuntime.InvokeVoidAsync("showNotification", $"Varlığınız eklenmiştir.");
 			navigationManager.NavigateTo("/Entity");

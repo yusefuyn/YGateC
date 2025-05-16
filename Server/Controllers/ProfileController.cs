@@ -3,6 +3,7 @@ using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
+using YGate.Interfaces.DomainLayer;
 using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
