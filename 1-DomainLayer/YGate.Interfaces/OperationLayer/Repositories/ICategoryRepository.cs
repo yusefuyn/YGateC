@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YGate.Interfaces.DomainLayer;
 
-namespace YGate.Interfaces.OperationLayer
+namespace YGate.Interfaces.OperationLayer.Repositories
 {
     public interface ICategoryRepository
     {

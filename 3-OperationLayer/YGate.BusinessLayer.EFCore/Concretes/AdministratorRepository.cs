@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YGate.BusinessLayer.EFCore.Abstracts;
 using YGate.Entities.BasedModel;
 using YGate.Entities;
 using YGate.Interfaces.DomainLayer;
 using YGate.Mapping;
 using YGate.Server.Facades;
+using YGate.Interfaces.OperationLayer.Repositories;
 
 namespace YGate.BusinessLayer.EFCore.Concretes
 {

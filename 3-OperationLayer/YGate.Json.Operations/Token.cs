@@ -13,7 +13,7 @@ using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Json.Operations
 {
-    public class Token
+    public class Token : ITokenService
     {
         public string SecretKey;
         public int ValidityTime;

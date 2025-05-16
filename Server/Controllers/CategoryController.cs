@@ -14,7 +14,7 @@ using YGate.Entities.ResultModel;
 using YGate.Entities.ViewModels;
 using YGate.Entities.ViewModels.Chat;
 using YGate.Interfaces.DomainLayer;
-using YGate.Interfaces.OperationLayer;
+using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Mapping;
 using YGate.Server.Facades;
 namespace YGate.Server.Controllers

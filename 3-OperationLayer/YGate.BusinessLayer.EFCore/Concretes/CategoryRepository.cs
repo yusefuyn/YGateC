@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using YGate.Entities.BasedModel;
 using YGate.Entities;
 using YGate.Interfaces.DomainLayer;
-using YGate.Interfaces.OperationLayer;
 using YGate.Server.Facades;
 using YGate.Entities.ViewModels;
+using YGate.Interfaces.OperationLayer.Repositories;
 
 namespace YGate.BusinessLayer.EFCore.Concretes
 {

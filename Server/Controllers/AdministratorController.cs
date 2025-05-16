@@ -6,11 +6,11 @@ using System.Data;
 using System.Numerics;
 using System.Threading.Tasks;
 using YGate.BusinessLayer.EFCore;
-using YGate.BusinessLayer.EFCore.Abstracts;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
 using YGate.Interfaces.DomainLayer;
+using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Attributes;
 using YGate.Server.Facades;
 

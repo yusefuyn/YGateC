@@ -3,10 +3,11 @@ using System.Net;
 using System.Net.Mail;
 using YGate.Entities;
 using YGate.Interfaces.DomainLayer;
+using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Mail.Operations
 {
-    public class MailServices
+    public class MailServices : IMailService
     {
         string smtpAddress = "smtp.example.com"; // SMTP sunucusu
         int portNumber = 587; // SMTP port numarası (genellikle 587 veya 465)
@@ -42,7 +43,7 @@ namespace YGate.Mail.Operations
                 Ready = true;
         }
 
-        public RequestResult Send(string Victim, string Title, string Content, bool ContentIsHtml = false) {
+        public IRequestResult Send(string Victim, string Title, string Content, bool ContentIsHtml = false) {
 
             RequestResult returnedResult = new("Send Mail");
 

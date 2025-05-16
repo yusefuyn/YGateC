@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGate.BusinessLayer.EFCore;
-using YGate.BusinessLayer.EFCore.Abstracts;
 using YGate.BusinessLayer.EFCore.Concretes;
 using YGate.Client;
 using YGate.Client.Services;
 using YGate.Entities;
 using YGate.Interfaces.OperationLayer;
+using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Json;
 using YGate.Json.Operations;
 using YGate.Mail.Operations;
@@ -20,11 +20,20 @@ using YGate.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string TokenPasswordConf = builder.Configuration["TokenConfiguration:TokenPassword"]; // Json Token Ayarlarý
+int ValidityTimeConf = Convert.ToInt32(builder.Configuration["TokenConfiguration:ValidityTime"].ToString());
 
 #region SonraDuzenle
 List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbSettings").Get<List<ConnectionString>>();
 
 builder.Services.AddSingleton<IJsonSerializer, JsonOperations>();
+
+builder.Services.AddSingleton<ITokenService, Token>(xd => {
+    var JsonServ = xd.GetService<IJsonSerializer>();
+    Token to = new Token(JsonServ, ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
+    YGate.Server.StaticTools.tokenService = to;
+    return to;
+});
 builder.Services.AddSingleton<IBaseFacades, BaseFacades>();
 
 
@@ -32,7 +41,7 @@ YGate.Server.StaticTools.SiteName = builder.Configuration.GetSection("SiteSettin
 YGate.Server.StaticTools.AllowedRequestCountTimeout = builder.Configuration.GetSection("SiteSettings").GetValue<int>("AllowedRequestCountTimeout");
 YGate.Server.StaticTools.NumberOfAllowedRequests = builder.Configuration.GetSection("SiteSettings").GetValue<int>("NumberOfAllowedRequests");
 
-builder.Services.AddScoped<MailServices>(xd =>
+builder.Services.AddScoped<IMailService,MailServices>(xd =>
 { // SMTP Ayalarý
     var res = new MailServices();
     res.SenderSettings(builder.Configuration.GetValue<string>("MailSettings:Mail"), builder.Configuration.GetValue<string>("MailSettings:Password"));
@@ -59,10 +68,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/AccessDenied"; // Eriþim reddedildiðinde yönlendirme
     });
 
-string TokenPasswordConf = builder.Configuration["TokenConfiguration:TokenPassword"]; // Json Token Ayarlarý
-int ValidityTimeConf = Convert.ToInt32(builder.Configuration["TokenConfiguration:ValidityTime"].ToString());
 
-YGate.Server.StaticTools.tokenService = new(new JsonOperations(), ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
+
 
 //  auth
 builder.Services.AddScoped<CookieService>();
@@ -72,6 +79,8 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>
 #region Repository
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ILoginRegisterRepository, LoginRegisterRepository>();
 #endregion
 
 builder.Services.AddAuthorizationCore();

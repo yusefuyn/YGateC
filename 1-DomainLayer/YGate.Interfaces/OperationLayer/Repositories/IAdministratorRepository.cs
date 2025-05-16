@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YGate.Interfaces.DomainLayer;
 
-namespace YGate.BusinessLayer.EFCore.Abstracts
+namespace YGate.Interfaces.OperationLayer.Repositories
 {
     public interface IAdministratorRepository
     {
