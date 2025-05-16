@@ -5,6 +5,7 @@ using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
 using YGate.Interfaces.DomainLayer;
+using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Facades;
 
 namespace YGate.Server.Controllers
@@ -12,83 +13,48 @@ namespace YGate.Server.Controllers
     [Route("api/[controller]/[action]")]
     public class MeasurementController : Controller
     {
-        Operations operations;
-        IBaseFacades baseFacades;
-        public MeasurementController(Operations operations, IBaseFacades baseFacades)
+        IMeasurementRepository measurementRepository;
+        public MeasurementController(IMeasurementRepository measurementRepository)
         {
-            this.operations = operations;
-            this.baseFacades = baseFacades;
+            this.measurementRepository = measurementRepository;
         }
 
 
         [HttpPost]
-        public string AddCategory([FromBody] RequestParameter parameter)
+        public IRequestResult AddCategory([FromBody] RequestParameter parameter)
         {
-            MeasurementCategory measurementCategory = parameter.ConvertParameters<MeasurementCategory>();
-            RequestResult returned = new("Add Measurement Category");
-            measurementCategory.DBGuid = YGate.String.Operations.GuidGen.Generate("MeasurementCategory");
-            operations.Context.MeasurementCategories.Add(measurementCategory);
-            operations.Context.SaveChanges();
-            returned.Result = EnumRequestResult.Success;
-            returned.Object = measurementCategory;
-            return baseFacades.JsonSerializer.Serialize(returned);
+            return measurementRepository.AddCategory(parameter);
         }
 
         [HttpPost]
-        public string GetAllCategory([FromBody] RequestParameter parameter = null) {
-            RequestResult returned = new("Get Measurement Categories");
-            returned.Result = EnumRequestResult.Success;
-            List<MeasurementCategory> res = operations.Context.MeasurementCategories.Where(xd=> xd.IsActive == true).ToList();
-            returned.Object = res;
-            return baseFacades.JsonSerializer.Serialize(returned);
+        public IRequestResult GetAllCategory([FromBody] RequestParameter parameter = null)
+        {
+            return measurementRepository.GetAllCategory(parameter);
         }
 
         [HttpPost]
-        public string DeleteCategory([FromBody] RequestParameter parameter)
+        public IRequestResult DeleteCategory([FromBody] RequestParameter parameter)
         {
-            string guid = parameter.Parameters.ToString();
-            RequestResult returned = new("Delete Measurement Categories");
-            returned.Result = EnumRequestResult.Success;
-            MeasurementCategory res = operations.Context.MeasurementCategories.FirstOrDefault(xd => xd.DBGuid == guid);
-            operations.Context.MeasurementCategories.Remove(res);
-            operations.Context.SaveChanges();
-            return baseFacades.JsonSerializer.Serialize(returned);
+            return measurementRepository.DeleteCategory(parameter);
         }
 
 
         [HttpPost]
-        public async Task<string> GetAllUnit()
+        public async Task<IRequestResult> GetAllUnit()
         {
-            RequestResult returned = new($"Get Measurement Units");
-            returned.Result = EnumRequestResult.Success;
-            List<MeasurementUnit> resobj = operations.Context.MeasurementUnits.Where(xd=> xd.IsActive == true).ToList();
-            returned.Object = resobj;
-            return baseFacades.JsonSerializer.Serialize(returned);
+            return await measurementRepository.GetAllUnit();
         }
 
         [HttpPost]
-        public async Task<string> DeleteUnit([FromBody] RequestParameter parameter)
+        public async Task<IRequestResult> DeleteUnit([FromBody] RequestParameter parameter)
         {
-            string guid = parameter.Parameters.ToString();
-            RequestResult returned = new("Delete Measurement Unit");
-            returned.Result = EnumRequestResult.Success;
-            MeasurementUnit res = operations.Context.MeasurementUnits.FirstOrDefault(xd => xd.DBGuid == guid);
-            operations.Context.MeasurementUnits.Remove(res);
-            operations.Context.SaveChanges();
-            return baseFacades.JsonSerializer.Serialize(returned);
+            return await measurementRepository.DeleteUnit(parameter);   
         }
 
         [HttpPost]
-        public async Task<string> AddUnit([FromBody] RequestParameter parameter)
+        public async Task<IRequestResult> AddUnit([FromBody] RequestParameter parameter)
         {
-            MeasurementUnit model = parameter.ConvertParameters<MeasurementUnit>();
-            RequestResult returned = new("Add Measurement Category");
-            model.DBGuid = YGate.String.Operations.GuidGen.Generate("MeasurementUnit");
-            operations.Context.MeasurementUnits.Add(model);
-            operations.Context.SaveChanges();
-            returned.Result = EnumRequestResult.Success;
-            returned.Object = model;
-            return baseFacades.JsonSerializer.Serialize(returned);
+            return await measurementRepository.AddUnit(parameter);
         }
     }
 }
