@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 using YGate.Entities;
+using YGate.Interfaces.DomainLayer;
 
 namespace YGate.Mail.Operations
 {

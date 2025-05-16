@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using YGate.Client.Services.Category
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 @inject ICategoryService categoryService
 @inject NavigationManager navigationManager
 
@@ -51,7 +52,7 @@
     {
         source = new();
         var res = await categoryService.GetAll();
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
         {
             var list = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Category>>();
             source.AddRange(list);
@@ -67,7 +68,7 @@
 
         var res = await categoryService.AddCategory(AddedCategory);
 
-        if (res.Result != YGate.Entities.EnumRequestResult.Success)
+        if (res.Result != EnumRequestResult.Success)
         {
             ErrorMessage = res.ShortDescription.ToString();
             return;

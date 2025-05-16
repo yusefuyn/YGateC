@@ -1,6 +1,7 @@
 ﻿@page "/Management/Category/AddNewtemp/{Id:int}"
 @using YGate.Client.Services.Category
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 @inject ICategoryService categoryService
 
 
@@ -27,7 +28,7 @@
     protected override async Task OnInitializedAsync()
     {
         var res = await categoryService.GetCategory(Id);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             SubCategory = res.ConvertRequestObject<YGate.Entities.BasedModel.Category>();
     }
     public async Task Click()
@@ -42,7 +43,7 @@
 
         var res = await categoryService.AddCategory(AddedCategory);
 
-        if (res.Result != YGate.Entities.EnumRequestResult.Success)
+        if (res.Result != EnumRequestResult.Success)
         {
             ErrorMessage = res.ShortDescription.ToString();
             return;

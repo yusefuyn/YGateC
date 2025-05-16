@@ -1,6 +1,7 @@
 ﻿@page "/Show/Entitie/{Guid}"
 @using YGate.Client.Services.Category
 @using YGate.Client.Services.Entitie
+@using YGate.Interfaces.DomainLayer
 @inject IEntitieService entitieService
 @inject IEntitieViewService entitieViewService
 @inject ICategoryService categoryService
@@ -51,7 +52,7 @@
     protected override async Task OnInitializedAsync()
     {
         var res1 = await entitieService.GetEntitieViewModel(Guid);
-        if (res1.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res1.Result == EnumRequestResult.Success)
             entitieviewModel = res1.ConvertRequestObject<YGate.Entities.ViewModels.EntitieViewModel>();
 
         view = entitieViewService.GetDataView(entitieviewModel);

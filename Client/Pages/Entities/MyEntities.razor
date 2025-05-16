@@ -3,6 +3,7 @@
 @using YGate.Client.Services.Entitie
 @using YGate.Entities.ViewModels
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 @inject IEntitieService entityService
 @inject IProfileService profileService
 @inject IEntitieViewService entitieViewService
@@ -78,7 +79,7 @@
     {
         string OwnerGuid = await profileService.GetPropertiesValue("Guid");
         var res = await entityService.GetAllMyEntitie(OwnerGuid);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             entitiesList = res.ConvertRequestObject<List<EntitieViewModel>>();
     }
 
@@ -92,7 +93,7 @@
         if (!(await jsRuntime.InvokeAsync<bool>("custom_confirm", "Silmek istediğinizden emin misiniz?\n Bu değişiklik geri alınamaz!")))
             return;
 
-        if ((await entityService.DeleteEntity(dbguid)).Result == YGate.Entities.EnumRequestResult.Success)
+        if ((await entityService.DeleteEntity(dbguid)).Result == EnumRequestResult.Success)
         {
             await GetEntities();    
             await jsRuntime.InvokeVoidAsync("showNotification", $"Varlığınız silindi.");

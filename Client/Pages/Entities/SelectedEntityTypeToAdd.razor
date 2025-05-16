@@ -3,6 +3,7 @@
 @using YGate.Entities.BasedModel
 @inject ICategoryService categoryService
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 <div class="container">
     <header style="width:100%;display: flex; justify-content: space-between; align-items: center; padding: 10px;">
         <h3>İlan oluştur</h3>
@@ -31,7 +32,7 @@
     {
 
         var res = await categoryService.GetAllButParentCategory();
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
         {
             categoryViewModels = res.ConvertRequestObject<List<YGate.Entities.BasedModel.Category>>();
         }

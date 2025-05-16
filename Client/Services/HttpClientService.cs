@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using YGate.Entities;
 using YGate.Interfaces.OperationLayer;
+using YGate.Interfaces.DomainLayer;
 
 namespace YGate.Client.Services
 {

@@ -17,6 +17,7 @@ using YGate.Client.Shared.Components;
 using YGate.Entities.ViewModels;
 using YGate.Client.Services.Profile;
 using YGate.Entities.ViewModels.Chat;
+using YGate.Interfaces.DomainLayer;
 
 namespace YGate.Client.Shared
 {
@@ -83,7 +84,7 @@ namespace YGate.Client.Shared
         private async Task RefreshSiteName()
         {
             var res1 = await statisticService.GetSiteName();
-            if (res1.Result == Entities.EnumRequestResult.Success)
+            if (res1.Result == EnumRequestResult.Success)
                 YGate.Client.StaticTools.SiteName = res1.Object.ToString();
             StateHasChanged();
 

@@ -4,6 +4,7 @@
 @using YGate.Client.Shared.Components
 @using YGate.Entities
 @using YGate.Entities.BasedModel
+@using YGate.Interfaces.DomainLayer
 @inject IMeasurementService measurementService
 @inject NavigationManager navigationManager
 @attribute [Authorize(Roles = "Administrator")]
@@ -59,11 +60,11 @@
     public async Task DataRefresh()
     {
         RequestResult requestResult = await measurementService.GetAllMeasurementUnit();
-        if (requestResult.Result == YGate.Entities.EnumRequestResult.Success)
+        if (requestResult.Result == EnumRequestResult.Success)
             Source = requestResult.ConvertRequestObject<List<MeasurementUnit>>();
 
         RequestResult requestResult2 = await measurementService.GetAllMeasurementCategory();
-        if (requestResult2.Result == YGate.Entities.EnumRequestResult.Success)
+        if (requestResult2.Result == EnumRequestResult.Success)
             Categories = requestResult2.ConvertRequestObject<List<MeasurementCategory>>();
     }
 
@@ -76,7 +77,7 @@
     public async Task DeleteMeasurementUnit(string guid)
     {
         RequestResult requestResult = await measurementService.DeleteMeasurermentUnit(guid);
-        if (requestResult.Result == YGate.Entities.EnumRequestResult.Success)
+        if (requestResult.Result == EnumRequestResult.Success)
             await DataRefresh();
     }
 }

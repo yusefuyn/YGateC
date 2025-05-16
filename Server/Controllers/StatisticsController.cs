@@ -4,6 +4,7 @@ using YGate.Entities.BasedModel;
 using YGate.Entities;
 using YGate.Entities.ViewModels;
 using System.Data.Entity;
+using YGate.Interfaces.DomainLayer;
 
 namespace YGate.Server.Controllers
 {

@@ -2,6 +2,7 @@
 using YGate.BusinessLayer.EFCore;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
+using YGate.Interfaces.DomainLayer;
 using YGate.Server.Attributes;
 using YGate.Server.Facades;
 

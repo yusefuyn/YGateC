@@ -1,6 +1,7 @@
 ﻿@page "/Management/Pages/Add"
 @using YGate.Client.Services.Page
 @using YGate.Entities.BasedModel
+@using YGate.Interfaces.DomainLayer
 @inject IPageService pageService
 @inject IJSRuntime jSRuntime
 @inject NavigationManager navigationManager
@@ -19,7 +20,7 @@
     public async Task AddPage()
     {
         var res = await pageService.Add(page);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             navigationManager.NavigateTo("/Management/Pages");
         await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
 

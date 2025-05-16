@@ -4,6 +4,7 @@ using System.Net.Http;
 using YGate.Client.Services;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
+using YGate.Interfaces.DomainLayer;
 using YGate.Json;
 
 namespace YGate.Client

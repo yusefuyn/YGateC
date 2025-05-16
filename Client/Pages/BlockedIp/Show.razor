@@ -1,9 +1,9 @@
 ﻿@attribute [Authorize(Roles = "Administrator")]
 @page "/Management/BlockedIp"
 @using Microsoft.AspNetCore.Authorization
-@using YGate.Entities
 @inject IAdministratorService administratorService
 @using YGate.Client.Shared.Components;
+@using YGate.Interfaces.DomainLayer
 <div class="container">
 
     <div class="col-12 container">

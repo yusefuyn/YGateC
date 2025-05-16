@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using YGate.Client.Services.Profile;
 using YGate.Entities;
 using YGate.Entities.ViewModels;
+using YGate.Interfaces.DomainLayer;
 using YGate.Json.Operations;
 
 namespace YGate.Client.Services.Login

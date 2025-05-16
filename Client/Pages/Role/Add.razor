@@ -5,6 +5,7 @@
 @inject IJSRuntime jsRuntime
 @inject NavigationManager navigationManager
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 <div class="container">
     <div class="container-header">
         <h3>Add</h3>
@@ -27,7 +28,7 @@
     public async Task Ekle()
     {
         var res = await roleService.AddRole(role);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
         {
             await jsRuntime.InvokeVoidAsync("showNotification", "Yeni rol eklendi");
             navigationManager.NavigateTo("/Management/Role");

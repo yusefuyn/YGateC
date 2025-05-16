@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using YGate.Entities;
+using YGate.Interfaces.DomainLayer;
 using YGate.Interfaces.OperationLayer;
 using YGate.Json;
 

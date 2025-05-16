@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
+using YGate.Interfaces.DomainLayer;
 
 namespace YGate.Client.Services.Profile
 {

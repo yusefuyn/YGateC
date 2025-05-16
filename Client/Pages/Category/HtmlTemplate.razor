@@ -3,6 +3,7 @@
 @using YGate.Entities
 @using YGate.Entities.BasedModel
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 @inject ICategoryService categoryService
 @inject IJSRuntime jsruntime
 @inject IProfileService profileService
@@ -109,7 +110,7 @@
     public async Task RefreshData()
     {
         var res = await categoryService.GetHtmlTemplateButCategoryId(Id);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             template = res.ConvertRequestObject<CategoryHtmlTemplate>();
         StateHasChanged();
     }

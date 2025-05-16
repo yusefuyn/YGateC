@@ -3,6 +3,7 @@
 @inject IPropertyService propertService
 @using YGate.Client.Shared.Components
 @using YGate.Entities
+@using YGate.Interfaces.DomainLayer
 @inject IProfileService profileService
 @inject NavigationManager navigationManager
 <div>
@@ -29,7 +30,7 @@
     protected override async Task OnInitializedAsync()
     {
         var res = await propertService.GetGroup(Guid);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             group = res.ConvertRequestObject<YGate.Entities.BasedModel.PropertyGroup>();
     }
 

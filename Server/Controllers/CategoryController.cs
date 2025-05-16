@@ -12,6 +12,7 @@ using YGate.Entities.BasedModel;
 using YGate.Entities.ResultModel;
 using YGate.Entities.ViewModels;
 using YGate.Entities.ViewModels.Chat;
+using YGate.Interfaces.DomainLayer;
 using YGate.Server.Facades;
 namespace YGate.Server.Controllers
 {

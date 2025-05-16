@@ -1,5 +1,6 @@
 ﻿@page "/Management/Entitie/Transfer/{Hash}/{ObjectGuid}"
 @using YGate.Client.Services.Entitie
+@using YGate.Interfaces.DomainLayer
 @inject IEntitieService entitieService
 @inject IJSRuntime jSRuntime
 @inject NavigationManager navigationManager
@@ -23,7 +24,7 @@
     public async Task TransferOp()
     {
         var res = await entitieService.Transfer(VictimGuid, ObjectGuid, Password);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
         {
             StartCountdown();
             await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString() + "\n 3 Saniye sonra yönlendirileceksiniz. \nLütfen bekleyiniz.");

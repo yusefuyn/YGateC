@@ -4,6 +4,7 @@
 @inject IRoleService roleService
 @inject IJSRuntime jsRuntime
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 <div class="container">
     <div class="container-header">
         <h3>Roles</h3>
@@ -62,14 +63,14 @@
     public async Task RefreshData()
     {
         var res = await roleService.GetAllRole();
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             Source = res.ConvertRequestObject<List<Role>>();
     }
 
     public async Task DeleteRole(string dbguid)
     {
         var res = await roleService.DeleteRole(dbguid);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             await jsRuntime.InvokeVoidAsync("showNotification", "Rol ve sahip kullanıcıların etiketleri silindi");
         else
             await jsRuntime.InvokeVoidAsync("showNotification", "Rol ve sahip kullanıcıların etiketleri Silinemedi !");

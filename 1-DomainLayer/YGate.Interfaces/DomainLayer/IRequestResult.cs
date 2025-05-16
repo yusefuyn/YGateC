@@ -3,23 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YGate.Interfaces.DomainLayer;
 
-namespace YGate.Entities
+namespace YGate.Interfaces.DomainLayer
 {
-    public class RequestResult : IRequestResult
+    public interface IRequestResult
     {
-
-        public RequestResult(string Description)
-        {
-            this.Result = EnumRequestResult.Error;
-            this.LongDescription = Description;
-        }
         public string? LongDescription { get; set; }
         public string? ShortDescription { get; set; }
         public EnumRequestResult Result { get; set; }
-        public EnumTo To { get; set; } = EnumTo.Client;
+        public EnumTo To { get; set; }
         public object Object { get; set; }
     }
 
+    public enum EnumTo
+    {
+        Client,
+        Server
+    }
+
+    public enum EnumRequestResult
+    {
+        Error,
+        Success,
+        Stop
+    }
 }

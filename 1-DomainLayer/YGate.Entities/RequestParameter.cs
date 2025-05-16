@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YGate.Interfaces.DomainLayer;
 
 namespace YGate.Entities
 {
-    public class RequestParameter
+    public class RequestParameter : IRequestParameter
     {
         public RequestParameter()
         {

@@ -7,6 +7,7 @@
 @inject IAdministratorService administratorService
 @inject IJSRuntime jsRuntime
 @using YGate.Client.Shared.Components
+@using YGate.Interfaces.DomainLayer
 
 <style>
     .role-row {
@@ -131,7 +132,7 @@
     private async Task RefreshData()
     {
         var res = await administratorService.GetUser(UserGuid);
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
             source = res.ConvertRequestObject<AdministratorUsersList>();
     }
 

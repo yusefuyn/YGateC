@@ -7,6 +7,7 @@ using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Entities.ViewModels;
 using YGate.Interfaces.Application.Advanced;
+using YGate.Interfaces.DomainLayer;
 using YGate.Json.Operations;
 using YGate.Server.Attributes;
 using YGate.Server.Facades;

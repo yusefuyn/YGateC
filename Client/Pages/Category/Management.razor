@@ -6,6 +6,7 @@
 @inject ICategoryService categoryService
 @using YGate.Client.Shared.Components
 @using YGate.Entities.ViewModels
+@using YGate.Interfaces.DomainLayer
 @inject IJSRuntime jsRuntime
 
 <style>
@@ -133,7 +134,7 @@
     public async Task RefreshData()
     {
         var res = await categoryService.GetAllButTreeView();
-        if (res.Result == YGate.Entities.EnumRequestResult.Success)
+        if (res.Result == EnumRequestResult.Success)
         {
             source = res.ConvertRequestObject<List<CategoryViewModel>>();
             StateHasChanged();

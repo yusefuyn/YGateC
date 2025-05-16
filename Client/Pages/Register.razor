@@ -2,6 +2,7 @@
 @using YGate.Client.Services.Login
 @using YGate.Client.Shared.Components
 @using YGate.Entities.ViewModels
+@using YGate.Interfaces.DomainLayer
 @inject IJSRuntime jsRuntime
 <PageTitle>@localizer["Register"]</PageTitle>
 
@@ -111,7 +112,7 @@
         model.RPassword = YGate.String.Operations.Hash.SaltAndSHA512(RPassword);
 
         var res = await loginregisterService.RegisterAsync(model);
-        if (res.Result != YGate.Entities.EnumRequestResult.Success)
+        if (res.Result != EnumRequestResult.Success)
         {
             ErrorMessage = res.ShortDescription.ToString();
             await jsRuntime.InvokeVoidAsync("enableButton", "RegisterButton");

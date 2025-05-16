@@ -26,6 +26,7 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\summernote\" />
+		<Folder Include="YGate\Entities\" />
 	</ItemGroup>
 
 </Project>
