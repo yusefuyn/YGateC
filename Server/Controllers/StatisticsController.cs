@@ -5,59 +5,39 @@ using YGate.Entities;
 using YGate.Entities.ViewModels;
 using System.Data.Entity;
 using YGate.Interfaces.DomainLayer;
+using System.Threading.Tasks;
+using YGate.Interfaces.OperationLayer.Repositories;
 
 namespace YGate.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class StatisticsController : Controller
     {
-        Operations operations;
-        public StatisticsController(Operations operations)
+        IStatisticsRepository statisticsRepository;
+
+        public StatisticsController(IStatisticsRepository statisticsRepository)
         {
-            this.operations = operations;
+            this.statisticsRepository = statisticsRepository;
         }
 
         [HttpPost]
-        public RequestResult GetStatistics([FromBody] RequestParameter parameter = null)
+        public IRequestResult GetStatistics([FromBody] RequestParameter parameter = null)
         { // TODO : Eş zamanlı sorunu var hem configure ederken data çekmeye çalışınca patlıyor.
-            RequestResult returned = new("GetStatistics");
-            StatisticsViewModel model = new StatisticsViewModel();
-            returned.To = EnumTo.Server;
-
-            YGate.Operation.Runner.TryCatchRunner(() =>
-            {
-                model.UserCount = operations.Context.Accounts.Count();
-                model.IdentifiedEntityCount = operations.Context.Categories.Count();
-                model.EntityPropertyCount = operations.Context.CategoryTemplateValues.Count();
-                model.CreatedEntityCount = operations.Context.Entities.Count();
-            }, () =>
-            {
-                model.UserCount = 0;
-                model.IdentifiedEntityCount = 0;
-                model.EntityPropertyCount = 0;
-                model.CreatedEntityCount = 0;
-            });
-            returned.Result = EnumRequestResult.Success;
-            returned.Object = model;
-            return returned;
+          return statisticsRepository.GetStatistics(parameter);
         }
 
         [HttpPost]
-        public RequestResult GetRequestLogs([FromBody] RequestParameter parameter = null)
+        public IRequestResult GetRequestLogs([FromBody] RequestParameter parameter = null)
         {
-            RequestResult returned = new("GetRequestLogs");
-            returned.Result = EnumRequestResult.Success;
-            returned.To = EnumTo.Server;
+            var returned = statisticsRepository.GetRequestLogs(parameter);
             returned.Object = StaticTools.IpAndDate;
             return returned;
         }
 
         [HttpPost]
-        public RequestResult GetSiteName([FromBody] RequestParameter parameter = null)
+        public IRequestResult GetSiteName([FromBody] RequestParameter parameter = null)
         {
-            RequestResult returned = new("GetSiteName");
-            returned.Result = EnumRequestResult.Success;
-            returned.To = EnumTo.Server;
+            var returned = statisticsRepository.GetSiteName(parameter);
             returned.Object = StaticTools.SiteName;
             return returned;
         }

@@ -27,6 +27,7 @@ namespace YGate.Server.Attributes
                 requestToken = "";
             else
             {
+                requestToken = requestToken.Replace("Bearer ", string.Empty);
                 if (StaticTools.tokenService.ValidateJwtToken(ref requestToken))
                 {
                     string userId = StaticTools.tokenService.GetUserIDFromToken(requestToken);

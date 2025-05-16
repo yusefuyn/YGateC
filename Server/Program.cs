@@ -28,10 +28,10 @@ List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbS
 
 builder.Services.AddSingleton<IJsonSerializer, JsonOperations>();
 
-builder.Services.AddSingleton<ITokenService, Token>(xd => {
+builder.Services.AddSingleton<ITokenService, Token>(xd =>
+{
     var JsonServ = xd.GetService<IJsonSerializer>();
     Token to = new Token(JsonServ, ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
-    YGate.Server.StaticTools.tokenService = to;
     return to;
 });
 builder.Services.AddSingleton<IBaseFacades, BaseFacades>();
@@ -41,7 +41,7 @@ YGate.Server.StaticTools.SiteName = builder.Configuration.GetSection("SiteSettin
 YGate.Server.StaticTools.AllowedRequestCountTimeout = builder.Configuration.GetSection("SiteSettings").GetValue<int>("AllowedRequestCountTimeout");
 YGate.Server.StaticTools.NumberOfAllowedRequests = builder.Configuration.GetSection("SiteSettings").GetValue<int>("NumberOfAllowedRequests");
 
-builder.Services.AddScoped<IMailService,MailServices>(xd =>
+builder.Services.AddScoped<IMailService, MailServices>(xd =>
 { // SMTP Ayalarý
     var res = new MailServices();
     res.SenderSettings(builder.Configuration.GetValue<string>("MailSettings:Mail"), builder.Configuration.GetValue<string>("MailSettings:Password"));
@@ -84,6 +84,10 @@ builder.Services.AddScoped<ILoginRegisterRepository, LoginRegisterRepository>();
 //EntitieController
 builder.Services.AddScoped<IMeasurementRepository, MeasurementRepository>();
 builder.Services.AddScoped<IPageRepository, PageRepository>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
 #endregion
 
 builder.Services.AddAuthorizationCore();

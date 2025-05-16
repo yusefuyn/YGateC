@@ -4,6 +4,7 @@ using YGate.DataAccess.Entities;
 using YGate.Entities;
 using YGate.Entities.BasedModel;
 using YGate.Interfaces.DomainLayer;
+using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Attributes;
 using YGate.Server.Facades;
 
@@ -13,71 +14,34 @@ namespace YGate.Server.Controllers
     [Route("api/[controller]/[action]")]
     public class RoleController : Controller
     {
-        Operations operations;
-        IBaseFacades baseFacades;
-        public RoleController(Operations operations, IBaseFacades baseFacades)
+
+        IRoleRepository roleRepository;
+
+        public RoleController(IRoleRepository roleRepository)
         {
-            this.operations = operations;
-            this.baseFacades = baseFacades;
+            this.roleRepository = roleRepository;
         }
 
         [HttpPost]
         [Authorized("Administrator")]
-        public string GetAll([FromBody] RequestParameter parameter)
+        public IRequestResult GetAll([FromBody] RequestParameter parameter)
         {
-            RequestResult result = new("Get All Role");
-            result.Result = EnumRequestResult.Success;
-            result.To = EnumTo.Server;
-            var objs = operations.Context.Roles.ToList();
-            result.Object = objs;
-            return baseFacades.JsonSerializer.Serialize(result);
+            return roleRepository.GetAll(parameter);
         }
 
         [HttpPost]
         [Authorized("Administrator")]
-        public string AddRole([FromBody] RequestParameter parameter)
+        public IRequestResult AddRole([FromBody] RequestParameter parameter)
         {
-            Role role = parameter.ConvertParameters<Role>();
-            RequestResult result = new("Add role");
-            result.To = EnumTo.Server;
-            result.Result = EnumRequestResult.Success;
+            return roleRepository.AddRole(parameter);
 
-            role.IsActive = true;
-            role.DBGuid = YGate.String.Operations.GuidGen.Generate("role");
-            operations.Context.Roles.Add(role);
-            operations.Context.SaveChanges();
-            result.Object = role;
-            return baseFacades.JsonSerializer.Serialize(result);
         }
         [HttpPost]
         [Authorized("Administrator")]
-        public async Task<string> DeleteRole([FromBody] RequestParameter parameter)
+        public async Task<IRequestResult> DeleteRole([FromBody] RequestParameter parameter)
         {
-            string roledbguid = parameter.Parameters.ToString();
-            RequestResult result = new($"Delete role {roledbguid}");
-            result.Result = EnumRequestResult.Success;
+            return await roleRepository.DeleteRole(parameter);
 
-            using (var transaction = await operations.Context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var obj = operations.Context.Roles.FirstOrDefault(xd => xd.DBGuid == roledbguid);
-                    operations.Context.Roles.Remove(obj);
-
-                    var objs = operations.Context.AccountRoles.Where(xd => xd.RoleGuid == roledbguid);
-                    operations.Context.AccountRoles.RemoveRange(objs);
-
-                    operations.Context.SaveChanges();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-
-            return baseFacades.JsonSerializer.Serialize(result);
         }
 
 
