@@ -19,7 +19,7 @@
 		<ItemGroup>
 		<ProjectReference Include="..\1-DomainLayer\YGate.Entities\YGate.Entities.csproj" />
 		<ProjectReference Include="..\3-OperationLayer\YGate.Html.Operations\YGate.Html.Operations.csproj" />
-		<ProjectReference Include="..\3-OperationLayer\YGate.Json.Operations\YGate.Json.Operations.csproj" />
+		<ProjectReference Include="..\3-OperationLayer\YGate.Json.Operations\YGate.Json.csproj" />
 		<ProjectReference Include="..\3-OperationLayer\YGate.String.Operations\YGate.String.Operations.csproj" />
 		<ProjectReference Include="..\Shared\YGate.Shared.csproj" />
 	</ItemGroup>

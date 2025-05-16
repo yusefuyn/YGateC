@@ -9,17 +9,26 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Json.Operations
 {
     public class Token
     {
-        public string __secretkey = "2524134145_yusuf_sado_m4m!";
-        public int ValidityTime = 1;
+        public string SecretKey;
+        public int ValidityTime;
+        IJsonSerializer serializer;
+        public Token(IJsonSerializer serializer, int ValidityTime = 1, string SecretKey = "2524134145_yusuf_sado_m4m!")
+        {
+            this.serializer = serializer;
+            this.ValidityTime = ValidityTime;
+            this.SecretKey = SecretKey;
+        }
+
 
         public string GenerateJwtToken(string userId, string name, List<string> roles)
         {
-            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(__secretkey));
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             List<Claim> myClaims = new List<Claim>()
             {
@@ -27,7 +36,7 @@ namespace YGate.Json.Operations
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier,userId),
                 new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.Role, YGate.Json.Operations.JsonSerialize.Serialize(roles)),
+                new Claim(ClaimTypes.Role, serializer.Serialize(roles)),
             };
 
             var tokenDescriptor = new JwtSecurityToken(claims: myClaims, expires: DateTime.Now.AddMinutes(ValidityTime), signingCredentials: credentials);
@@ -54,24 +63,19 @@ namespace YGate.Json.Operations
             var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
             if (jsonToken == null)
                 return "";
-
             string roles = string.Join(",", jsonToken?.Claims
                     .Where(c => c.Type == ClaimTypes.Role)
                     .Select(xd => xd.Value.ToString().Replace("[", "").Replace("]", "").Replace("\"", "")) ?? Enumerable.Empty<string>());
-
-
             return roles;
         }
 
         public bool ValidateJwtToken(ref string token)
         {
-            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(__secretkey)); // Aynı gizli anahtar
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
             var tokenHandler = new JwtSecurityTokenHandler();
 
             if (token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-            {
-                token = token.Substring("Bearer ".Length).Trim(); // "Bearer " kelimesinden sonrasını al
-            }
+                token = token.Substring("Bearer ".Length).Trim();
 
             try
             {
@@ -79,16 +83,15 @@ namespace YGate.Json.Operations
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = securityKey,
-                    ValidateIssuer = false, // İsterseniz doğrulayabilirsiniz
-                    ValidateAudience = false, // İsterseniz doğrulayabilirsiniz
-                    ClockSkew = TimeSpan.Zero // Geçerlilik süresi toleransı
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
                 return true;
             }
             catch (Exception ex)
             {
-                // Token geçersiz
                 Console.WriteLine($"Token doğrulama hatası: {ex.Message}");
                 return false;
             }

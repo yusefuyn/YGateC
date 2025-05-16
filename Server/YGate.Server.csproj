@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\3-OperationLayer\YGate.BusinessLayer.EFCore\YGate.BusinessLayer.EFCore.csproj" />
-		<ProjectReference Include="..\3-OperationLayer\YGate.Json.Operations\YGate.Json.Operations.csproj" />
+		<ProjectReference Include="..\3-OperationLayer\YGate.Json.Operations\YGate.Json.csproj" />
 		<ProjectReference Include="..\3-OperationLayer\YGate.Mail.Operations\YGate.Mail.Operations.csproj" />
 		<ProjectReference Include="..\Client\YGate.Client.csproj" />
 		<ProjectReference Include="..\Shared\YGate.Shared.csproj" />

@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.BusinessLayer.EFCore"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.IO.Operations", "3-OperationLayer\YGate.IO.Operations\YGate.IO.Operations.csproj", "{F755C664-434A-41E2-9262-0D7663883D49}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.Json.Operations", "3-OperationLayer\YGate.Json.Operations\YGate.Json.Operations.csproj", "{95B39128-C3E5-4DE9-A3CC-4DB210FB7885}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.Json", "3-OperationLayer\YGate.Json.Operations\YGate.Json.csproj", "{95B39128-C3E5-4DE9-A3CC-4DB210FB7885}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGate.Operation.Runner", "3-OperationLayer\YGate.Operation.Runner\YGate.Operation.Runner.csproj", "{6472199D-64CF-4CC5-83A4-83C77872B7A8}"
 EndProject

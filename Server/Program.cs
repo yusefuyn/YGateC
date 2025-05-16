@@ -17,17 +17,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbSettings").Get<List<ConnectionString>>();
 
-builder.Services.AddSingleton<Operations>(xd => { // DbAyarlarý
+builder.Services.AddSingleton<Operations>(xd =>
+{ // DbAyarlarý
     Operations returnedOperations = new();
     returnedOperations.AddDbSettings(dbSettingsSection);
-    return returnedOperations; 
+    return returnedOperations;
 });
 
 YGate.Server.StaticTools.SiteName = builder.Configuration.GetSection("SiteSettings").GetValue<string>("Title");
 YGate.Server.StaticTools.AllowedRequestCountTimeout = builder.Configuration.GetSection("SiteSettings").GetValue<int>("AllowedRequestCountTimeout");
 YGate.Server.StaticTools.NumberOfAllowedRequests = builder.Configuration.GetSection("SiteSettings").GetValue<int>("NumberOfAllowedRequests");
 
-builder.Services.AddScoped<MailServices>(xd => { // SMTP Ayalarý
+builder.Services.AddScoped<MailServices>(xd =>
+{ // SMTP Ayalarý
     var res = new MailServices();
     res.SenderSettings(builder.Configuration.GetValue<string>("MailSettings:Mail"), builder.Configuration.GetValue<string>("MailSettings:Password"));
     res.ServiceSettings(builder.Configuration.GetValue<string>("MailSettings:SmtpAddress"), builder.Configuration.GetValue<int>("MailSettings:Port"), builder.Configuration.GetValue<bool>("MailSettings:SSL"));
@@ -45,7 +47,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 string TokenPasswordConf = builder.Configuration["TokenConfiguration:TokenPassword"]; // Json Token Ayarlarý
 int ValidityTimeConf = Convert.ToInt32(builder.Configuration["TokenConfiguration:ValidityTime"].ToString());
 
-YGate.Server.StaticTools.tokenService = 
+YGate.Server.StaticTools.tokenService =
     new() { __secretkey = YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf), ValidityTime = ValidityTimeConf };
 
 //  auth
@@ -90,7 +92,11 @@ app.UseStaticFiles();
 app.MapRazorPages();
 app.MapControllers();
 
+
+#region Middlewares
 app.UseMiddleware<RequestMiddleware>();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+#endregion
 
 app.MapHub<MyHub>("/MyHub"); // SignalR Burada.
 app.MapFallbackToFile("index.html");

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\3-OperationLayer\YGate.Json.Operations\YGate.Json.Operations.csproj" />
+    <ProjectReference Include="..\..\3-OperationLayer\YGate.Json.Operations\YGate.Json.csproj" />
     <ProjectReference Include="..\..\3-OperationLayer\YGate.String.Operations\YGate.String.Operations.csproj" />
     <ProjectReference Include="..\YGate.Interfaces\YGate.Interfaces.csproj" />
   </ItemGroup>
