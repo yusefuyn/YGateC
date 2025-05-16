@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using YGate.Entities;
 using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Server.Middlewares
@@ -29,11 +30,9 @@ namespace YGate.Server.Middlewares
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var result = jsonSerializer.Serialize(new
+                var result = jsonSerializer.Serialize(new RequestResult("Hata Meydana Geldi")
                 {
-                    success = false,
-                    message = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
-                    detail = ex.Message // İstersen burayı production'da kapatabilirsin
+                    ShortDescription = "Bir hata meydana geldi"
                 });
 
                 await context.Response.WriteAsync(result);

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGate.BusinessLayer.EFCore;
+using YGate.BusinessLayer.EFCore.Abstracts;
+using YGate.BusinessLayer.EFCore.Concretes;
 using YGate.Client;
 using YGate.Client.Services;
 using YGate.Entities;
@@ -17,6 +19,8 @@ using YGate.Server.Facades;
 using YGate.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 #region SonraDuzenle
 List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbSettings").Get<List<ConnectionString>>();
 
@@ -64,6 +68,12 @@ YGate.Server.StaticTools.tokenService = new(new JsonOperations(), ValidityTimeCo
 builder.Services.AddScoped<CookieService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 #endregion
+
+#region Repository
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
+#endregion
+
 builder.Services.AddAuthorizationCore();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
