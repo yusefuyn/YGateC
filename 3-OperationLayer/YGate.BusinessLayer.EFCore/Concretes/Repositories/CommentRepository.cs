@@ -9,7 +9,7 @@ using YGate.Interfaces.DomainLayer;
 using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Facades;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class CommentRepository : ICommentRepository
     {

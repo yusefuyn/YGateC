@@ -9,7 +9,7 @@ using YGate.Interfaces.DomainLayer;
 using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Facades;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class MeasurementRepository : IMeasurementRepository
     {
@@ -26,7 +26,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
         {
             MeasurementCategory measurementCategory = baseFacades.JsonSerializer.Deserialize<MeasurementCategory>(parameter.Parameters.ToString());
             RequestResult returned = new("Add Measurement Category");
-            measurementCategory.DBGuid = YGate.String.Operations.GuidGen.Generate("MeasurementCategory");
+            measurementCategory.DBGuid = String.Operations.GuidGen.Generate("MeasurementCategory");
             operations.Context.MeasurementCategories.Add(measurementCategory);
             operations.Context.SaveChanges();
             returned.Result = EnumRequestResult.Success;
@@ -38,7 +38,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
         {
             MeasurementUnit model = baseFacades.JsonSerializer.Deserialize<MeasurementUnit>(parameter.Parameters.ToString());
             RequestResult returned = new("Add Measurement Category");
-            model.DBGuid = YGate.String.Operations.GuidGen.Generate("MeasurementUnit");
+            model.DBGuid = String.Operations.GuidGen.Generate("MeasurementUnit");
             operations.Context.MeasurementUnits.Add(model);
             operations.Context.SaveChanges();
             returned.Result = EnumRequestResult.Success;

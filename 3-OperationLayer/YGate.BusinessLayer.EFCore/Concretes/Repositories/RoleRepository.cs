@@ -11,7 +11,7 @@ using YGate.Mapping;
 using YGate.Server.Facades;
 
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
 
     public class RoleRepository : IRoleRepository
@@ -32,7 +32,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             result.Result = EnumRequestResult.Success;
 
             role.IsActive = true;
-            role.DBGuid = YGate.String.Operations.GuidGen.Generate("role");
+            role.DBGuid = String.Operations.GuidGen.Generate("role");
             operations.Context.Roles.Add(role);
             operations.Context.SaveChanges();
             result.Object = role;

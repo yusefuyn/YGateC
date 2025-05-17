@@ -11,7 +11,7 @@ using YGate.Mapping;
 using YGate.Server.Facades;
 using YGate.Entities.BasedModel;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class PropertyRepository : IPropertyRepository
     {
@@ -27,7 +27,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             PropertyGroup model = baseFacades.JsonSerializer.Deserialize<PropertyGroup>(parameter.Parameters.ToString());
             RequestResult returned = new("Add PropertyGroup");
             returned.Result = EnumRequestResult.Success;
-            model.DBGuid = YGate.String.Operations.GuidGen.Generate("PropertyGroup");
+            model.DBGuid = String.Operations.GuidGen.Generate("PropertyGroup");
             operations.Context.PropertyGroups.Add(model);
             operations.Context.SaveChanges();
             return returned;
@@ -48,7 +48,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             RequestResult returned = new("Get All Property But ViewModel");
             returned.Result = EnumRequestResult.Success;
             List<PropertyGroup> objs = operations.Context.PropertyGroups.ToList();
-            List<PropertyGroupViewModel> returnedList = YGate.Mapping.Operations.ConvertToList<PropertyGroupViewModel>(objs);
+            List<PropertyGroupViewModel> returnedList = Mapping.Operations.ConvertToList<PropertyGroupViewModel>(objs);
             returnedList.ForEach(o => o.Values = operations.Context.PropertyGroupValues.Where(xd => xd.PropertyGroupGuid == o.DBGuid).ToList());
             returned.Object = returnedList;
             return returned;

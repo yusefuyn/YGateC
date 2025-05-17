@@ -9,7 +9,7 @@ using YGate.Interfaces.DomainLayer;
 using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Facades;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class PageRepository : IPageRepository
     {
@@ -35,7 +35,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
             DynamicPage page = baseFacades.JsonSerializer.Deserialize<DynamicPage>(parameter.Parameters.ToString());
             page.IsActive = true;
-            page.DBGuid = YGate.String.Operations.GuidGen.Generate("Page");
+            page.DBGuid = String.Operations.GuidGen.Generate("Page");
             page.CreatorGuid = parameter.Token;
             operations.Context.DynamicPages.Add(page);
             operations.Context.SaveChanges();
@@ -166,7 +166,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
         public async Task<IRequestResult> SavePageParameters(IRequestParameter parameter)
         {
             List<PageParameter> pageParameters = baseFacades.JsonSerializer.Deserialize<List<PageParameter>>(parameter.Parameters.ToString());
-            string pageGuid = YGate.String.Operations.GuidGen.Generate("TempParametersGroup");
+            string pageGuid = String.Operations.GuidGen.Generate("TempParametersGroup");
             string Token = "";
             if (!string.IsNullOrEmpty(parameter.Token))
                 Token = parameter.Token;

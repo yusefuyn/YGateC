@@ -8,7 +8,7 @@ using YGate.Entities;
 using YGate.Interfaces.DomainLayer;
 using YGate.Interfaces.OperationLayer.Repositories;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class StatisticsRepository : IStatisticsRepository
     {
@@ -39,7 +39,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             StatisticsViewModel model = new StatisticsViewModel();
             returned.To = EnumTo.Server;
 
-            YGate.Operation.Runner.TryCatchRunner(() =>
+            Operation.Runner.TryCatchRunner(() =>
             {
                 model.UserCount = operations.Context.Accounts.Count();
                 model.IdentifiedEntityCount = operations.Context.Categories.Count();

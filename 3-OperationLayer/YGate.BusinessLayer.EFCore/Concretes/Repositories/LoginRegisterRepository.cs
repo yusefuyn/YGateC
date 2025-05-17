@@ -11,7 +11,7 @@ using YGate.Interfaces.OperationLayer;
 using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Server.Facades;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class LoginRegisterRepository : ILoginRegisterRepository
     {
@@ -86,7 +86,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                 return returnedResult;
             }
 
-            string userGuid = YGate.String.Operations.GuidGen.Generate("Account");
+            string userGuid = String.Operations.GuidGen.Generate("Account");
             var accountModel = new Account()
             {
                 DBGuid = userGuid,
@@ -104,7 +104,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
             AccountRole role = new AccountRole()
             {
-                DBGuid = YGate.String.Operations.GuidGen.Generate("AccountRole"),
+                DBGuid = String.Operations.GuidGen.Generate("AccountRole"),
                 FromGuid = userGuid,
                 ToGuid = "Admin",
                 IsActive = true,

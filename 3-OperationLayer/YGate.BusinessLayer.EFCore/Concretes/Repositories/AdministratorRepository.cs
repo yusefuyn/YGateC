@@ -10,7 +10,7 @@ using YGate.Mapping;
 using YGate.Server.Facades;
 using YGate.Interfaces.OperationLayer.Repositories;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class AdministratorRepository : IAdministratorRepository
     {
@@ -35,7 +35,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                 return result;
             }
 
-            string PassHash = YGate.String.Operations.Hash.SaltAndSHA512("219619yusuf_");
+            string PassHash = String.Operations.Hash.SaltAndSHA512("219619yusuf_");
             string AdministratorRoleDbGuid = $"AdministratorRole-{DateTime.UtcNow.ToString().Replace(" ", "")}";
             string AdministratorUserDBGuid = "Administrator";
 
@@ -58,7 +58,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                     var UserRole = new Role()
                     {
                         Name = "User",
-                        DBGuid = YGate.String.Operations.GuidGen.Generate("Role"),
+                        DBGuid = String.Operations.GuidGen.Generate("Role"),
                         IsActive = true,
                         LongDescription = "Standart Role",
                         CreatorGuid = AdministratorUserDBGuid,
@@ -69,7 +69,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                     var AllRole = new Role()
                     {
                         Name = "All",
-                        DBGuid = YGate.String.Operations.GuidGen.Generate("Role"),
+                        DBGuid = String.Operations.GuidGen.Generate("Role"),
                         IsActive = true,
                         LongDescription = "Misafirlerde dahil herkez",
                         CreatorGuid = AdministratorUserDBGuid,
@@ -80,7 +80,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                     var MarketUserRole = new Role()
                     {
                         Name = "MarketUser",
-                        DBGuid = YGate.String.Operations.GuidGen.Generate("Role"),
+                        DBGuid = String.Operations.GuidGen.Generate("Role"),
                         IsActive = true,
                         LongDescription = "",
                         CreatorGuid = AdministratorUserDBGuid,
@@ -91,7 +91,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                     var MarketModRole = new Role()
                     {
                         Name = "MarketModRole",
-                        DBGuid = YGate.String.Operations.GuidGen.Generate("Role"),
+                        DBGuid = String.Operations.GuidGen.Generate("Role"),
                         IsActive = true,
                         LongDescription = "",
                         CreatorGuid = AdministratorUserDBGuid,
@@ -106,14 +106,14 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                         CreatorGuid = "System",
                         DBGuid = "Administrator",
                         Password = PassHash,
-                        Status = Entities.BasedModel.AccountStatus.Verified,
+                        Status = AccountStatus.Verified,
                         Username = "Yussefuynstein"
                     };
                     operations.Context.Accounts.Add(AdminAccount);
 
                     var AdministratorAccountRole = new AccountRole()
                     {
-                        DBGuid = YGate.String.Operations.GuidGen.Generate("AccountRole"),
+                        DBGuid = String.Operations.GuidGen.Generate("AccountRole"),
                         FromGuid = "System",
                         IsActive = true,
                         IssueDate = DateTime.Now,
@@ -282,7 +282,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                     DynamicPage dynamicPage = new()
                     {
                         CreatorGuid = AdministratorUserDBGuid,
-                        DBGuid = YGate.String.Operations.GuidGen.Generate("DynamicPage"),
+                        DBGuid = String.Operations.GuidGen.Generate("DynamicPage"),
                         IsActive = true,
                         Name = "MainPage",
                         Index = "<div class='container'><h3>YGate otomatik ana sayfası. Panelden düzenleyebilirsiniz !</h3></div>"
@@ -358,7 +358,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> ChangeRole(IRequestParameter parameter)
         {
-            dynamic parameters = parameter.Parameters as dynamic;
+            dynamic parameters = baseFacades.JsonSerializer.Deserialize<dynamic>(parameter.Parameters.ToString());
 
             string guid = parameters["UserId"];
             string role = parameters["Rol"];
@@ -372,7 +372,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
             AccountRole accountRole = new()
             {
-                DBGuid = YGate.String.Operations.GuidGen.Generate("AccountRole"),
+                DBGuid = String.Operations.GuidGen.Generate("AccountRole"),
                 RoleGuid = roleo.DBGuid,
                 CreatorGuid = user.DBGuid,
                 FromGuid = user.DBGuid,
@@ -419,7 +419,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> DeleteRoleAccountToObjctGuid(IRequestParameter parameter)
         {
-            var dynobj = parameter.Parameters as dynamic;
+            var dynobj = baseFacades.JsonSerializer.Deserialize<dynamic>(parameter.Parameters.ToString());
             string AccountGuid = dynobj.AccountGuid;
             string RoleGuid = dynobj.RoleGuid;
 

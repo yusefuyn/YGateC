@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGate.BusinessLayer.EFCore;
-using YGate.BusinessLayer.EFCore.Concretes;
+using YGate.BusinessLayer.EFCore.Concretes.Repositories;
 using YGate.Client;
 using YGate.Client.Services;
 using YGate.Entities;
@@ -20,8 +20,10 @@ using YGate.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string TokenPasswordConf = builder.Configuration["TokenConfiguration:TokenPassword"]; // Json Token Ayarlarý
+string TokenPasswordConf = YGate.String.Operations.Hash.ComputeSHA256(builder.Configuration["TokenConfiguration:TokenPassword"]); // Json Token Ayarlarý
 int ValidityTimeConf = Convert.ToInt32(builder.Configuration["TokenConfiguration:ValidityTime"].ToString());
+
+YGate.Server.StaticTools.tokenService = new TokenService(new JsonOperations(), ValidityTimeConf, TokenPasswordConf);
 
 #region SonraDuzenle
 List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbSettings").Get<List<ConnectionString>>();
@@ -31,7 +33,7 @@ builder.Services.AddSingleton<IJsonSerializer, JsonOperations>();
 builder.Services.AddSingleton<ITokenService, TokenService>(xd =>
 {
     var JsonServ = xd.GetService<IJsonSerializer>();
-    TokenService to = new TokenService(JsonServ, ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
+    TokenService to = new TokenService(JsonServ, ValidityTimeConf, TokenPasswordConf);
     return to;
 });
 builder.Services.AddSingleton<IBaseFacades, BaseFacades>();

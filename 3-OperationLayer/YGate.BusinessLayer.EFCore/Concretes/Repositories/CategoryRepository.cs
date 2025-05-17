@@ -10,7 +10,7 @@ using YGate.Server.Facades;
 using YGate.Entities.ViewModels;
 using YGate.Interfaces.OperationLayer.Repositories;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
@@ -25,13 +25,13 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> AddCategoryRoles(IRequestParameter parameter)
         {
-            CategoryRoles ob = parameter.Parameters as CategoryRoles;
+            CategoryRoles ob = baseFacades.JsonSerializer.Deserialize<CategoryRoles>(parameter.Parameters.ToString());
 
 
             RequestResult returned = new($"AddCategoryRoles {ob.RoleGuid} {ob.CategoryGuid} {ob.CreatorGuid}");
             returned.To = EnumTo.Server;
             returned.Result = EnumRequestResult.Success;
-            ob.DBGuid = YGate.String.Operations.GuidGen.Generate("CategoryRole");
+            ob.DBGuid = String.Operations.GuidGen.Generate("CategoryRole");
             operations.Context.CategoryRoles.Add(ob);
             operations.Context.SaveChanges();
             returned.Object = operations.GetCategoryRole(ob.CategoryGuid);
@@ -42,7 +42,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> AddHtmlTemplate(IRequestParameter parameter)
         {
-            CategoryHtmlTemplate viewModel = parameter.Parameters as CategoryHtmlTemplate;
+            CategoryHtmlTemplate viewModel = baseFacades.JsonSerializer.Deserialize<CategoryHtmlTemplate>(parameter.Parameters.ToString()); 
 
             RequestResult returned = new($"AddHtmlTemplate {viewModel.DBGuid}");
             returned.Result = EnumRequestResult.Success;
@@ -54,8 +54,8 @@ namespace YGate.BusinessLayer.EFCore.Concretes
         public async Task<IRequestResult> AddNewCategory(IRequestParameter parameter)
         {
             RequestResult returned = new("AddNewCategory");
-            Category category = parameter as Category;
-            category.DBGuid = YGate.String.Operations.GuidGen.Generate("Category");
+            Category category = baseFacades.JsonSerializer.Deserialize<Category>(parameter.Parameters.ToString());
+            category.DBGuid = String.Operations.GuidGen.Generate("Category");
             if (string.IsNullOrEmpty(category.Icon))
                 category.Icon = "fa fa-star";
             operations.Context.Categories.Add(category);
@@ -112,7 +112,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             if (returnedObj == null)
             {
                 returnedObj = new();
-                returnedObj.DBGuid = YGate.String.Operations.GuidGen.Generate("HtmlTemplate");
+                returnedObj.DBGuid = String.Operations.GuidGen.Generate("HtmlTemplate");
                 returnedObj.CategoryGuid = dbguid;
             }
 
@@ -132,10 +132,10 @@ namespace YGate.BusinessLayer.EFCore.Concretes
         public async Task<IRequestResult> AddTemplates(IRequestParameter parameter)
         {
             RequestResult returned = new($"AddTemplates");
-            List<CategoryTemplateViewModel> viewmodels = parameter.Parameters as List<CategoryTemplateViewModel>;
+            List<CategoryTemplateViewModel> viewmodels = baseFacades.JsonSerializer.Deserialize<List<CategoryTemplateViewModel>>(parameter.Parameters.ToString());
 
             returned.Result = EnumRequestResult.Success;
-            List<CategoryTemplate> Templates = YGate.Mapping.Operations.ConvertToList<CategoryTemplate>(viewmodels);
+            List<CategoryTemplate> Templates = Mapping.Operations.ConvertToList<CategoryTemplate>(viewmodels);
             List<CategoryTemplateValue> Values = new();
             viewmodels.ForEach(xd =>
             {
@@ -231,7 +231,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> DeleteTemplate(IRequestParameter parameter)
         {
-            CategoryTemplateViewModel viewModel = parameter.Parameters as CategoryTemplateViewModel;
+            CategoryTemplateViewModel viewModel = baseFacades.JsonSerializer.Deserialize<CategoryTemplateViewModel>(parameter.Parameters.ToString());
 
             RequestResult returned = new($"DeleteTemplate {viewModel.DBGuid}");
             returned.Result = EnumRequestResult.Success;
@@ -319,7 +319,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> ModifyHtmlTemplate(IRequestParameter parameter)
         {
-            CategoryHtmlTemplate template = parameter.Parameters as CategoryHtmlTemplate;
+            CategoryHtmlTemplate template = baseFacades.JsonSerializer.Deserialize<CategoryHtmlTemplate>(parameter.Parameters.ToString());
             RequestResult returned = new($"ModifyHtmlTemplate {template.Id}");
             returned.Result = EnumRequestResult.Success;
             var obj = operations.Context.CategoryHtmlTemplates.FirstOrDefault(xd => xd.DBGuid == template.DBGuid);
@@ -330,7 +330,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
 
         public async Task<IRequestResult> RemoveCategoryRole(IRequestParameter parameter)
         {
-            dynamic param = parameter.Parameters as dynamic;
+            dynamic param = baseFacades.JsonSerializer.Deserialize<dynamic>(parameter.Parameters.ToString());
             string CategoryGuid = param["CategoryGuid"];
             string RoleGuid = param["RoleGuid"];
 

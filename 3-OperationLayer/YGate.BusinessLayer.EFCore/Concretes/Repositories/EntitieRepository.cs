@@ -11,7 +11,7 @@ using YGate.Interfaces.OperationLayer.Repositories;
 using YGate.Mapping;
 using YGate.Server.Facades;
 
-namespace YGate.BusinessLayer.EFCore.Concretes
+namespace YGate.BusinessLayer.EFCore.Concretes.Repositories
 {
     public class EntitieRepository : IEntitieRepository
     {
@@ -30,12 +30,12 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             RequestResult result = new("Add Entitie");
             result.Result = EnumRequestResult.Success;
             #region ModeliDuzenleme
-            RequestModel.MainModel.DBGuid = YGate.String.Operations.GuidGen.Generate("Entitie");
+            RequestModel.MainModel.DBGuid = String.Operations.GuidGen.Generate("Entitie");
             RequestModel.MainModel.Values = RequestModel.MainModel.Values
                 .Select(values =>
                 {
                     values.EntitieDbGuid = RequestModel.MainModel.DBGuid;
-                    values.DBGuid = YGate.String.Operations.GuidGen.Generate("MainEntitieValue");
+                    values.DBGuid = String.Operations.GuidGen.Generate("MainEntitieValue");
                     return values;
                 })
                 .ToList();
@@ -43,10 +43,10 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             RequestModel.SubModel = RequestModel.SubModel.Select(subModel =>
             {
                 subModel.ParentEntitieDBGuid = RequestModel.MainModel.DBGuid; // Ebeveyn objenin dbguid'i geliyor.
-                subModel.DBGuid = YGate.String.Operations.GuidGen.Generate("SubEntitie"); // Objenin dbguid'i yeniden atanıyor
+                subModel.DBGuid = String.Operations.GuidGen.Generate("SubEntitie"); // Objenin dbguid'i yeniden atanıyor
                 subModel.Values = subModel.Values.Select(subModelValues =>
                 { // Values'leri düzenleniyor
-                    subModelValues.DBGuid = YGate.String.Operations.GuidGen.Generate("SubEntitieValue"); // valueslere yeni dbguid atanıyor
+                    subModelValues.DBGuid = String.Operations.GuidGen.Generate("SubEntitieValue"); // valueslere yeni dbguid atanıyor
                     subModelValues.EntitieDbGuid = subModel.DBGuid; // valueslerin ebeveny dbguid'i atanıyor
                     return subModelValues;
                 }).ToList();
@@ -70,7 +70,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
                 EntitieGuid = RequestModel.MainModel.DBGuid,
                 OldOwnerGuid = "System",
                 NewOwnerGuid = RequestModel.MainModel.CreatorGuid,
-                Hash = YGate.String.Operations.Hash.ComputeSHA256("System")
+                Hash = String.Operations.Hash.ComputeSHA256("System")
             };
             operations.Context.EntitieOwner.Add(entitieOwnerTransfer);
             #endregion
@@ -218,7 +218,7 @@ namespace YGate.BusinessLayer.EFCore.Concretes
             List<Entitie> EntitieList = operations.Context.Entities
                 .Where(xd => EntitieGuidList.Contains(xd.DBGuid))
                 .ToList();
-            List<EntitieViewModel> list = YGate.Mapping.Operations.ConvertToList<EntitieViewModel>(EntitieList);
+            List<EntitieViewModel> list = Mapping.Operations.ConvertToList<EntitieViewModel>(EntitieList);
 
 
             operations._EntitieViewModelGetInfo(ref list);
