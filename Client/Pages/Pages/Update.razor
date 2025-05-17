@@ -11,7 +11,7 @@
         <h3>Add</h3>
     </div>
     <Entry Placeholder="Name" @bind-Value="page.Name"></Entry>
-    <Entry Placeholder="Body" @bind-Value="page.Index"></Entry>
+    <div id="editor" style="height: 400px; width: 100%; border:1px solid #333333;"></div>
     <SpecialButton Text="Ok" OnClick="async()=> await UpdatePage()"></SpecialButton>
 </div>
 
@@ -29,10 +29,36 @@
 
     public async Task UpdatePage()
     {
+        page.Index = await GetEditorContent();
         var res = await pageService.PageObjectUpdate(page);
         if (res.Result == EnumRequestResult.Success)
             navigationManager.NavigateTo("/Management/Pages");
 
         await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
+    }
+
+    private bool Rendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender && Rendered == false)
+        {
+            await jSRuntime.InvokeVoidAsync("AceEditorInitialize", "editor");
+            await SetEditorContent(page.Index);
+            Rendered = true;
+        }
+    }
+
+    private async Task<string> GetEditorContent()
+    {
+        var EditorText = "";
+        EditorText = await jSRuntime.InvokeAsync<string>("AceEditorGetValue");
+        return EditorText;
+    }
+
+    private async Task SetEditorContent(string code)
+    {
+        await jSRuntime.InvokeVoidAsync("AceEditorSetValue", code);
+        await jSRuntime.InvokeVoidAsync("AceEditorFormatCode");
     }
 }

@@ -10,7 +10,9 @@
         <h3>Add</h3>
     </div>
     <YGate.Client.Shared.Components.Entry Placeholder="Name" @bind-Value="page.Name"></YGate.Client.Shared.Components.Entry>
-    <YGate.Client.Shared.Components.Entry Placeholder="Body" @bind-Value="page.Index"></YGate.Client.Shared.Components.Entry>
+
+    <div id="editor" style="height: 400px; width: 100%; border:1px solid #333333;"></div>
+
     <YGate.Client.Shared.Components.SpecialButton Text="Ok" OnClick="async()=> await AddPage()"></YGate.Client.Shared.Components.SpecialButton>
 </div>
 
@@ -19,10 +21,36 @@
 
     public async Task AddPage()
     {
+        page.Index = await GetEditorContent();
         var res = await pageService.Add(page);
         if (res.Result == EnumRequestResult.Success)
             navigationManager.NavigateTo("/Management/Pages");
         await jSRuntime.InvokeVoidAsync("showNotification", res.LongDescription.ToString());
 
+    }
+
+    private bool Rendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender && Rendered == false)
+        {
+            await jSRuntime.InvokeVoidAsync("AceEditorInitialize", "editor");
+            await SetEditorContent(page.Index);
+            Rendered = true;
+        }
+    }
+
+    private async Task<string> GetEditorContent()
+    {
+        var EditorText = "";
+        EditorText = await jSRuntime.InvokeAsync<string>("AceEditorGetValue");
+        return EditorText;
+    }
+
+    private async Task SetEditorContent(string code)
+    {
+        await jSRuntime.InvokeVoidAsync("AceEditorSetValue", code);
+        await jSRuntime.InvokeVoidAsync("AceEditorFormatCode");
     }
 }

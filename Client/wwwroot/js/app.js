@@ -22,7 +22,52 @@ function disableButton(buttonId) {
     }
 }
 
+let aceEditor;
 
+function AceEditorInitialize(elementId) {
+    const $el = $('#' + elementId);
+
+    if ($el.length === 0) {
+        console.log("AceEditorInitialize: element not found:", elementId);
+        return;
+    }
+
+    aceEditor = ace.edit(elementId);
+    if (aceEditor) {
+        aceEditor.session.setMode("ace/mode/html");
+    }
+}
+
+function AceEditorGetValue(elementId) {
+    if (aceEditor) {
+        return aceEditor ? aceEditor.getValue() : "";
+    }
+    return "";
+}
+
+window.AceEditorFormatCode = () => {
+    if (!window.aceEditor) return;
+
+    const session = aceEditor.getSession();
+    const totalLines = session.getLength();
+
+    for (let row = 0; row < totalLines; row++) {
+        const line = session.getLine(row);
+        session.replace({
+            start: { row: row, column: 0 },
+            end: { row: row, column: line.length }
+        }, line.trimStart());
+    }
+
+    aceEditor.gotoLine(1, 0, true); // En üste git
+};
+
+
+window.AceEditorSetValue = (value) => {
+    if (aceEditor) {
+        aceEditor.setValue(value, -1); // caret sona gitmesin diye -1
+    }
+};
 
 window.custom_confirm = function (message, title = 'Yussefuynstein', yesbtn = 'Evet', nobtn = 'Hayır') {
     return new Promise((resolve, reject) => {
