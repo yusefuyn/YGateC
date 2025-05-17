@@ -12,7 +12,7 @@ namespace YGate.Server
         public static int NumberOfAllowedRequests = 10;
         public static int AllowedRequestCountTimeout = 5;
 
-        public static Token tokenService { get; set; }
+        public static TokenService tokenService { get; set; }
 
         public static T ConvertParameters<T>(this RequestParameter parameter)
         {

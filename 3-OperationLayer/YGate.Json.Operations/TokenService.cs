@@ -13,12 +13,12 @@ using YGate.Interfaces.OperationLayer;
 
 namespace YGate.Json.Operations
 {
-    public class Token : ITokenService
+    public class TokenService : ITokenService
     {
         public string SecretKey;
         public int ValidityTime;
         IJsonSerializer serializer;
-        public Token(IJsonSerializer serializer, int ValidityTime = 1, string SecretKey = "2524134145_yusuf_sado_m4m!")
+        public TokenService(IJsonSerializer serializer, int ValidityTime = 1, string SecretKey = "2524134145_yusuf_sado_m4m!")
         {
             this.serializer = serializer;
             this.ValidityTime = ValidityTime;

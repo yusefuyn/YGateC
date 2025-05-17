@@ -28,10 +28,10 @@ List<ConnectionString> dbSettingsSection = builder.Configuration.GetSection("DbS
 
 builder.Services.AddSingleton<IJsonSerializer, JsonOperations>();
 
-builder.Services.AddSingleton<ITokenService, Token>(xd =>
+builder.Services.AddSingleton<ITokenService, TokenService>(xd =>
 {
     var JsonServ = xd.GetService<IJsonSerializer>();
-    Token to = new Token(JsonServ, ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
+    TokenService to = new TokenService(JsonServ, ValidityTimeConf, YGate.String.Operations.Hash.ComputeSHA256(TokenPasswordConf));
     return to;
 });
 builder.Services.AddSingleton<IBaseFacades, BaseFacades>();
@@ -81,7 +81,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ILoginRegisterRepository, LoginRegisterRepository>();
-//EntitieController
+builder.Services.AddScoped<IEntitieRepository, EntitieRepository>();
 builder.Services.AddScoped<IMeasurementRepository, MeasurementRepository>();
 builder.Services.AddScoped<IPageRepository, PageRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
