@@ -19,6 +19,7 @@ using YGate.Client.Services.Profile;
 using YGate.Entities.ViewModels.Chat;
 using YGate.Interfaces.DomainLayer;
 
+
 namespace YGate.Client.Shared
 {
     [Authorize]

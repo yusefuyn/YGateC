@@ -93,7 +93,7 @@ namespace YGate.Server.Controllers
         [HttpPost]
         public async Task<IRequestResult> GetCategoryToGuid([FromBody] RequestParameter parameter)
         {
-            return await GetCategoryToGuid(parameter);
+            return await categoryRepository.GetCategoryToGuid(parameter);
         }
 
         [HttpPost]

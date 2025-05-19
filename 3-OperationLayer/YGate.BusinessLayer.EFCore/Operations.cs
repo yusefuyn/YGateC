@@ -526,7 +526,6 @@ namespace YGate.BusinessLayer.EFCore
                 .Where(predi)
                 .ToList();
 
-
             // Tiplerini getirmek için
             foreach (var propValue in entityPropertyValues)
             {
@@ -539,11 +538,9 @@ namespace YGate.BusinessLayer.EFCore
                     continue;
                 }
             }
-
-            // Gerekli Değerleri değiştirme ve yazdırma
-            entityPropertyValues.ForEach(xd =>
+            foreach (var xd in entityPropertyValues)
             {
-                try // TODO : Sonra bak Trysız olması lazım.
+                try
                 {
                     if (xd.Type == PropertyValueType.Unit)
                     {
@@ -557,11 +554,12 @@ namespace YGate.BusinessLayer.EFCore
                         xd.PropertyValue = $"{Integer}{UnitValue}";
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    continue;
                 }
-            });
+            }
+
             return entityPropertyValues;
         }
 
