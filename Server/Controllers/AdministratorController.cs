@@ -25,9 +25,10 @@ namespace YGate.Server.Controllers
         IHubContext<MyHub> hub;
         IAdministratorRepository administratorRepository;
 
-        public AdministratorController(IHubContext<MyHub> hub)
+        public AdministratorController(IHubContext<MyHub> hub, IAdministratorRepository administratorRepository)
         {
             this.hub = hub;
+            this.administratorRepository = administratorRepository;
         }
 
         [HttpPost]

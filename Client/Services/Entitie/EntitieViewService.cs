@@ -7,6 +7,24 @@ namespace YGate.Client.Services.Entitie
     public class EntitieViewService : IEntitieViewService
     {
         private MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, TemplateEnum TempType) => CategoryHtmlTemplateAddValues(entitie, entitie.HtmlTemplate.Template.ToString(), TempType);
+        /// <summary>
+        /// ]>{} Şeklinde olanları Üretir
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private string ReplaceMarkupCreate(string val)
+            => "]>" + '{' + val + '}';
+        /// <summary>
+        /// <></> Şeklinde olanı üretir
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private string TemplateMarkupCreate(string val)
+            => '<' + val + "></" + val + ">";
+        private string TemplateMarkupCreateAndAddValue(string CreatedMarkup, string AddValue)
+            => TemplateMarkupAddValue(AddValue, TemplateMarkupCreate(CreatedMarkup));
+        private string TemplateMarkupAddValue(string val, string TemplateMarkup)
+            => TemplateMarkup.Replace("><", $">{val}<");
         private MarkupString CategoryHtmlTemplateAddValues(EntitieViewModel entitie, string temp, TemplateEnum TempType)
         {
             if (entitie == null || string.IsNullOrEmpty(temp))
@@ -31,19 +49,19 @@ namespace YGate.Client.Services.Entitie
 
                     foreach (var entitieProperty in group.Value)
                     {
-                        Markup = "]>{" + entitieProperty.PropertyName + "}";
-                        var replace = entitieProperty.PropertyValue;
+                        Markup = ReplaceMarkupCreate(entitieProperty.PropertyName);
+                        string replace = entitieProperty.PropertyValue.ToString();
 
 
-                        if (entitieProperty.Type == Entities.BasedModel.PropertyValueType.ValueList)
+                        if (entitieProperty.Type == PropertyValueType.ValueList)
                         {
                             if (!Grouped)
                             {
-                                Template = Template.Replace(Markup, $"<customlistcomponent><listcomponent>{replace}</listcomponent>{Markup}</customlistcomponent>");
+                                Template = Template.Replace(Markup, TemplateMarkupCreateAndAddValue("customlistcomponent", TemplateMarkupCreateAndAddValue("listcomponent", replace) + Markup));
                                 Grouped = true;
                                 continue;
                             }
-                            replace = $"<listcomponent>{replace}</listcomponent>{Markup}";
+                            replace = TemplateMarkupCreateAndAddValue("listcomponent", replace) + Markup;
                             Template = Template.Replace(Markup, replace);
                             if (!MarkupToBeDeletedAfterTheReplaceOperation)
                                 MarkupToBeDeletedAfterTheReplaceOperation = true;
@@ -52,11 +70,11 @@ namespace YGate.Client.Services.Entitie
                         {
                             if (!Grouped)
                             {
-                                Template = Template.Replace(Markup, $"<customlistcomponent><combocomponent>{replace}</combocomponent>{Markup}</customlistcomponent>");
+                                Template = Template.Replace(Markup, TemplateMarkupCreateAndAddValue("customlistcomponent", TemplateMarkupCreateAndAddValue("combocomponent", replace) + Markup));
                                 Grouped = true;
                                 continue;
                             }
-                            replace = $"<combocomponent>{replace}</combocomponent>{Markup}";
+                            replace = TemplateMarkupCreateAndAddValue("combocomponent", replace) + Markup;
                             Template = Template.Replace(Markup, replace);
                             if (!MarkupToBeDeletedAfterTheReplaceOperation)
                                 MarkupToBeDeletedAfterTheReplaceOperation = true;
@@ -81,11 +99,11 @@ namespace YGate.Client.Services.Entitie
 
             var ozelliklerDict = new System.Collections.Generic.Dictionary<string, string>
             {
-                { "]>{GoLink}", PrepateTheLink(entitie) },
-                { "]>{GoOwnerLink}", $"/Show/User/{entitie.CreatorGuid}" },
-                { "]>{OwnerName}", entitie.OwnerName },
-                { "]>{CreateDate}", entitie.SharedDateUTC.ToString() },
-                { "]>{CategoryName}", entitie.CategoryName.ToString()}
+                { ReplaceMarkupCreate("GoLink"), PrepateTheLink(entitie) },
+                { ReplaceMarkupCreate("GoOwnerLink"), $"/Show/User/{entitie.CreatorGuid}" },
+                { ReplaceMarkupCreate("OwnerName"), entitie.OwnerName },
+                { ReplaceMarkupCreate("CreateDate"), entitie.SharedDateUTC.ToString() },
+                { ReplaceMarkupCreate("CategoryName"), entitie.CategoryName.ToString()}
             };
 
             foreach (var deger in ozelliklerDict)
@@ -96,7 +114,7 @@ namespace YGate.Client.Services.Entitie
             try
             {
 
-                string ChildMarkup = "<ChildEntitieTemplate></ChildEntitieTemplate>";
+                string ChildMarkup = TemplateMarkupCreate("ChildEntitieTemplate");
                 string ChildTemplates = "";
                 foreach (var childItem in entitie.ChildEntitie)
                 {
@@ -226,7 +244,7 @@ namespace YGate.Client.Services.Entitie
                 ListView = new(ListView.Value.ToString() + ob.Value.ToString());
             }
             MarkupString ListPage = CategoryHtmlTemplateAddValues(PageViewModel, TemplateEnum.ListingPage);
-            ListPage = new(ListPage.Value.Replace("<IListView></IListView>", ListView.Value.ToString()));
+            ListPage = new(ListPage.Value.Replace(TemplateMarkupCreate("IListView"), ListView.Value.ToString()));
             return ListPage;
         }
         public MarkupString GetView(DynamicPageDynamicParameter dynamicPageDynamicParameter)
